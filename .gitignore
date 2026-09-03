@@ -429,3 +429,5 @@ FodyWeavers.xsd
 *.msp
 
 *.exe
+2dgp2_debug.exe
+Log.txt
