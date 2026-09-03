@@ -5,6 +5,7 @@
 #include "DxPlus/DxPlus.h"
 #include <memory>
 #include <vector>
+#include "Game_03.h"
 
 // ゲーム全体で共有する"文脈（コンテキスト）"。
 // プレイヤー・敵・マップ・アイテムなどを束ね、
@@ -27,4 +28,6 @@ public:
 
 private:
     const DxPlus::Sprite::SpriteBase* backgroundSpr{ nullptr };
+
+	Game_03 game_03;
 };
