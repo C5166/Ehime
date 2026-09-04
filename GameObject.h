@@ -1,20 +1,25 @@
 #pragma once
 #include "DxPlus/DxPlus.h"
 
-// 的の種類
+// ボールタイプ
 enum class BallType
 {
-    Red,  // ターゲット（加点）
-    Blue  // お手付き（HP減）
+    Red,
+    Blue,
+    Target,  // 撮影対象（加点）
+    Penalty  // お手付き（減点）
 };
 
 struct Object
 {
     DxPlus::Vec2 position;
-    DxPlus::Vec2 size;       // 半径代わりに size.x や radius を使用
+    DxPlus::Vec2 size;
     float rotation{ 0.0f };
-    DxPlus::Vec2 velocity;    // 移動速度
+    DxPlus::Vec2 velocity;
     DxPlus::Vec2 acceleration{ 0, 0 };
-    bool active{ true };      // クリックされて消えたかどうか
-    BallType type{ BallType::Red };
+    bool isColliding{ false };
+    bool active{ true };
+
+    // Game_01 で使う型に合わせます
+    BallType type{ BallType::Target };
 };
