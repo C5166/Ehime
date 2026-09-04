@@ -21,6 +21,7 @@ void ResourceManager::LoadAll()
 
 	LoadTextureAsSpriteLeftTop(ResourceKeys::game2_back, L"./Data/Images/mihon_3.png");
 
+	LoadTextureAsSpriteCenter(ResourceKeys::game_1_description_1, L"./Data/Images/game_1_description_1.png");
 
     LoadMusic(ResourceKeys::BGM_Game,       L"./Data/Sounds/maou_bgm_8bit14.mp3");
     LoadSound(ResourceKeys::SE_Explosion,   L"./Data/Sounds/Explosion.mp3");

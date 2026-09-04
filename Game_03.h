@@ -15,6 +15,8 @@ public:
 private:
     void SpawnBalls(); // 的をまとめて生成するヘルパー関数
 
+    const DxPlus::Sprite::SpriteBase* explanationID{ nullptr };
+
     std::vector<Object> balls;
 
     // 画面の幅・高さ（必要に応じてゲームの画面サイズに合わせて変更してください）

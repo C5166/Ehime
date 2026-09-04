@@ -17,6 +17,9 @@ namespace ResourceKeys
     inline constexpr const wchar_t* SE_Explosion = L"Explosion";
     inline constexpr const wchar_t* SE_PlayerShot = L"PlayerShot";
 
+    // ===== Game03 =====
+	inline constexpr const wchar_t* game_1_description_1 = L"game_1_description_1";
+
     // ===== Fonts =====
     inline constexpr const wchar_t* Font_Title = L"Bitcount Light";
 }

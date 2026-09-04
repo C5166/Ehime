@@ -7,6 +7,7 @@
 #include <vector>
 #include "Game_03.h"
 #include "Game_02.h"
+#include "Game_00.h"
 
 // ゲーム全体で共有する"文脈（コンテキスト）"。
 // プレイヤー・敵・マップ・アイテムなどを束ね、
@@ -35,4 +36,5 @@ private:
     
 
 	bool Isinit{ false };
+    Game_00 game_00;
 };

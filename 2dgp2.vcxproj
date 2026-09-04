@@ -189,6 +189,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="Game_02.h" />
+    <ClInclude Include="Game_01.h" />
     <ClInclude Include="Game_03.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="ResourceKeys.h" />
@@ -215,6 +216,8 @@
     <ClCompile Include="GameContext.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Game_02.cpp" />
+    <ClCompile Include="Game_00.cpp" />
+    <ClCompile Include="Game_01.cpp" />
     <ClCompile Include="Game_03.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
