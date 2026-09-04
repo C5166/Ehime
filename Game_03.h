@@ -1,27 +1,26 @@
 ﻿#pragma once
 #include "DxPlus/DxPlus.h"
 #include "GameObject.h"
+#include <vector>
 
 class Game_03
 {
 public:
-	Game_03() = default;
-	void Init();
-	void Reset();
-	void Update();
-	void Draw() const;
+    Game_03() = default;
+    void Init();
+    void Reset();
+    void Update();
+    void Draw() const;
+
 private:
+    void SpawnBalls(); // 的をまとめて生成するヘルパー関数
 
-	Object RedBall;
-	Object BlueBall;
+    std::vector<Object> balls;
 
-	//出現させるための個数用変数
-	int spawnCount{ 0 };
+    // 画面の幅・高さ（必要に応じてゲームの画面サイズに合わせて変更してください）
+    const float screenWidth = 1280.0f;
+    const float screenHeight = 720.0f;
 
-	//数字
-	int number { 0 };
-
-	//仮㏋
-	int HP{ 100 };
-
+    int number{ 0 };  // スコア
+    int HP{ 3 };      // 仮HP（ハート3個分）
 };

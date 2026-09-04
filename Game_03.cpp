@@ -1,101 +1,124 @@
 ﻿#include "Game_03.h"
+#include <cstdlib>
 
 void Game_03::Init()
 {
-	RedBall.position = { 100, 100 };
-	RedBall.size = { 50, 50 };
-	RedBall.rotation = 0;
-	RedBall.velocity = { 0, 0 };
-	RedBall.acceleration = { 0, 0 };
-	RedBall.isColliding = false;
-
-	BlueBall.position = { 300, 300 };
-	BlueBall.size = { 50, 50 };
-	BlueBall.rotation = 0;
-	BlueBall.velocity = { 0, 0 };
-	BlueBall.acceleration = { 0, 0 };
-	BlueBall.isColliding = false;
-
-	number = 0;
+    Reset();
 }
 
 void Game_03::Reset()
 {
-	RedBall.position = { 100, 100 };
-	RedBall.velocity = { 0, 0 };
-	RedBall.acceleration = { 0, 0 };
-	RedBall.isColliding = false;
+    number = 0;
+    HP = 3;
+    SpawnBalls();
+}
 
-	BlueBall.position = { 300, 300 };
-	BlueBall.velocity = { 0, 0 };
-	BlueBall.acceleration = { 0, 0 };
-	BlueBall.isColliding = false;
+void Game_03::SpawnBalls()
+{
+    balls.clear();
 
-	spawnCount = 0;
+    // 例：赤10個、青10個をランダム生成
+    int totalRed = 10;
+    int totalBlue = 10;
 
-	number = 0;
+    for (int i = 0; i < totalRed + totalBlue; ++i)
+    {
+        Object ball;
+        ball.type = (i < totalRed) ? BallType::Red : BallType::Blue;
+        ball.size = { 40.0f, 40.0f }; // 直径40（半径20）
+        ball.active = true;
+
+        // ランダムな位置 (画面内)
+        ball.position.x = static_cast<float>(rand() % static_cast<int>(screenWidth - 100) + 50);
+        ball.position.y = static_cast<float>(rand() % static_cast<int>(screenHeight - 100) + 50);
+
+        // ランダムな速度（それぞれ違う速度で動く）
+        float vx = static_cast<float>((rand() % 200 - 100) / 20.0f); // -5.0 〜 5.0
+        float vy = static_cast<float>((rand() % 200 - 100) / 20.0f);
+        if (vx == 0.0f) vx = 2.0f;
+        if (vy == 0.0f) vy = 2.0f;
+        ball.velocity = { vx, vy };
+
+        balls.push_back(ball);
+    }
 }
 
 void Game_03::Update()
 {
-	
+    using namespace DxPlus::Input;
+    int button = GetButtonDown(PLAYER1);
+    bool isClicked = (button & BUTTON_TRIGGER2);
 
+    int mouseX = 0, mouseY = 0;
+    if (isClicked)
+    {
+        DxLib::GetMousePoint(&mouseX, &mouseY);
+    }
 
-	//赤いブロックを左クリックしたらRedBall.isColliding = tureにして消す、そしたらnumberを1増やす
-	using namespace DxPlus::Input;
-	int botton = GetButtonDown(PLAYER1);
-	if (botton & BUTTON_TRIGGER2)
-	{
-		int mouseX, mouseY;
-		DxLib::GetMousePoint(&mouseX, &mouseY);
-		if (mouseX >= RedBall.position.x - RedBall.size.x * 0.5f &&
-			mouseX <= RedBall.position.x + RedBall.size.x * 0.5f &&
-			mouseY >= RedBall.position.y - RedBall.size.y * 0.5f &&
-			mouseY <= RedBall.position.y + RedBall.size.y * 0.5f)
-		{
-			RedBall.isColliding = true;
-			number++;
-		}
-	}
+    float radius = 20.0f; // 的の半径
 
-	if (botton & BUTTON_TRIGGER2)
-	{
-		int mouseX, mouseY;
-		DxLib::GetMousePoint(&mouseX, &mouseY);
-		if (mouseX >= BlueBall.position.x - BlueBall.size.x * 0.5f &&
-			mouseX <= BlueBall.position.x + BlueBall.size.x * 0.5f &&
-			mouseY >= BlueBall.position.y - BlueBall.size.y * 0.5f &&
-			mouseY <= BlueBall.position.y + BlueBall.size.y * 0.5f)
-		{
-			BlueBall.isColliding = true;
-			HP--;
-		}
-	}
+    for (auto& ball : balls)
+    {
+        if (!ball.active) continue;
+
+        // 1. 位置の更新（移動処理）
+        ball.position.x += ball.velocity.x;
+        ball.position.y += ball.velocity.y;
+
+        // 2. 画面端での跳ね返り処理
+        if (ball.position.x - radius < 0 || ball.position.x + radius > screenWidth)
+        {
+            ball.velocity.x *= -1.0f;
+        }
+        if (ball.position.y - radius < 0 || ball.position.y + radius > screenHeight)
+        {
+            ball.velocity.y *= -1.0f;
+        }
+
+        // 3. クリック判定（円判定：中心からの距離の2乗で比較）
+        if (isClicked)
+        {
+            float dx = static_cast<float>(mouseX) - ball.position.x;
+            float dy = static_cast<float>(mouseY) - ball.position.y;
+            if ((dx * dx + dy * dy) <= (radius * radius))
+            {
+                ball.active = false; // 消す
+
+                if (ball.type == BallType::Red)
+                {
+                    number++; // 赤を選んだらスコア加点
+                }
+                else if (ball.type == BallType::Blue)
+                {
+                    HP--;    // 青を選んだらHP減少
+                }
+            }
+        }
+    }
 }
 
 void Game_03::Draw() const
 {
-	// 
-	if (RedBall.isColliding == false) {
-		DxLib::DrawBox(static_cast<int>(RedBall.position.x - RedBall.size.x * 0.5f),
-			static_cast<int>(RedBall.position.y - RedBall.size.y * 0.5f),
-			static_cast<int>(RedBall.position.x + RedBall.size.x * 0.5f),
-			static_cast<int>(RedBall.position.y + RedBall.size.y * 0.5f),
-			DxLib::GetColor(255, 0, 0), TRUE);
-	}
+    float radius = 20.0f;
 
-	// Draw BlueBall
-	if (BlueBall.isColliding == false) {
-		DxLib::DrawBox(static_cast<int>(BlueBall.position.x - BlueBall.size.x * 0.5f),
-			static_cast<int>(BlueBall.position.y - BlueBall.size.y * 0.5f),
-			static_cast<int>(BlueBall.position.x + BlueBall.size.x * 0.5f),
-			static_cast<int>(BlueBall.position.y + BlueBall.size.y * 0.5f),
-			DxLib::GetColor(0, 0, 255), TRUE);
-	}
+    for (const auto& ball : balls)
+    {
+        if (!ball.active) continue;
 
-	//スコアを表示
-	DxLib::DrawFormatString(10, 10, DxLib::GetColor(255, 255, 255), L"Score: %d", number);
+        // 的の種類に応じた色設定（デザイン画像に合わせて円で描画）
+        unsigned int color = (ball.type == BallType::Red)
+            ? DxLib::GetColor(230, 30, 30)
+            : DxLib::GetColor(0, 100, 220);
 
-	//仮㏋
-	DxLib::DrawFormatString(10, 30, DxLib::GetColor(255, 255, 255), L"HP: %d",HP );
+        DxLib::DrawCircle(
+            static_cast<int>(ball.position.x),
+            static_cast<int>(ball.position.y),
+            static_cast<int>(radius),
+            color, TRUE
+        );
+    }
+
+    // UI表示
+    DxLib::DrawFormatString(10, 10, DxLib::GetColor(255, 255, 255), L"Score: %d", number);
+    DxLib::DrawFormatString(10, 30, DxLib::GetColor(255, 255, 255), L"HP: %d", HP);
 }
