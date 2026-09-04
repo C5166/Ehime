@@ -1,8 +1,11 @@
 ﻿#include "Game_03.h"
+#include "ResourceKeys.h"
+#include "ResourceManager.h"
 #include <cstdlib>
 
 void Game_03::Init()
 {
+	explanationID = RM().GridAt(ResourceKeys::game_1_description_1);
     Reset();
 }
 
@@ -117,6 +120,8 @@ void Game_03::Draw() const
             color, TRUE
         );
     }
+
+	explanationID->Draw({ 640.0f, 555.0f });
 
     // UI表示
     DxLib::DrawFormatString(10, 10, DxLib::GetColor(255, 255, 255), L"Score: %d", number);

@@ -19,6 +19,8 @@ void ResourceManager::LoadAll()
     LoadTextureAsSpriteCenter(ResourceKeys::Player_Shot, L"./Data/Images/player_shot.png");
     LoadGridCenter(ResourceKeys::Explosion, L"./Data/Images/explosion.png", { 0,0 }, { 10,3 }, { 256,256 });
 
+	LoadTextureAsSpriteCenter(ResourceKeys::game_1_description_1, L"./Data/Images/game_1_description_1.png");
+
     LoadMusic(ResourceKeys::BGM_Game,       L"./Data/Sounds/maou_bgm_8bit14.mp3");
     LoadSound(ResourceKeys::SE_Explosion,   L"./Data/Sounds/Explosion.mp3");
     LoadSound(ResourceKeys::SE_PlayerShot,  L"./Data/Sounds/PlayerShot.wav");

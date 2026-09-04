@@ -1,16 +1,16 @@
-﻿#include "Game_01.h"
+﻿#include "Game_00.h"
 #include <cstdlib>
 #include <cmath>
 
 // ----------------------------------------------------
 // 初期化・リセット処理
 // ----------------------------------------------------
-void Game_01::Init()
+void Game_00::Init()
 {
     Reset();
 }
 
-void Game_01::Reset()
+void Game_00::Reset()
 {
     // ゲームパラメータの初期化
     number = 0; // スコアリセット
@@ -24,8 +24,8 @@ void Game_01::Reset()
     // オブジェクトリストをクリアして再生成
     subjects.clear();
 
-    const int totalTarget = 10;  // 撮影成功対象（得点）
-    const int totalPenalty = 10; // 撮影NG対象（ペナルティ）
+    const int totalTarget = 3;  // 撮影成功対象（得点）
+    const int totalPenalty = 4; // 撮影NG対象（ペナルティ）
 
     for (int i = 0; i < totalTarget + totalPenalty; ++i)
     {
@@ -35,23 +35,41 @@ void Game_01::Reset()
         subj.size = { 40.0f, 40.0f };
         subj.active = true;
 
-        // 【出現位置】画面の左右端を避け、地面（y: 450〜650）付近にランダム配置
+        // 【出現位置】画面の左右端を避け、地面（y: 650）付近にランダム配置
         subj.position.x = static_cast<float>(rand() % static_cast<int>(screenWidth - 100) + 50);
-        subj.position.y = static_cast<float>(rand() % 200 + 450);
+		subj.position.y = (screenHeight - 150.0f); // 地面付近に固定
 
-        // 【移動速度】左右の移動速度をランダム設定（停止しないよう最小速度を補正）
-        float vx = static_cast<float>((rand() % 100 - 50) / 10.0f);
-        if (std::abs(vx) < 0.5f) vx = 1.5f;
-        subj.velocity = { vx, 0.0f };
+        // 重なり防止
+	    bool isOverlapping = false;
+        for (const auto& existingSubj : subjects)
+        {
+            if (!existingSubj.active) continue;
+            float dx = subj.position.x - existingSubj.position.x;
+            float dy = subj.position.y - existingSubj.position.y;
+            float distanceSq = dx * dx + dy * dy;
+            float minDistance = (subj.size.x + existingSubj.size.x) * 0.5f; // 半径の合計
+            if (distanceSq < (minDistance * minDistance))
+            {
+                isOverlapping = true;
+                break;
+            }
+        }
+        if (isOverlapping)
+        {
+            --i; // 重なっていた場合は再度生成
+            continue;
+        }
 
-        subjects.push_back(subj);
+        // 停止
+		subj.velocity = { 0.0f, 0.0f };
+		subjects.push_back(subj);
     }
 }
 
 // ----------------------------------------------------
 // 更新処理（フレーム毎の動作）
 // ----------------------------------------------------
-void Game_01::Update()
+void Game_00::Update()
 {
     using namespace DxPlus::Input;
 
@@ -171,7 +189,7 @@ void Game_01::Update()
 // ----------------------------------------------------
 // 描画処理
 // ----------------------------------------------------
-void Game_01::Draw() const
+void Game_00::Draw() const
 {
     // ====================================================
     // 1. 背景描画（空・地面）

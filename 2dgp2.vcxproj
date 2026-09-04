@@ -188,6 +188,7 @@
     <ClInclude Include="GameContext.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="Game_00.h" />
     <ClInclude Include="Game_01.h" />
     <ClInclude Include="Game_03.h" />
     <ClInclude Include="MathUtils.h" />
@@ -214,6 +215,7 @@
     <ClCompile Include="DxPlus\Utils.cpp" />
     <ClCompile Include="GameContext.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="Game_00.cpp" />
     <ClCompile Include="Game_01.cpp" />
     <ClCompile Include="Game_03.cpp" />
     <ClCompile Include="main.cpp" />
