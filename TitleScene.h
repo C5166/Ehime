@@ -14,6 +14,8 @@ public:
     void Render() const override;
 
 private:
+//10‰ñƒJƒEƒ“ƒg
+	int TenCount{ 1 };
     int frameCount{ 0 };
     int fontHandle{ -1 };
 };

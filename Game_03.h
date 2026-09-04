@@ -15,6 +15,9 @@ private:
 	Object RedBall;
 	Object BlueBall;
 
+	//出現させるための個数用変数
+	int spawnCount{ 0 };
+
 	//数字
 	int number { 0 };
 

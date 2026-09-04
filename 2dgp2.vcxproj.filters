@@ -144,9 +144,6 @@
     <ClInclude Include="Game_03.h">
       <Filter>40_Gameplay\Actors</Filter>
     </ClInclude>
-    <ClInclude Include="GameTimer.h">
-      <Filter>40_Gameplay\Actors</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DxPlus\Debug.cpp">
@@ -213,9 +210,6 @@
       <Filter>40_Gameplay\Base</Filter>
     </ClCompile>
     <ClCompile Include="Game_03.cpp">
-      <Filter>40_Gameplay\Actors</Filter>
-    </ClCompile>
-    <ClCompile Include="GameTimer.cpp">
       <Filter>40_Gameplay\Actors</Filter>
     </ClCompile>
   </ItemGroup>

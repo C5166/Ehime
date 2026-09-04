@@ -188,7 +188,6 @@
     <ClInclude Include="GameContext.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameScene.h" />
-    <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Game_03.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="ResourceKeys.h" />
@@ -214,7 +213,6 @@
     <ClCompile Include="DxPlus\Utils.cpp" />
     <ClCompile Include="GameContext.cpp" />
     <ClCompile Include="GameScene.cpp" />
-    <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="Game_03.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ResourceManager.cpp" />

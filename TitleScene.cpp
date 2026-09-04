@@ -21,9 +21,14 @@ void TitleScene::Update()
     using namespace DxPlus::Input;
     if (GetButtonDown(PLAYER1) & BUTTON_START)
     {
-        Scene* gameScene = SceneManager::GetInstance().GetScene(SceneID::Game);
-        SetNextScene(gameScene);
-        StartFadeOut();
+        if(TenCount >= 10)
+        {
+            Scene* gameScene = SceneManager::GetInstance().GetScene(SceneID::Game);
+            SetNextScene(gameScene);
+            StartFadeOut();
+		}
+		TenCount++;
+        
         return;
     }
     frameCount++;
@@ -32,7 +37,7 @@ void TitleScene::Update()
 void TitleScene::Render() const
 {
     const int white = DxLib::GetColor(255, 255, 255);
-    DxPlus::Text::DrawString(L"2D GameProgramming II", 
+    DxPlus::Text::DrawString(L"ehime", 
         { DxPlus::CLIENT_WIDTH * 0.5f, DxPlus::CLIENT_HEIGHT * 0.25f }, 
         white, DxPlus::Text::TextAlign::MIDDLE_CENTER, { 2, 2 }, 0, fontHandle);
 
