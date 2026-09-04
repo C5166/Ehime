@@ -15,21 +15,44 @@ void GameContext::Init()
 	backgroundSpr = RM().GridAt(ResourceKeys::Background);
 
 	game_03.Init();
+	game_02.Init();
 }
 
 void GameContext::Reset()
 {
 	game_03.Reset();
+	Isinit = false;
 }
 
 void GameContext::Update()
 {
-	game_03.Update();
+	using namespace DxPlus::Input;
+	int Button = GetButtonDown(PLAYER1);
+
+	if(Isinit == false)
+	{
+		game_03.Update();
+	}
+	else if (Isinit == true)
+	{
+		game_02.Update();
+	}
+
+	if(Button& BUTTON_START)
+	{
+		Isinit = true;
+	}
 }
 
 void GameContext::Draw() const
 {
 	backgroundSpr->Draw({});
-
-	game_03.Draw();
+	if (Isinit == false)
+	{
+		game_03.Draw();
+	}
+	else if (Isinit == true)
+	{
+		game_02.Draw();
+	}
 }

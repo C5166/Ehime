@@ -10,6 +10,7 @@ namespace ResourceKeys
     inline constexpr const wchar_t* Background = L"Background";
     inline constexpr const wchar_t* Player_Shot = L"PlayerShot";
     inline constexpr const wchar_t* Explosion = L"Explosion";
+    inline constexpr const wchar_t* game2_back = L"game2_back";
 
     // ===== Musics / Sounds =====
     inline constexpr const wchar_t* BGM_Game = L"BGM_Game";

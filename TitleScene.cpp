@@ -19,7 +19,7 @@ void TitleScene::Init()
 void TitleScene::Update()
 {
     using namespace DxPlus::Input;
-    if (GetButtonDown(PLAYER1) & BUTTON_START)
+    if (GetButtonDown(PLAYER1) & BUTTON_START||GetButtonDown(PLAYER1)& BUTTON_TRIGGER2)
     {
         if(TenCount >= 10)
         {
