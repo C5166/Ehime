@@ -189,6 +189,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="Game_02.h" />
+    <ClInclude Include="Game_00.h" />
     <ClInclude Include="Game_01.h" />
     <ClInclude Include="Game_03.h" />
     <ClInclude Include="MathUtils.h" />
