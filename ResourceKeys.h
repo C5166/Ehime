@@ -30,6 +30,16 @@ namespace ResourceKeys
 	inline constexpr const wchar_t* game_start = L"game_start";
 	inline constexpr const wchar_t* game_setumei_2 = L"game_setumei_2";
 
+	// ===== Game00 =====
+    inline constexpr const wchar_t* game3_camera = L"game3_camera";
+    inline constexpr const wchar_t* game_3_nekosima = L"game_3_nekosima";
+    inline constexpr const wchar_t* game_3_neko = L"game_3_neko";
+    inline constexpr const wchar_t* game_3_hitu = L"game_3_hitu";
+    inline constexpr const wchar_t* game_3_inu = L"game_3_inu";
+    inline constexpr const wchar_t* game_3_kesi1 = L"game_3_kesi1";
+    inline constexpr const wchar_t* game_3_kesi2 = L"game_3_kesi2";
+    inline constexpr const wchar_t* game_3_kesi3 = L"game_3_kesi3";
+
     // ===== Fonts =====
     inline constexpr const wchar_t* Font_Title = L"Bitcount Light";
 }

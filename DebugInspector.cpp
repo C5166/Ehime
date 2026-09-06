@@ -54,4 +54,13 @@ void DebugInspector::Draw()
     if (ImGui::Button("Game 03 [F3]")) gc.SetCurrentMiniGame(GameNamber::Game_3);
 
     ImGui::End();
+
+    // 現在のゲームコンテキストを取得
+    auto& gameContext = SM().GetGameState();
+
+    // 現在選択されているミニゲームが Game_00 (GameNamber::Game_0) の場合、Hierarchy/Inspector を描画
+    if (gameContext.GetCurrentMiniGame() == GameNamber::Game_0)
+    {
+        gameContext.GetGame00().DrawImGui();
+    }
 }

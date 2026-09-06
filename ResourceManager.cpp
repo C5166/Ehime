@@ -38,6 +38,16 @@ void ResourceManager::LoadAll()
     LoadTextureAsSpriteCenter(ResourceKeys::game_1_heart_2, L"./Data/Images/game_1_heart_2.png");
 	LoadTextureAsSpriteCenter(ResourceKeys::game_1_heart_3, L"./Data/Images/game_1_heart_3.png");
 
+
+	LoadTextureAsSpriteCenter(ResourceKeys::game3_camera, L"./Data/Images/game3_camera.png");
+	LoadTextureAsSpriteCenter(ResourceKeys::game_3_nekosima, L"./Data/Images/game_3_nekosima.png");
+	LoadTextureAsSpriteCenter(ResourceKeys::game_3_neko, L"./Data/Images/game_3_neko.png");
+	LoadTextureAsSpriteCenter(ResourceKeys::game_3_hitu, L"./Data/Images/game_3_hitu.png");
+	LoadTextureAsSpriteCenter(ResourceKeys::game_3_inu, L"./Data/Images/game_3_inu.png");
+	LoadTextureAsSpriteCenter(ResourceKeys::game_3_kesi1, L"./Data/Images/game_3_kesi1.png");
+	LoadTextureAsSpriteCenter(ResourceKeys::game_3_kesi2, L"./Data/Images/game_3_kesi2.png");
+	LoadTextureAsSpriteCenter(ResourceKeys::game_3_kesi3, L"./Data/Images/game_3_kesi3.png");
+
     LoadMusic(ResourceKeys::BGM_Game,       L"./Data/Sounds/maou_bgm_8bit14.mp3");
     LoadSound(ResourceKeys::SE_Explosion,   L"./Data/Sounds/Explosion.mp3");
     LoadSound(ResourceKeys::SE_PlayerShot,  L"./Data/Sounds/PlayerShot.wav");

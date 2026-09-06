@@ -40,6 +40,9 @@ public:
     int GetCurrentMiniGame() const { return Isinit; }
     void SetCurrentMiniGame(int gameNum) { Isinit = gameNum; }
 
+    // ゲッターを追加
+    Game_00& GetGame00() { return game_00; }
+
 private:
     // --- 【設定】演出位置・表示時間 ---
     const float EXPLANATION_DURATION = 2.0f; // 説明表示時間(秒)
@@ -78,7 +81,7 @@ private:
     int playerHP{ 3 };
     int totalScore{ 0 };
 
-    const float GAME_TIME_LIMIT{ 10.0f };
+    const float GAME_TIME_LIMIT{ 500.0f };
     const float TIME_SPEED_RATE{ 1.0f };
     float timer{ 10.0f };
 

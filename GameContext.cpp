@@ -26,6 +26,7 @@ void GameContext::Init()
 
 	game_03.Init();
 	game_02.Init();
+	game_00.Init();
 }
 
 void GameContext::Reset()

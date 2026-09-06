@@ -192,7 +192,6 @@
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="Game_02.h" />
     <ClInclude Include="Game_00.h" />
-    <ClInclude Include="Game_01.h" />
     <ClInclude Include="Game_03.h" />
     <ClInclude Include="imgui\extras\FA6FreeSolidFontData.h" />
     <ClInclude Include="imgui\extras\IconsFontAwesome6.h" />
@@ -241,7 +240,6 @@
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Game_02.cpp" />
     <ClCompile Include="Game_00.cpp" />
-    <ClCompile Include="Game_01.cpp" />
     <ClCompile Include="Game_03.cpp" />
     <ClCompile Include="imgui\GraphEditor.cpp" />
     <ClCompile Include="imgui\ImCurveEdit.cpp" />
