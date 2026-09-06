@@ -1,7 +1,4 @@
-﻿// =============================
-// Core/GameContext.cpp
-// =============================
-#include "GameContext.h"
+﻿#include "GameContext.h"
 #include <algorithm>
 #include "Entity2D.h"
 #include "ResourceManager.h"
@@ -11,13 +8,21 @@
 
 void GameContext::Init()
 {
-//    DxLib::SetMouseDispFlag(FALSE);
 	backgroundSpr = RM().GridAt(ResourceKeys::Background);
 	backgroundSpr2 = RM().GridAt(ResourceKeys::title_frame_2);
+
+	// ↓ Game_start123 のこの行は削除してください（Draw時にコマ指定で直接取得するため）
+	// Game_start123 = RM().GridAt(ResourceKeys::game_start123); 
+
+	Game_start = RM().GridAt(ResourceKeys::game_start);
+	Game_setumei_2 = RM().GridAt(ResourceKeys::game_setumei_2);
 
 	playerHP = 3;
 	totalScore = 0;
 	timer = GAME_TIME_LIMIT;
+
+	sequenceState = SequenceState::Explanation;
+	sequenceTimer = 0.0f;
 
 	game_03.Init();
 	game_02.Init();
@@ -32,52 +37,91 @@ void GameContext::Reset()
 	game_02.Reset();
 	game_00.Reset();
 	Isinit = 0;
+
+	sequenceState = SequenceState::Explanation;
+	sequenceTimer = 0.0f;
 }
 
 void GameContext::Update()
 {
-	// タイマー減算（60FPS想定で 1/60 秒ずつ減算 * TIME_SPEED_RATE）
-	// DxLibのデルタタイムが使える場合は `DxLib::GetDeltaTime()` 等をご利用ください
 	float deltaTime = 1.0f / 60.0f;
+
+	// --- 演出フェーズの更新 ---
+	if (sequenceState != SequenceState::Playing)
+	{
+		sequenceTimer += deltaTime;
+
+		switch (sequenceState)
+		{
+		case SequenceState::Explanation:
+			if (sequenceTimer >= EXPLANATION_DURATION)
+			{
+				sequenceState = SequenceState::Countdown;
+				sequenceTimer = 0.0f;
+			}
+			break;
+
+		case SequenceState::Countdown:
+			if (sequenceTimer >= COUNTDOWN_STEP_TIME * 3.0f)
+			{
+				sequenceState = SequenceState::StartMsg;
+				sequenceTimer = 0.0f;
+			}
+			break;
+
+		case SequenceState::StartMsg:
+			if (sequenceTimer >= START_MSG_DURATION)
+			{
+				sequenceState = SequenceState::Playing;
+				sequenceTimer = 0.0f;
+			}
+			break;
+		}
+
+		// 演出再生中はゲームの処理を行わずリターン
+		return;
+	}
+
+	// --- メインゲームの更新（演出終了後のみ進行） ---
 	timer -= deltaTime * TIME_SPEED_RATE;
 
-	// 10秒が経過（0以下）したら次のゲームに移行
+	// 10秒経過したら次のゲームに移行＆演出リセット
 	if (timer <= 0.0f)
 	{
-		timer = GAME_TIME_LIMIT; // 次のゲーム用にタイマーリセット
+		timer = GAME_TIME_LIMIT;
 		Isinit++;
+
+		// 次のミニゲーム用に演出を初期化
+		sequenceState = SequenceState::Explanation;
+		sequenceTimer = 0.0f;
 	}
 
 	// 各ゲームの更新
-
 	switch (Isinit)
 	{
 	case GameNamber::Game_3:
-			game_03.Update(playerHP, totalScore);
-			break;
+		game_03.Update(playerHP, totalScore);
+		break;
 
 	case GameNamber::Game_2:
 		game_02.Update(playerHP, totalScore);
 		break;
 
 	case GameNamber::Game_0:
-			game_00.Update(playerHP,totalScore);
-			break;
-	default:
+		game_00.Update(playerHP, totalScore);
+		break;
 
+	default:
 		break;
 	}
-
 }
 
 void GameContext::DrawTimer() const
 {
-	// 1. 残り時間が3秒より大きい場合（通常数字表示）
 	if (timer > 3.0f)
 	{
 		int displayTime = static_cast<int>(std::ceil(timer));
 
-		// 10以上の場合は2桁表示
 		if (displayTime >= 10)
 		{
 			int tens = displayTime / 10;
@@ -86,17 +130,15 @@ void GameContext::DrawTimer() const
 			const auto* sprTens = RM().GridAt(ResourceKeys::number_countdown_b, tens, 0);
 			const auto* sprOnes = RM().GridAt(ResourceKeys::number_countdown_b, ones, 0);
 
-			// TIMER_POS を基準に左右にオフセット配置
 			if (sprTens) sprTens->Draw({ TIMER_POS.x - DIGIT_OFFSET_X * 0.5f, TIMER_POS.y });
 			if (sprOnes) sprOnes->Draw({ TIMER_POS.x + DIGIT_OFFSET_X * 0.5f, TIMER_POS.y });
 		}
-		else // 4〜9の1桁表示
+		else
 		{
 			const auto* spr = RM().GridAt(ResourceKeys::number_countdown_b, displayTime, 0);
 			if (spr) spr->Draw(TIMER_POS);
 		}
 	}
-	// 2. 残り時間が3秒以下の場合（3・2・1・0 のアニメーション表示）
 	else
 	{
 		float elapsedSec = 3.0f - std::max(0.0f, timer);
@@ -114,6 +156,69 @@ void GameContext::DrawTimer() const
 	}
 }
 
+void GameContext::DrawHP() const
+{
+	const int TOTAL_FRAMES = 15;
+	const int COLUMNS = 10;
+
+	int currentFrame = static_cast<int>((10.0f - timer) * 20.0f) % TOTAL_FRAMES;
+	if (currentFrame < 0) currentFrame = 0;
+
+	int animX = currentFrame % COLUMNS;
+	int animY = currentFrame / COLUMNS;
+
+	for (int i = 0; i < MAX_PLAYER_HP; ++i)
+	{
+		DxPlus::Vec2 pos = { HP_POS.x + i * HP_ICON_OFFSET_X, HP_POS.y };
+
+		if (i < playerHP)
+		{
+			const auto* spr = RM().GridAt(ResourceKeys::game_hp_1, animX, animY);
+			if (spr) spr->Draw(pos);
+		}
+		else
+		{
+			const auto* spr = RM().GridAt(ResourceKeys::game_hp_2, animX, animY);
+			if (spr) spr->Draw(pos);
+		}
+	}
+}
+
+void GameContext::DrawSequenceUI() const
+{
+	switch (sequenceState)
+	{
+	case SequenceState::Explanation:
+	{
+		if (Game_setumei_2) Game_setumei_2->Draw(EXPLANATION_POS);
+	}
+	break;
+
+	case SequenceState::Countdown:
+	{
+		// 3 -> 2 -> 1 の順に切り替え (0.0s~1.0s: '3' / 1.0s~2.0s: '2' / 2.0s~3.0s: '1')
+		int countStep = static_cast<int>(sequenceTimer / COUNTDOWN_STEP_TIME);
+		int animX = 2 - countStep; // コマ0='1', 1='2', 2='3' なので 3 からカウントダウン
+		if (animX < 0) animX = 0;
+
+		// ↓↓↓ 直接 RM().GridAt に animX を渡して描画します ↓↓↓
+		const auto* spr = RM().GridAt(ResourceKeys::game_start123, animX, 0);
+		if (spr) spr->Draw(COUNTDOWN_POS);
+	}
+	break;
+
+	case SequenceState::StartMsg:
+	{
+		if (Game_start) Game_start->Draw(START_MSG_POS);
+	}
+	break;
+
+	case SequenceState::Playing:
+
+		break;
+	}
+}
+
 void GameContext::Draw() const
 {
 	backgroundSpr->Draw({});
@@ -122,23 +227,27 @@ void GameContext::Draw() const
 	{
 	case GameNamber::Game_3:
 		game_03.Draw(playerHP, totalScore);
-		backgroundSpr2->Draw({ 0, 0 });
+		DrawTimer();
 		break;
 
 	case GameNamber::Game_2:
 		game_02.Draw(playerHP, totalScore);
-		backgroundSpr2->Draw({ 0, 0 });
+		DrawTimer();
 		break;
 
 	case GameNamber::Game_0:
 		game_00.Draw(playerHP, totalScore);
-		backgroundSpr2->Draw({ 0, 0 });
 		break;
-	default:
 
+	default:
 		break;
 	}
+	DrawSequenceUI();
 
-	// 従来の DxLib::DrawFormatString の代わりに画像タイマー描画を呼び出す
+	// 最前面に演出画像を描画
+
+	backgroundSpr2->Draw({ 0, 0 });
 	DrawTimer();
+	DrawHP();
+
 }

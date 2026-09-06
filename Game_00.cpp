@@ -251,7 +251,6 @@ void Game_00::Draw(int hp,int score) const
     // ====================================================
     // 5. UI（スコア・HP・操作ヘルプ）描画
     // ====================================================
-    DxLib::DrawFormatString(10, 10, DxLib::GetColor(0, 0, 0), L"Score: %d", score);
-    DxLib::DrawFormatString(10, 30, DxLib::GetColor(200, 0, 0), L"HP: %d", hp);
+    
     DxLib::DrawString(10, 680, L"【操作】WASD / マウス : カメラ移動 | Enter / クリック : 撮影", DxLib::GetColor(0, 0, 0));
 }

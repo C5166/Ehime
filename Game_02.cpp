@@ -142,7 +142,4 @@ void Game_02::Draw(int hp, int score) const
 	mihon_3->Draw({ 0, 0 });
 	DrawGraph(157, 320, a[change], TRUE);
 
-    // UI•\Ž¦
-    DxLib::DrawFormatString(10, 10, DxLib::GetColor(255, 255, 255), L"Score: %d", score);
-    DxLib::DrawFormatString(10, 30, DxLib::GetColor(255, 255, 255), L"HP: %d", hp);
 }

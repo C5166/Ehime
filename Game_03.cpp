@@ -56,7 +56,6 @@ namespace
 
 void Game_03::Init()
 {
-    explanationID = RM().GridAt(ResourceKeys::game_1_description_1);
     Herat1ID = RM().GridAt(ResourceKeys::game_1_heart_1);
     Herat2ID = RM().GridAt(ResourceKeys::game_1_heart_2);
     Herat3ID = RM().GridAt(ResourceKeys::game_1_heart_3);
@@ -229,8 +228,4 @@ void Game_03::Draw(int hp, int score) const
 #endif
     }
 
-    explanationID->Draw({ 640.0f, 555.0f });
-
-    DxLib::DrawFormatString(10, 10, DxLib::GetColor(255, 255, 255), L"Score: %d", score);
-    DxLib::DrawFormatString(10, 30, DxLib::GetColor(255, 0, 0), L"HP: %d", hp);
 }

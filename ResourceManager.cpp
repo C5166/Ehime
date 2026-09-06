@@ -22,14 +22,20 @@ void ResourceManager::LoadAll()
     LoadGridCenter(ResourceKeys::number_countdown_b, L"./Data/Images/number_countdown_b.png", { 0,0 }, { 10,1 }, { 180,126 });
     LoadGridCenter(ResourceKeys::number_countdown_321, L"./Data/Images/number_countdown_321.png", { 0,0 }, { 10,18 }, { 180,126 });
 
+    LoadGridCenter(ResourceKeys::game_hp_1, L"./Data/Images/game_hp_1.png", { 0,0 }, { 10,2 }, { 70,70 });
+    LoadGridCenter(ResourceKeys::game_hp_2, L"./Data/Images/game_hp_2.png", { 0,0 }, { 10,2 }, { 70,70 });
+    LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_2, L"./Data/Images/game_setumei_2.png");
+
+    LoadGridCenter(ResourceKeys::game_start123, L"./Data/Images/game_start123.png", { 0, 0 }, { 3, 1 }, { 300, 379 });
+
+    LoadTextureAsSpriteCenter(ResourceKeys::game_start, L"./Data/Images/game_start.png");
+
 	LoadTextureAsSpriteLeftTop(ResourceKeys::game2_back, L"./Data/Images/mihon_3.png");
 	LoadTextureAsSpriteLeftTop(ResourceKeys::title_frame_2, L"./Data/Images/title_frame_2.png");
 
 	LoadTextureAsSpriteCenter(ResourceKeys::game_1_heart_1, L"./Data/Images/game_1_heart_1.png");
     LoadTextureAsSpriteCenter(ResourceKeys::game_1_heart_2, L"./Data/Images/game_1_heart_2.png");
 	LoadTextureAsSpriteCenter(ResourceKeys::game_1_heart_3, L"./Data/Images/game_1_heart_3.png");
-
-	LoadTextureAsSpriteCenter(ResourceKeys::game_1_description_1, L"./Data/Images/game_1_description_1.png");
 
     LoadMusic(ResourceKeys::BGM_Game,       L"./Data/Sounds/maou_bgm_8bit14.mp3");
     LoadSound(ResourceKeys::SE_Explosion,   L"./Data/Sounds/Explosion.mp3");

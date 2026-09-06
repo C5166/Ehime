@@ -16,7 +16,6 @@ public:
 private:
     void SpawnBalls(); // 的をまとめて生成するヘルパー関数
 
-    const DxPlus::Sprite::SpriteBase* explanationID{ nullptr };
     const DxPlus::Sprite::SpriteBase* Herat1ID{ nullptr };
     const DxPlus::Sprite::SpriteBase* Herat2ID{ nullptr };
     const DxPlus::Sprite::SpriteBase* Herat3ID{ nullptr };
