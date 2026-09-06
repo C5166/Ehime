@@ -9,8 +9,8 @@ public:
     Game_02() = default;
     void Init();
     void Reset();
-    void Update();
-    void Draw() const;
+    void Update(int& hp, int& score);
+    void Draw(int hp, int score) const;
 
 private:
 
@@ -25,7 +25,5 @@ private:
 	const DxPlus::Sprite::SpriteBase* mihon_3{ nullptr };
 
     int change = 0;
-    int number{ 0 };  // スコア
-    int HP{ 3 };      // 仮HP（ハート3個分）
 
 };

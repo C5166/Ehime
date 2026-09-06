@@ -6,6 +6,7 @@ enum class BallType
 {
     Red,
     Blue,
+	Green,
     Target,  // 撮影対象（加点）
     Penalty  // お手付き（減点）
 };

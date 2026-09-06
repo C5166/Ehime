@@ -13,13 +13,21 @@ ResourceManager& ResourceManager::GetInstance()
 
 void ResourceManager::LoadAll()
 {
-    LoadTextureAsSpriteLeftTop(ResourceKeys::Background, L"./Data/Images/back.png");
+    LoadTextureAsSpriteLeftTop(ResourceKeys::Background, L"./Data/Images/game_background.png");
     LoadGridBottom(ResourceKeys::Player, L"./Data/Images/player.png", { 0,0 }, { 3,4 }, { 96,128 });
     LoadGridBottom(ResourceKeys::Enemy_Yankee, L"./Data/Images/yankee.png", { 0,0 }, { 3,4 }, { 96, 128 });
     LoadTextureAsSpriteCenter(ResourceKeys::Player_Shot, L"./Data/Images/player_shot.png");
     LoadGridCenter(ResourceKeys::Explosion, L"./Data/Images/explosion.png", { 0,0 }, { 10,3 }, { 256,256 });
 
+    LoadGridCenter(ResourceKeys::number_countdown_b, L"./Data/Images/number_countdown_b.png", { 0,0 }, { 10,1 }, { 180,126 });
+    LoadGridCenter(ResourceKeys::number_countdown_321, L"./Data/Images/number_countdown_321.png", { 0,0 }, { 10,18 }, { 180,126 });
+
 	LoadTextureAsSpriteLeftTop(ResourceKeys::game2_back, L"./Data/Images/mihon_3.png");
+	LoadTextureAsSpriteLeftTop(ResourceKeys::title_frame_2, L"./Data/Images/title_frame_2.png");
+
+	LoadTextureAsSpriteCenter(ResourceKeys::game_1_heart_1, L"./Data/Images/game_1_heart_1.png");
+    LoadTextureAsSpriteCenter(ResourceKeys::game_1_heart_2, L"./Data/Images/game_1_heart_2.png");
+	LoadTextureAsSpriteCenter(ResourceKeys::game_1_heart_3, L"./Data/Images/game_1_heart_3.png");
 
 	LoadTextureAsSpriteCenter(ResourceKeys::game_1_description_1, L"./Data/Images/game_1_description_1.png");
 

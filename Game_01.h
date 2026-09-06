@@ -25,8 +25,8 @@ private:
     float shutterAnimTimer{ 0.0f };
     int flashAlpha{ 0 };
 
-    const float screenWidth = 1280.0f;
-    const float screenHeight = 720.0f;
+    const float screenWidth  = DxPlus::CLIENT_WIDTH ;
+    const float screenHeight = DxPlus::CLIENT_HEIGHT;
 
     int number{ 0 }; // ÉXÉRÉA
     int HP{ 3 };     // HP

@@ -18,12 +18,11 @@ void Game_02::Init()
 
 void Game_02::Reset()
 {
-    number = 0;
-    HP = 3;
+   
 }
 
 
-void Game_02::Update()
+void Game_02::Update(int& hp, int& score)
 {
     using namespace DxPlus::Input;
     int button = GetButtonDown(PLAYER1);
@@ -41,12 +40,12 @@ void Game_02::Update()
             DxLib::GetMousePoint(&mouseX, &mouseY);
             if(mouseX >= 157 && mouseX <= 157 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
-                HP--;
+                hp--;
                 change = GetRand(5);
             }
 			else if (mouseX >= 855 && mouseX <= 855 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
-                number++;
+                score++;
                 change = GetRand(5);
 			}
         }
@@ -57,12 +56,12 @@ void Game_02::Update()
             DxLib::GetMousePoint(&mouseX, &mouseY);
             if (mouseX >= 157 && mouseX <= 157 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
-                number++;
+                score++;
                 change = GetRand(5);
             }
             else if (mouseX >= 855 && mouseX <= 855 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
-                HP--;
+                hp--;
                 change = GetRand(5);
             }
         }
@@ -73,12 +72,12 @@ void Game_02::Update()
             DxLib::GetMousePoint(&mouseX, &mouseY);
             if (mouseX >= 157 && mouseX <= 157 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
-                number++;
+                score++;
                 change = GetRand(5);
             }
             else if (mouseX >= 855 && mouseX <= 855 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
-                HP--;
+                hp--;
                 change = GetRand(5);
             }
         }
@@ -89,12 +88,12 @@ void Game_02::Update()
             DxLib::GetMousePoint(&mouseX, &mouseY);
             if (mouseX >= 157 && mouseX <= 157 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
-                number++;
+                score++;
                 change = GetRand(5);
             }
             else if (mouseX >= 855 && mouseX <= 855 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
-                HP--;
+                hp--;
                 change = GetRand(5);
             }
         }
@@ -105,12 +104,12 @@ void Game_02::Update()
             DxLib::GetMousePoint(&mouseX, &mouseY);
             if (mouseX >= 157 && mouseX <= 157 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
-                number++;
+                score++;
                 change = GetRand(5);
             }
             else if (mouseX >= 855 && mouseX <= 855 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
-                HP--;
+                hp--;
                 change = GetRand(5);
             }
         }
@@ -121,12 +120,12 @@ void Game_02::Update()
             DxLib::GetMousePoint(&mouseX, &mouseY);
             if (mouseX >= 157 && mouseX <= 157 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
-                number++;
+                score++;
                 change = GetRand(5);
             }
             else if (mouseX >= 855 && mouseX <= 855 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
-                HP--;
+                hp--;
                 change = GetRand(5);
             }
         }
@@ -136,7 +135,7 @@ void Game_02::Update()
     }
 }
 
-void Game_02::Draw() const
+void Game_02::Draw(int hp, int score) const
 {
 	//DrawGraph(0, 0, background, TRUE);
 
@@ -144,6 +143,6 @@ void Game_02::Draw() const
 	DrawGraph(157, 320, a[change], TRUE);
 
     // UI•\Ž¦
-    DxLib::DrawFormatString(10, 10, DxLib::GetColor(255, 255, 255), L"Score: %d", number);
-    DxLib::DrawFormatString(10, 30, DxLib::GetColor(255, 255, 255), L"HP: %d", HP);
+    DxLib::DrawFormatString(10, 10, DxLib::GetColor(255, 255, 255), L"Score: %d", score);
+    DxLib::DrawFormatString(10, 30, DxLib::GetColor(255, 255, 255), L"HP: %d", hp);
 }

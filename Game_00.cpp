@@ -13,8 +13,6 @@ void Game_00::Init()
 void Game_00::Reset()
 {
     // ゲームパラメータの初期化
-    number = 0; // スコアリセット
-    HP = 3;     // 残機（HP）リセット
 
     // カメラ・演出パラメーターの初期化
     cameraPos = { screenWidth * 0.5f, screenHeight * 0.5f }; // 画面中央に配置
@@ -69,7 +67,7 @@ void Game_00::Reset()
 // ----------------------------------------------------
 // 更新処理（フレーム毎の動作）
 // ----------------------------------------------------
-void Game_00::Update()
+void Game_00::Update(int& hp, int& score)
 {
     using namespace DxPlus::Input;
 
@@ -162,11 +160,11 @@ void Game_00::Update()
                 // 種類に応じたスコア／HPの増減処理
                 if (subj.type == BallType::Target)
                 {
-                    number++; // ターゲット撮影成功：加点
+                    score++; // ターゲット撮影成功：加点
                 }
                 else if (subj.type == BallType::Penalty)
                 {
-                    HP--;     // お手付き対象を撮影：ダメージ
+                    hp--;     // お手付き対象を撮影：ダメージ
                 }
             }
         }
@@ -189,7 +187,7 @@ void Game_00::Update()
 // ----------------------------------------------------
 // 描画処理
 // ----------------------------------------------------
-void Game_00::Draw() const
+void Game_00::Draw(int hp,int score) const
 {
     // ====================================================
     // 1. 背景描画（空・地面）
@@ -253,7 +251,7 @@ void Game_00::Draw() const
     // ====================================================
     // 5. UI（スコア・HP・操作ヘルプ）描画
     // ====================================================
-    DxLib::DrawFormatString(10, 10, DxLib::GetColor(0, 0, 0), L"Score: %d", number);
-    DxLib::DrawFormatString(10, 30, DxLib::GetColor(200, 0, 0), L"HP: %d", HP);
+    DxLib::DrawFormatString(10, 10, DxLib::GetColor(0, 0, 0), L"Score: %d", score);
+    DxLib::DrawFormatString(10, 30, DxLib::GetColor(200, 0, 0), L"HP: %d", hp);
     DxLib::DrawString(10, 680, L"【操作】WASD / マウス : カメラ移動 | Enter / クリック : 撮影", DxLib::GetColor(0, 0, 0));
 }
