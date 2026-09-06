@@ -167,8 +167,10 @@
   <ItemGroup>
     <ClInclude Include="AnimationClip.h" />
     <ClInclude Include="AnimationUtil.h" />
+    <ClInclude Include="AnimClipRef.h" />
     <ClInclude Include="Collision2D.h" />
     <ClInclude Include="Consts.h" />
+    <ClInclude Include="DebugInspector.h" />
     <ClInclude Include="DxPlus\Debug.h" />
     <ClInclude Include="DxPlus\DxPlus.h" />
     <ClInclude Include="DxPlus\DxPlusConstants.h" />
@@ -200,7 +202,9 @@
     <ClInclude Include="imgui\ImGradient.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\ImGuizmo.h" />
+    <ClInclude Include="imgui\imgui_impl_dx11.h" />
     <ClInclude Include="imgui\imgui_impl_raylib.h" />
+    <ClInclude Include="imgui\imgui_impl_win32.h" />
     <ClInclude Include="imgui\imgui_internal.h" />
     <ClInclude Include="imgui\ImLightRig.h" />
     <ClInclude Include="imgui\ImSequencer.h" />
@@ -220,6 +224,8 @@
   <ItemGroup>
     <ClCompile Include="AnimationClip.cpp" />
     <ClCompile Include="AnimationUtil.cpp" />
+    <ClCompile Include="AnimClipRef.cpp" />
+    <ClCompile Include="DebugInspector.cpp" />
     <ClCompile Include="DxPlus\Debug.cpp" />
     <ClCompile Include="DxPlus\DxPlus.cpp" />
     <ClCompile Include="DxPlus\DxWrapper.cpp" />
@@ -244,6 +250,8 @@
     <ClCompile Include="imgui\ImGuizmo.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="imgui\ImSequencer.cpp" />
@@ -252,7 +260,12 @@
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="ResultScene.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SceneManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -25,7 +25,7 @@ public:
         Playing      // メインゲームプレイ中
     };
 
-    GameContext() = default;
+	GameContext() = default;
     ~GameContext() = default;
 
     void Init();
@@ -36,6 +36,9 @@ public:
     int GetHP() const { return playerHP; }
     int GetScore() const { return totalScore; }
     int GetRemainingTime() const { return static_cast<int>(timer); }
+
+    int GetCurrentMiniGame() const { return Isinit; }
+    void SetCurrentMiniGame(int gameNum) { Isinit = gameNum; }
 
 private:
     // --- 【設定】演出位置・表示時間 ---
@@ -69,7 +72,7 @@ private:
     Game_03 game_03;
     Game_02 game_02;
 
-    int Isinit;
+    int Isinit{ 0 };
     Game_00 game_00;
 
     int playerHP{ 3 };
