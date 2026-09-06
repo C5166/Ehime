@@ -11,6 +11,7 @@ public:
     void Reset();
     void Update(int& hp, int& score);
     void Draw(int hp, int score) const;
+    void DrawPerfectAnimation(int x, int y) ;
 
 private:
 
@@ -26,4 +27,16 @@ private:
 
     int change = 0;
 
+    //ˆê’U
+    int waku;
+    int perfectSheetID;
+	int notsheetID;
+
+	bool Animating = false; 
+
+    struct notFrameRect {
+        int x, y, w, h;
+    };
+
+    int frame = 0;
 };
