@@ -9,6 +9,7 @@ public:
     Game_02() = default;
     void Init();
     void Reset();
+    void DrawPerfectAnimation(int x, int y) ;
     void Update();
     void Draw() const;
 
@@ -28,4 +29,16 @@ private:
     int number{ 0 };  // スコア
     int HP{ 3 };      // 仮HP（ハート3個分）
 
+    //一旦
+    int waku;
+    int perfectSheetID;
+	int notsheetID;
+
+	bool Animating = false; 
+
+    struct notFrameRect {
+        int x, y, w, h;
+    };
+
+    int frame = 0;
 };

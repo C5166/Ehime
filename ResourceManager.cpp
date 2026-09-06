@@ -19,7 +19,7 @@ void ResourceManager::LoadAll()
     LoadTextureAsSpriteCenter(ResourceKeys::Player_Shot, L"./Data/Images/player_shot.png");
     LoadGridCenter(ResourceKeys::Explosion, L"./Data/Images/explosion.png", { 0,0 }, { 10,3 }, { 256,256 });
 
-	LoadTextureAsSpriteLeftTop(ResourceKeys::game2_back, L"./Data/Images/mihon_3.png");
+	LoadTextureAsSpriteLeftTop(ResourceKeys::game2_back, L"./Data/Images/game_background.png");
 
 	LoadTextureAsSpriteCenter(ResourceKeys::game_1_description_1, L"./Data/Images/game_1_description_1.png");
 
