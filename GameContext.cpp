@@ -14,14 +14,12 @@ void GameContext::Init()
 	Game_setumei_2 = RM().GridAt(ResourceKeys::game_setumei_2);
 
 	Game_start = RM().GridAt(ResourceKeys::game_start);
-	Gameover_background = RM().GridAt(ResourceKeys::gameover_background);
-	Gameover_character_1 = RM().GridAt(ResourceKeys::gameover_character_1);
-	Gameover_character_2 = RM().GridAt(ResourceKeys::gameover_character_2);
-	/*Gameover_logo = RM().GridAt(ResourceKeys::gameover_logo);*/
+	
 
 	gameclear_background = RM().GridAt(ResourceKeys::gameclear_background);
 	gameclear_character_1 = RM().GridAt(ResourceKeys::gameclear_character_1);
 	gameclear_character_2 = RM().GridAt(ResourceKeys::gameclear_character_2);
+
 
 
 	playerHP = 3;
@@ -34,7 +32,6 @@ void GameContext::Init()
 	game_03.Init();
 	game_02.Init();
 	game_00.Init();
-	isGameOverInput = false;
 }
 
 void GameContext::Reset()
@@ -45,15 +42,13 @@ void GameContext::Reset()
 	game_03.Reset();
 	game_02.Reset();
 	game_00.Reset();
-	Isinit = 0;
-	isGameOverInputCount = 0;
-
+	
 	sequenceState = SequenceState::Explanation;
 	sequenceTimer = 0.0f;
 
-	isGameOverInput = false;
 
 	isGameCleared = false; // ゲームクリアフラグをリセット
+
 }
 
 void GameContext::Update(bool& input)
@@ -133,31 +128,7 @@ void GameContext::Update(bool& input)
 	using namespace DxPlus::Input;
 	int bottom = GetButtonDown(PLAYER1);
 
-	if(playerHP < 1)
-	{
-		
-		if (bottom & BUTTON_START || bottom & BUTTON_TRIGGER2)
-		{
-			isGameOverInput = true;
-			isGameOverInputCount++;
-		}
-		else if(isGameOverInput)
-		{
-			isGameOverInput = false;
-		}
-
-		if (isGameOverInputCount == isGameOverInputMax)
-		{
-			//タイトル画面(TitleScene)に戻る
-			input = true;
-
-			// ゲームオーバー入力カウントをリセット
-
-			isGameOverInputCount = 0;
-
-		}
-
-	}
+	
 
 	if (Isinit == GameNamber::Game_3 && totalScore >= 10)
 	{
@@ -185,6 +156,8 @@ void GameContext::Update(bool& input)
 
 		}
 	}
+
+
 }
 
 void GameContext::DrawTimer() const
@@ -255,22 +228,6 @@ void GameContext::DrawHP() const
 	}
 }
 
-//void GameContext::DrawGameOverLogo() const
-//{
-//	//gameover_logoの総フレーム52をループして描画する
-//	int totalFrames = 36;
-//
-//	int currentFrame = static_cast<int>((10.0f - timer) * 20.0f) % totalFrames;
-//
-//	int animX = currentFrame % 10;
-//
-//	int animY = currentFrame / 10;
-//
-//	const auto* spr = RM().GridAt(ResourceKeys::gameover_logo, animX, animY);
-//
-//	if (spr) spr->Draw({ 960.0f, 540.0f });
-//}
-
 void GameContext::DrawSequenceUI() const
 {
 	switch (sequenceState)
@@ -306,6 +263,41 @@ void GameContext::DrawSequenceUI() const
 	}
 }
 
+void GameContext::DrawGameOverUI() const
+{
+	int GameOverlogoCount{ 0 };
+	int GameOverlogoTotalfram{ 0 };
+	int GameOverlogoCountX{ 0 };
+	int GameOverlogoCountY{ 0 };
+
+	//Gameover_logoをループして描画させる
+	if (GameOverlogoCountX < 12 && GameOverlogoCountY < 5)
+	{
+		GameOverlogoTotalfram++;
+		GameOverlogoCountX++;
+		if (GameOverlogoCountX > 10)
+		{
+			GameOverlogoCountX = 0;
+			GameOverlogoCountY++;
+			if (GameOverlogoTotalfram == 26)
+			{
+				GameOverlogoCountX = 0;
+				GameOverlogoCountY = 0;
+			}
+			
+		}
+	}
+
+	const auto* Gameover_logo = RM().GridAt(ResourceKeys::gameover_logo, GameOverlogoCountX, GameOverlogoCountY);
+
+	if (Gameover_logo)
+	{
+		Gameover_logo->Draw({ 960, 540 });
+	}
+}
+
+
+
 void GameContext::Draw() const
 {
 	backgroundSpr->Draw({});
@@ -336,24 +328,6 @@ void GameContext::Draw() const
 	backgroundSpr2->Draw({ 0, 0 });
 	DrawTimer();
 	DrawHP();
-
-	if(playerHP  < 1)
-	{
-		backgroundSpr->Draw({});
-		backgroundSpr2->Draw({ 0, 0 });
-		Gameover_background->Draw({ 0, 0 });
-		if (isGameOverInput == false)
-		{
-			Gameover_character_1->Draw({ 0, 0 });
-		}
-		if (isGameOverInput)
-		{
-			Gameover_character_2->Draw({ 0, 0 });
-		}
-		
-		/*DrawGameOverLogo();*/
-		
-	}
 
 	if (isGameCleared)
 	{

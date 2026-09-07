@@ -34,7 +34,7 @@ void SceneManager::Init()
 
     titleScene.SetGameContext(&gameContext);
     gameScene.SetGameContext(&gameContext);
-    resultScene.SetGameContext(&gameContext);
+    gameOverScene.SetGameContext(&gameContext);
 
     scene = &titleScene;
 }
@@ -51,11 +51,10 @@ void SceneManager::Shutdown()
     DxPlus::Shutdown();
 }
 
-// ššš ˆÈ‰º‚Ì2‚Â‚ÌŠÖ”‚ªŒ‡—‚µ‚Ä‚¢‚½‚½‚ß’Ç‰Á‚µ‚Ü‚· ššš
 void SceneManager::SetScene(Scene* newScene)
 {
     if (!newScene || newScene == scene) return;
-    scene = newScene; // ”jŠü‚µ‚È‚¢í’“
+    scene = newScene;
 }
 
 Scene* SceneManager::GetScene(SceneID id)
@@ -64,11 +63,10 @@ Scene* SceneManager::GetScene(SceneID id)
     {
     case SceneID::Title:    return &titleScene;
     case SceneID::Game:     return &gameScene;
-    case SceneID::Result:   return &resultScene;
+    case SceneID::GameOver: return &gameOverScene;
     }
     return &titleScene;
 }
-// š--------------------------------------------------š
 
 void SceneManager::Run()
 {

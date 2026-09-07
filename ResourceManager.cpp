@@ -35,7 +35,7 @@ void ResourceManager::LoadAll()
 	LoadTextureAsSpriteLeftTop(ResourceKeys::gameover_background, L"./Data/Images/gameover_background.png");
 	LoadTextureAsSpriteLeftTop(ResourceKeys::gameover_character_1, L"./Data/Images/gameover_character_1.png");
 	LoadTextureAsSpriteLeftTop(ResourceKeys::gameover_character_2, L"./Data/Images/gameover_character_2.png");
-	/*LoadGridCenter(ResourceKeys::gameover_logo, L"./Data/Images/gameover_logo.png", { 0,0 }, { 10,6 }, { 1320,459 });*/
+	LoadGridCenter(ResourceKeys::gameover_logo, L"./Data/Images/gameover_logo.png", { 0,0 }, { 10,3 }, { 528,184 });
 
     LoadGridCenter(ResourceKeys::game_hp_1, L"./Data/Images/game_hp_1.png", { 0,0 }, { 10,2 }, { 70,70 });
     LoadGridCenter(ResourceKeys::game_hp_2, L"./Data/Images/game_hp_2.png", { 0,0 }, { 10,2 }, { 70,70 });

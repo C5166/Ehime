@@ -30,19 +30,12 @@ void GameScene::Update()
 
     using namespace DxPlus::Input;
     int buttonDown = GetButtonDown(PLAYER1);
-    if (buttonDown & BUTTON_SELECT)
-    {
-        Scene* resultScene = SceneManager::GetInstance().GetScene(SceneID::Result);
-        SetNextScene(resultScene);
-        finished = true;    // フェード無しの場合は finished を true にしておく必要あり
-        return;
-    }
 
-    if (isGameOverInput)
+    if (gameContext->GetHP() < 1)
     {
-        Scene* resultScene = SceneManager::GetInstance().GetScene(SceneID::Title);
-        SetNextScene(resultScene);
-        finished = true;    // フェード無しの場合は finished を true にしておく必要あり
+        Scene* gameOverScene = SceneManager::GetInstance().GetScene(SceneID::GameOver);
+        SetNextScene(gameOverScene);
+        StartFadeOut();
         return;
     }
 }

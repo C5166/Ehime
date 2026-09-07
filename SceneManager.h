@@ -1,14 +1,11 @@
-// =============================
-// Scenes/Base/SceneManager.h
-// =============================
 #pragma once
 #include "Scene.h"
 #include "GameContext.h"
 #include "TitleScene.h"
 #include "GameScene.h"
-#include "ResultScene.h"
+#include "GameOverScene.h"
 
-enum class SceneID { Title, Game, Result };
+enum class SceneID { Title, Game, GameOver};
 
 class SceneManager
 {
@@ -25,9 +22,10 @@ public:
     void SetScene(Scene* newScene);
     Scene* GetScene(SceneID id);
 
+    Scene* GetCurrentScene() const { return scene; }
+
     GameContext& GetGameState() { return gameContext; }
 
-    // コピー禁止
     SceneManager(const SceneManager&) = delete;
     SceneManager& operator=(const SceneManager&) = delete;
 
@@ -38,8 +36,8 @@ private:
     GameContext gameContext;
     TitleScene  titleScene{ &gameContext };
     GameScene   gameScene{ &gameContext };
-    ResultScene resultScene{ &gameContext };
+    GameOverScene gameOverScene{ &gameContext };
 
-    Scene* scene = nullptr; // 現在のシーン
+    Scene* scene = nullptr;
 };
-inline SceneManager& SM() { return SceneManager::GetInstance(); } // ショートカット
+inline SceneManager& SM() { return SceneManager::GetInstance(); }
