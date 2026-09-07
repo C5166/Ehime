@@ -13,6 +13,13 @@ void TitleScene::Init()
 
     fontHandle = RM().GetFont(ResourceKeys::Font_Title);
 
+    bgSprite = RM().GridAt(ResourceKeys::Title_frame);
+	title_character = RM().GridAt(ResourceKeys::title_character);
+	title_character2 = RM().GridAt(ResourceKeys::title_character_2);
+
+	isTitleInput = false;
+	isTitleInputCount = 0;
+
     StartFadeIn();
 }
 
@@ -27,15 +34,38 @@ void TitleScene::Update()
             SetNextScene(gameScene);
             StartFadeOut();
 		}
+
 		TenCount++;
+
+        if (isTitleInput == false)
+        {
+            isTitleInput = true;
+        }
         
         return;
     }
+
+    if (isTitleInput)
+    {
+		isTitleInputCount++;
+    }
+
+    if (isTitleInput && isTitleInputCount > isTitleInputMax)
+    {
+        isTitleInput = false;
+		isTitleInputCount = 0;
+    }
+
     frameCount++;
 }
 
 void TitleScene::Render() const
 {
+
+    if (bgSprite)
+    {
+        bgSprite->Draw({ 0, 0 });
+    }
     const int white = DxLib::GetColor(255, 255, 255);
     DxPlus::Text::DrawString(L"ehime", 
         { DxPlus::CLIENT_WIDTH * 0.5f, DxPlus::CLIENT_HEIGHT * 0.25f }, 
@@ -47,5 +77,14 @@ void TitleScene::Render() const
         DxPlus::Text::DrawString(L"Push Enter", 
             { DxPlus::CLIENT_WIDTH * 0.5f, DxPlus::CLIENT_HEIGHT * 0.75f }, 
             yellow, DxPlus::Text::TextAlign::MIDDLE_CENTER, { 1,1 }, 0, fontHandle);
+    }
+
+    if (isTitleInput)
+    {
+        title_character2->Draw({ 960, 540 });
+    }
+	else if (!isTitleInput)
+    {
+        title_character->Draw({ 960, 540 });
     }
 }

@@ -22,6 +22,10 @@ void Scene::SetNextScene(Scene* scene)
     nextScene = scene;
     //finished = (scene != nullptr);  // フェードイン/アウトさせたい場合はこの行をコメントアウト
 }
+//
+//void Scene::SetFinished(bool flag) {
+//    finished = flag;
+//}
 
 void Scene::UpdateFadeController()
 {

@@ -9,13 +9,14 @@
 void GameContext::Init()
 {
 	backgroundSpr = RM().GridAt(ResourceKeys::Background);
-	backgroundSpr2 = RM().GridAt(ResourceKeys::title_frame_2);
-
-	// ↓ Game_start123 のこの行は削除してください（Draw時にコマ指定で直接取得するため）
-	// Game_start123 = RM().GridAt(ResourceKeys::game_start123); 
+	backgroundSpr2 = RM().GridAt(ResourceKeys::title_frame_2); 
 
 	Game_start = RM().GridAt(ResourceKeys::game_start);
-	Game_setumei_2 = RM().GridAt(ResourceKeys::game_setumei_2);
+	Gameover_background = RM().GridAt(ResourceKeys::gameover_background);
+	Gameover_character_1 = RM().GridAt(ResourceKeys::gameover_character_1);
+	Gameover_character_2 = RM().GridAt(ResourceKeys::gameover_character_2);
+	/*Gameover_logo = RM().GridAt(ResourceKeys::gameover_logo);*/
+
 
 	playerHP = 3;
 	totalScore = 0;
@@ -27,6 +28,7 @@ void GameContext::Init()
 	game_03.Init();
 	game_02.Init();
 	game_00.Init();
+	isGameOverInput = false;
 }
 
 void GameContext::Reset()
@@ -38,12 +40,15 @@ void GameContext::Reset()
 	game_02.Reset();
 	game_00.Reset();
 	Isinit = 0;
+	isGameOverInputCount = 0;
 
 	sequenceState = SequenceState::Explanation;
 	sequenceTimer = 0.0f;
+
+	isGameOverInput = false;
 }
 
-void GameContext::Update()
+void GameContext::Update(bool& input)
 {
 	float deltaTime = 1.0f / 60.0f;
 
@@ -96,24 +101,52 @@ void GameContext::Update()
 		sequenceState = SequenceState::Explanation;
 		sequenceTimer = 0.0f;
 	}
+	if (!(playerHP < 0)) {
+		// 各ゲームの更新
+		switch (Isinit)
+		{
+		case GameNamber::Game_3:
+			game_03.Update(playerHP, totalScore);
+			break;
 
-	// 各ゲームの更新
-	switch (Isinit)
+		case GameNamber::Game_2:
+			game_02.Update(playerHP, totalScore);
+			break;
+
+		case GameNamber::Game_0:
+			game_00.Update(playerHP, totalScore);
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	if(playerHP < 0)
 	{
-	case GameNamber::Game_3:
-		game_03.Update(playerHP, totalScore);
-		break;
+		using namespace DxPlus::Input;
+		int bottom = GetButtonDown(PLAYER1);
+		if (bottom & BUTTON_START || bottom & BUTTON_TRIGGER2)
+		{
+			isGameOverInput = true;
+			isGameOverInputCount++;
+		}
+		else if(isGameOverInput)
+		{
+			isGameOverInput = false;
+		}
 
-	case GameNamber::Game_2:
-		game_02.Update(playerHP, totalScore);
-		break;
+		if (isGameOverInputCount == isGameOverInputMax)
+		{
+			//タイトル画面(TitleScene)に戻る
+			input = true;
 
-	case GameNamber::Game_0:
-		game_00.Update(playerHP, totalScore);
-		break;
+			// ゲームオーバー入力カウントをリセット
 
-	default:
-		break;
+			isGameOverInputCount = 0;
+
+		}
+
 	}
 }
 
@@ -185,6 +218,22 @@ void GameContext::DrawHP() const
 	}
 }
 
+//void GameContext::DrawGameOverLogo() const
+//{
+//	//gameover_logoの総フレーム52をループして描画する
+//	int totalFrames = 36;
+//
+//	int currentFrame = static_cast<int>((10.0f - timer) * 20.0f) % totalFrames;
+//
+//	int animX = currentFrame % 10;
+//
+//	int animY = currentFrame / 10;
+//
+//	const auto* spr = RM().GridAt(ResourceKeys::gameover_logo, animX, animY);
+//
+//	if (spr) spr->Draw({ 960.0f, 540.0f });
+//}
+
 void GameContext::DrawSequenceUI() const
 {
 	switch (sequenceState)
@@ -250,5 +299,23 @@ void GameContext::Draw() const
 	backgroundSpr2->Draw({ 0, 0 });
 	DrawTimer();
 	DrawHP();
+
+	if(playerHP < 0)
+	{
+		backgroundSpr->Draw({});
+		backgroundSpr2->Draw({ 0, 0 });
+		Gameover_background->Draw({ 0, 0 });
+		if (isGameOverInput == false)
+		{
+			Gameover_character_1->Draw({ 0, 0 });
+		}
+		if (isGameOverInput)
+		{
+			Gameover_character_2->Draw({ 0, 0 });
+		}
+		
+		/*DrawGameOverLogo();*/
+		
+	}
 
 }

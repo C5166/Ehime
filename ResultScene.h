@@ -14,4 +14,8 @@ public:
 
 private:
     int fontHandle{ -1 };
+    const DxPlus::Sprite::SpriteBase* Gameover_background{ nullptr };
+    const DxPlus::Sprite::SpriteBase* gameover_character_1{ nullptr };
+    const DxPlus::Sprite::SpriteBase* gameover_character_2{ nullptr };
+    
 };

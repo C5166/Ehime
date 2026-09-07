@@ -19,9 +19,18 @@ void ResourceManager::LoadAll()
     LoadTextureAsSpriteCenter(ResourceKeys::Player_Shot, L"./Data/Images/player_shot.png");
     LoadGridCenter(ResourceKeys::Explosion, L"./Data/Images/explosion.png", { 0,0 }, { 10,3 }, { 256,256 });
 
+   /* LoadGridCenter(ResourceKeys::Title_background, L"./Data/Images/title_background.png", { 0,0 }, { 10,8 }, { 960, 540 });*/
+	LoadTextureAsSpriteLeftTop(ResourceKeys::Title_frame, L"./Data/Images/title_frame.png");
+    LoadTextureAsSpriteCenter(ResourceKeys::title_character, L"./Data/Images/title_character.png");
+    LoadTextureAsSpriteCenter(ResourceKeys::title_character_2, L"./Data/Images/title_character_2.png");
+
     LoadGridCenter(ResourceKeys::number_countdown_b, L"./Data/Images/number_countdown_b.png", { 0,0 }, { 10,1 }, { 180,126 });
     LoadGridCenter(ResourceKeys::number_countdown_321, L"./Data/Images/number_countdown_321.png", { 0,0 }, { 10,18 }, { 180,126 });
 
+	LoadTextureAsSpriteLeftTop(ResourceKeys::gameover_background, L"./Data/Images/gameover_background.png");
+	LoadTextureAsSpriteLeftTop(ResourceKeys::gameover_character_1, L"./Data/Images/gameover_character_1.png");
+	LoadTextureAsSpriteLeftTop(ResourceKeys::gameover_character_2, L"./Data/Images/gameover_character_2.png");
+	/*LoadGridCenter(ResourceKeys::gameover_logo, L"./Data/Images/gameover_logo.png", { 0,0 }, { 10,6 }, { 1320,459 });*/
 
     LoadGridCenter(ResourceKeys::game_hp_1, L"./Data/Images/game_hp_1.png", { 0,0 }, { 10,2 }, { 70,70 });
     LoadGridCenter(ResourceKeys::game_hp_2, L"./Data/Images/game_hp_2.png", { 0,0 }, { 10,2 }, { 70,70 });

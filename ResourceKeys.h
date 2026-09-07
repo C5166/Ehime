@@ -22,6 +22,20 @@ namespace ResourceKeys
     inline constexpr const wchar_t* SE_Explosion = L"Explosion";
     inline constexpr const wchar_t* SE_PlayerShot = L"PlayerShot";
 
+	// ===== Title =====
+	inline constexpr const wchar_t* Title_frame = L"Title_frame";
+	/*inline constexpr const wchar_t* Title_background = L"Title_background";*/
+	inline constexpr const wchar_t* title_character = L"title_character";
+	inline constexpr const wchar_t* title_character_2 = L"title_character_2";
+
+
+	// ===== GameOver =====
+	inline constexpr const wchar_t* gameover_background = L"gameover_background";
+	inline constexpr const wchar_t* gameover_character_1 = L"gameover_character_1";
+	inline constexpr const wchar_t* gameover_character_2 = L"gameover_character_2";
+	//inline constexpr const wchar_t* gameover_logo = L"gameover_logo";
+
+
     // ===== Game03 =====
 	inline constexpr const wchar_t* game_1_heart_1 = L"game_1_heart_1";
 	inline constexpr const wchar_t* game_1_heart_2 = L"game_1_heart_2";

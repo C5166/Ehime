@@ -14,5 +14,11 @@ public:
     void Render() const override;
     void End() override;
 
+	void SetGameOverInput(bool input) { isGameOverInput = input; }
+	bool GetGameOverInput() const { return isGameOverInput; }
+
 private:
+
+	bool isGameOverInput{ false };
+
 };

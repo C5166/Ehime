@@ -18,4 +18,12 @@ private:
 	int TenCount{ 1 };
     int frameCount{ 0 };
     int fontHandle{ -1 };
+
+	bool isTitleInput{ false };
+	int isTitleInputCount{ 0 };
+	int isTitleInputMax{ 10 };
+
+    const DxPlus::Sprite::SpriteBase* bgSprite{ nullptr };
+    const DxPlus::Sprite::SpriteBase* title_character{ nullptr };
+    const DxPlus::Sprite::SpriteBase* title_character2{ nullptr };
 };

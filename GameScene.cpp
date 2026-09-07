@@ -19,18 +19,28 @@ void GameScene::Init()
         DxLib::PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
     }
 
+	isGameOverInput = false;
+
     StartFadeIn();
 }
 
 void GameScene::Update()
 {
-    gameContext->Update();
+	gameContext->Update(isGameOverInput);
 
     using namespace DxPlus::Input;
     int buttonDown = GetButtonDown(PLAYER1);
     if (buttonDown & BUTTON_SELECT)
     {
         Scene* resultScene = SceneManager::GetInstance().GetScene(SceneID::Result);
+        SetNextScene(resultScene);
+        finished = true;    // フェード無しの場合は finished を true にしておく必要あり
+        return;
+    }
+
+    if (isGameOverInput)
+    {
+        Scene* resultScene = SceneManager::GetInstance().GetScene(SceneID::Title);
         SetNextScene(resultScene);
         finished = true;    // フェード無しの場合は finished を true にしておく必要あり
         return;

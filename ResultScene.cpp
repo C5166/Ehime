@@ -10,6 +10,8 @@ void ResultScene::Init()
 {
     DxLib::SetBackgroundColor(128, 64, 0);
     fontHandle = RM().GetFont(ResourceKeys::Font_Title);
+	Gameover_background = RM().GridAt(ResourceKeys::gameover_background);
+	Gameover_background = RM().GridAt(ResourceKeys::gameover_background);
     StartFadeIn(0.0f);
 }
 
@@ -28,9 +30,11 @@ void ResultScene::Update()
 void ResultScene::Render() const
 {
     gameContext->Draw();
+    
+    Gameover_background->Draw({0,0});
 
-    const int white = DxLib::GetColor(255, 255, 255);
-    DxPlus::Text::DrawString(L"Result",
-        { DxPlus::CLIENT_WIDTH * 0.5f, DxPlus::CLIENT_HEIGHT * 0.25f },
-        white, DxPlus::Text::TextAlign::MIDDLE_CENTER, { 2, 2 }, 0, fontHandle);
+		gameover_character_1->Draw({ 0, 0 });
+
+
+ 
 }

@@ -30,7 +30,7 @@ public:
 
     void Init();
     void Reset();
-    void Update();
+    void Update(bool & input);
     void Draw() const;
 
     int GetHP() const { return playerHP; }
@@ -65,6 +65,8 @@ private:
 
     void DrawTimer() const;
     void DrawHP() const;
+	//gameover_logoの描画関数を追加
+	/*void DrawGameOverLogo() const;*/
     void DrawSequenceUI() const; // 演出描画関数を追加
 
     const DxPlus::Sprite::SpriteBase* backgroundSpr{ nullptr };
@@ -72,6 +74,10 @@ private:
     const DxPlus::Sprite::SpriteBase* Game_start123{ nullptr };
     const DxPlus::Sprite::SpriteBase* Game_start{ nullptr };
     const DxPlus::Sprite::SpriteBase* Game_setumei_2{ nullptr };
+    const DxPlus::Sprite::SpriteBase* Gameover_background{ nullptr };
+    const DxPlus::Sprite::SpriteBase* Gameover_character_1{ nullptr };
+    const DxPlus::Sprite::SpriteBase* Gameover_character_2{ nullptr };
+    /*const DxPlus::Sprite::SpriteBase* Gameover_logo{ nullptr };*/
 
     Game_03 game_03;
     Game_02 game_02;
@@ -89,4 +95,10 @@ private:
     // --- 演出管理用変数 ---
     SequenceState sequenceState{ SequenceState::Explanation };
     float sequenceTimer{ 0.0f };
+
+	bool isGameOverInput{ false };
+
+	int isGameOverInputCount{ 0 };//ゲームオーバーのときボタンを押す回数
+
+	int isGameOverInputMax{ 10 };//ゲームオーバーのときボタンを押す回数の最大値
 };
