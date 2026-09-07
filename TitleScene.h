@@ -12,6 +12,7 @@ public:
     void Init() override;
     void Update() override;
     void Render() const override;
+    void Draw() const;
 
 private:
 //10‰ñƒJƒEƒ“ƒg
@@ -26,4 +27,10 @@ private:
     const DxPlus::Sprite::SpriteBase* bgSprite{ nullptr };
     const DxPlus::Sprite::SpriteBase* title_character{ nullptr };
     const DxPlus::Sprite::SpriteBase* title_character2{ nullptr };
+
+    int  touch[5];
+    int poti;
+    int kirakira;
+    int a=0;
+    int startvoice;
 };

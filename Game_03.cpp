@@ -60,6 +60,16 @@ void Game_03::Init()
     Herat2ID = RM().GridAt(ResourceKeys::game_1_heart_2);
     Herat3ID = RM().GridAt(ResourceKeys::game_1_heart_3);
 
+    poti = RM().GetSound(ResourceKeys::SE_poti);
+
+    bubu = RM().GetSound(ResourceKeys::SE_bubu);
+
+    good[0] = RM().GetSound(ResourceKeys::SE_GoodVoice1);
+    good[1] = RM().GetSound(ResourceKeys::SE_GoodVoice2);
+    good[2] = RM().GetSound(ResourceKeys::SE_GoodVoice3);
+
+    perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
+
     Reset();
 }
 
@@ -122,6 +132,7 @@ void Game_03::Update(int& hp, int& score)
     int mouseX = 0, mouseY = 0;
     if (isClicked)
     {
+        PlaySoundMem(poti, DX_PLAYTYPE_BACK);
         DxLib::GetMousePoint(&mouseX, &mouseY);
     }
 
@@ -166,10 +177,16 @@ void Game_03::Update(int& hp, int& score)
 
                 if (ball.type == BallType::Red)
                 {
+                    int a = GetRand(2);
+                    PlaySoundMem(good[a], DX_PLAYTYPE_BACK);
+
                     score++;
                 }
                 else if (ball.type == BallType::Blue || ball.type == BallType::Green)
                 {
+
+                    PlaySoundMem(bubu, DX_PLAYTYPE_BACK);
+
                     hp--;
                 }
 

@@ -11,7 +11,6 @@ namespace ResourceKeys
     inline constexpr const wchar_t* Player_Shot = L"PlayerShot";
     inline constexpr const wchar_t* Explosion = L"Explosion";
     inline constexpr const wchar_t* game2_back = L"game2_back";
-    inline constexpr const wchar_t* title_frame_2 = L"title_frame_2";
     inline constexpr const wchar_t* number_countdown_b = L"number_countdown_b";
     inline constexpr const wchar_t* number_countdown_321 = L"number_countdown_321";
     inline constexpr const wchar_t* game_hp_1 = L"game_hp_1";
@@ -21,6 +20,31 @@ namespace ResourceKeys
     inline constexpr const wchar_t* BGM_Game = L"BGM_Game";
     inline constexpr const wchar_t* SE_Explosion = L"Explosion";
     inline constexpr const wchar_t* SE_PlayerShot = L"PlayerShot";
+    //------------------------------------------------------------------
+	inline constexpr const wchar_t* SE_GameOver = L"GameOver";
+	inline constexpr const wchar_t* SE_GameClear = L"GameClear";
+	inline constexpr const wchar_t* SE_TouchVoice1 = L"TouchVoice1";
+	inline constexpr const wchar_t* SE_TouchVoice2 = L"TouchVoice2";
+	inline constexpr const wchar_t* SE_TouchVoice3 = L"TouchVoice3";
+	inline constexpr const wchar_t* SE_TouchVoice4 = L"TouchVoice4";
+	inline constexpr const wchar_t* SE_TouchVoice5 = L"TouchVoice5";
+	inline constexpr const wchar_t* SE_GoodVoice1 = L"SE_GoodVoice1";
+	inline constexpr const wchar_t* SE_GoodVoice2 = L"SE_GoodVoice2";
+	inline constexpr const wchar_t* SE_GoodVoice3 = L"SE_GoodVoice3";
+	inline constexpr const wchar_t* SE_PerfectVoice = L"PerfectVoice";
+	inline constexpr const wchar_t* SE_poti = L"poti";
+	inline constexpr const wchar_t* SE_kirakira = L"kirakira";
+
+	inline constexpr const wchar_t* SE_StartVoice = L"StartVoice";
+	inline constexpr const wchar_t* SE_GameStart = L"GameStart";
+	inline constexpr const wchar_t* SE_Camera = L"Camera";
+
+	inline constexpr const wchar_t* SE_bubu = L"bubu";
+
+	//===== Title =====
+
+    inline constexpr const wchar_t* title_frame_2 = L"title_frame_2";
+    inline constexpr const wchar_t* title_background = L"title_background";
 
 	// ===== Title =====
 	inline constexpr const wchar_t* Title_frame = L"Title_frame";

@@ -13,6 +13,9 @@ void GameContext::Init()
 
 	Game_setumei_2 = RM().GridAt(ResourceKeys::game_setumei_2);
 
+	gamestart = RM().GetSound(ResourceKeys::SE_GameStart);
+
+
 	Game_start = RM().GridAt(ResourceKeys::game_start);
 	
 
@@ -212,7 +215,12 @@ void GameContext::DrawSequenceUI() const
 
 	case SequenceState::StartMsg:
 	{
-		if (Game_start) Game_start->Draw(START_MSG_POS);
+		if (Game_start) {
+			Game_start->Draw(START_MSG_POS);
+			if (CheckSoundMem(gamestart) == 0) {
+				PlaySoundMem(gamestart, DX_PLAYTYPE_BACK);
+			}
+		}
 	}
 	break;
 

@@ -5,12 +5,14 @@
 #include "Game_03.h"
 #include "Game_02.h"
 #include "Game_00.h"
+#include "TitleScene.h"
 
 enum GameNamber
 {
     Game_3,
     Game_2,
-    Game_0
+    Game_0,
+	Title,
 };
 
 class GameContext
@@ -88,6 +90,8 @@ private:
     const float GAME_TIME_LIMIT{ 10000000.0f };
     const float TIME_SPEED_RATE{ 1.0f };
     float timer{ 10.0f };
+
+    int gamestart;
 
     // --- ââèoä«óùópïœêî ---
     SequenceState sequenceState{ SequenceState::Explanation };

@@ -29,4 +29,13 @@ private:
 
     const float screenWidth = 1852 ;
     const float screenHeight = 860;
+
+    int poti;
+
+    int bubu;
+
+    int good[3];
+
+    int perfect;
+
 };

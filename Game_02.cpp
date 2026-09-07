@@ -72,10 +72,21 @@ void Game_02::Init()
     a[4] = DxLib::LoadGraph(L"./Data/Images/game2_5.png");
     a[5] = DxLib::LoadGraph(L"./Data/Images/game2_6.png");
 
+	good[0] = RM().GetSound(ResourceKeys::SE_GoodVoice1);
+	good[1] = RM().GetSound(ResourceKeys::SE_GoodVoice2);
+	good[2] = RM().GetSound(ResourceKeys::SE_GoodVoice3);
+
 	waku = DxLib::LoadGraph(L"./Data/Images/title_frame_2.png");
 
 	perfectSheetID = DxLib::LoadGraph(L"./Data/Images/game_perfect.png");
 	notsheetID = DxLib::LoadGraph(L"./Data/Images/game_error.png");
+
+    poti = RM().GetSound(ResourceKeys::SE_poti);
+
+    bubu = RM().GetSound(ResourceKeys::SE_bubu);
+
+    perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
+
 }
 
 void Game_02::Reset()
@@ -99,15 +110,21 @@ void Game_02::Update(int& hp, int& score)
     case 0:
         if (isClicked)
         {
+            PlaySoundMem(poti, DX_PLAYTYPE_BACK);
             DxLib::GetMousePoint(&mouseX, &mouseY);
             if(mouseX >= 157 && mouseX <= 157 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
+
+                PlaySoundMem(bubu, DX_PLAYTYPE_BACK);
 
                 hp--;
                 change ++;
             }
 			else if (mouseX >= 855 && mouseX <= 855 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
+                int a = GetRand(2);
+                PlaySoundMem(good[a], DX_PLAYTYPE_BACK);
+
                 score++;
                 change ++;
 			}
@@ -118,15 +135,21 @@ void Game_02::Update(int& hp, int& score)
 	case 1:
         if (isClicked)
         {
+            PlaySoundMem(poti, DX_PLAYTYPE_BACK);
             DxLib::GetMousePoint(&mouseX, &mouseY);
             if (mouseX >= 157 && mouseX <= 157 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
+                int a = GetRand(2);
+                PlaySoundMem(good[a], DX_PLAYTYPE_BACK);
 
                 score++;
                 change++;
             }
             else if (mouseX >= 855 && mouseX <= 855 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
+
+                PlaySoundMem(bubu, DX_PLAYTYPE_BACK);
+
                 hp--;
                 change++;
             }
@@ -136,15 +159,21 @@ void Game_02::Update(int& hp, int& score)
     case 2:
         if (isClicked)
         {
+            PlaySoundMem(poti, DX_PLAYTYPE_BACK);
             DxLib::GetMousePoint(&mouseX, &mouseY);
             if (mouseX >= 157 && mouseX <= 157 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
+                int a = GetRand(2);
+                PlaySoundMem(good[a], DX_PLAYTYPE_BACK);
 
                 score++;
                 change ++;
             }
             else if (mouseX >= 855 && mouseX <= 855 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
+
+                PlaySoundMem(bubu, DX_PLAYTYPE_BACK);
+
                 hp--;
                 change ++;
             }
@@ -154,15 +183,21 @@ void Game_02::Update(int& hp, int& score)
 	case 3:
         if (isClicked)
         {
+            PlaySoundMem(poti, DX_PLAYTYPE_BACK);
             DxLib::GetMousePoint(&mouseX, &mouseY);
             if (mouseX >= 157 && mouseX <= 157 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
+                int a = GetRand(2);
+                PlaySoundMem(good[a], DX_PLAYTYPE_BACK);
 
                 score++;
                 change ++;
             }
             else if (mouseX >= 855 && mouseX <= 855 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
+
+                PlaySoundMem(bubu, DX_PLAYTYPE_BACK);
+
                 hp--;
                 change ++;
             }
@@ -172,15 +207,21 @@ void Game_02::Update(int& hp, int& score)
 	case 4:
         if (isClicked)
         {
+            PlaySoundMem(poti, DX_PLAYTYPE_BACK);
             DxLib::GetMousePoint(&mouseX, &mouseY);
             if (mouseX >= 157 && mouseX <= 157 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
+                int a = GetRand(2);
+                PlaySoundMem(good[a], DX_PLAYTYPE_BACK);
 
                 score++;
                 change++;
             }
             else if (mouseX >= 855 && mouseX <= 855 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
+
+                PlaySoundMem(bubu, DX_PLAYTYPE_BACK);
+
                 hp--;
                 change++;
             }
@@ -190,15 +231,22 @@ void Game_02::Update(int& hp, int& score)
 	case 5:
         if (isClicked)
         {
+            PlaySoundMem(poti, DX_PLAYTYPE_BACK);
             DxLib::GetMousePoint(&mouseX, &mouseY);
             if (mouseX >= 157 && mouseX <= 157 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
+                int a = GetRand(2);
+                PlaySoundMem(good[a], DX_PLAYTYPE_BACK);
+
                 score++;
                 change = 0;
             }
             else if (mouseX >= 855 && mouseX <= 855 + 751 && mouseY >= 320 && mouseY <= 320 + 482)
             {
-                score--;
+
+                PlaySoundMem(bubu, DX_PLAYTYPE_BACK);
+
+                hp--;
                 change = 0;
             }
             Animating = true;

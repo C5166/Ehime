@@ -46,4 +46,12 @@ private:
     void DrawGizmo(Object& obj);
 
     bool isCameraLocked{ false };
+
+    int CAMERA;
+
+    int bubu;
+
+    int good[3];
+
+    int perfect;
 };
