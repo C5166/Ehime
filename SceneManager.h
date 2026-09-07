@@ -4,8 +4,9 @@
 #include "TitleScene.h"
 #include "GameScene.h"
 #include "GameOverScene.h"
+#include "GameClearScene.h"
 
-enum class SceneID { Title, Game, GameOver};
+enum class SceneID { Title, Game, GameOver, GameClear};
 
 class SceneManager
 {
@@ -37,6 +38,7 @@ private:
     TitleScene  titleScene{ &gameContext };
     GameScene   gameScene{ &gameContext };
     GameOverScene gameOverScene{ &gameContext };
+    GameClearScene gameClearScene{ &gameContext };
 
     Scene* scene = nullptr;
 };

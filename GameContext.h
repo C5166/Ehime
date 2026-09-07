@@ -75,10 +75,6 @@ private:
     const DxPlus::Sprite::SpriteBase* Game_start123{ nullptr };
     const DxPlus::Sprite::SpriteBase* Game_start{ nullptr };
     const DxPlus::Sprite::SpriteBase* Game_setumei_2{ nullptr };
-    const DxPlus::Sprite::SpriteBase* Gameover_background{ nullptr };
-    const DxPlus::Sprite::SpriteBase* Gameover_character_1{ nullptr };
-    const DxPlus::Sprite::SpriteBase* Gameover_character_2{ nullptr };
-    const DxPlus::Sprite::SpriteBase* Gameover_logo{ nullptr };
 
     Game_03 game_03;
     Game_02 game_02;
@@ -96,19 +92,5 @@ private:
     // --- 演出管理用変数 ---
     SequenceState sequenceState{ SequenceState::Explanation };
     float sequenceTimer{ 0.0f };
-
-	//GameClear
-
-    bool isGameCleared{ false }; // ゲームクリアフラグ
-
-	bool isGameClearInput{ false }; // ゲームクリア時の入力フラグ
-
-	int isGameClearInputCount{ 0 }; // ゲームクリア時の入力カウント
-
-	int isGameClearInputMax{ 10 }; // ゲームクリア時の入力カウント最大値
-
-    const DxPlus::Sprite::SpriteBase* gameclear_background{ nullptr };
-    const DxPlus::Sprite::SpriteBase* gameclear_character_1{ nullptr };
-    const DxPlus::Sprite::SpriteBase* gameclear_character_2{ nullptr };
 
 };

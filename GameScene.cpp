@@ -38,6 +38,14 @@ void GameScene::Update()
         StartFadeOut();
         return;
     }
+
+    if (gameContext->GetCurrentMiniGame() == GameNamber::Game_3 && gameContext->GetScore() >= 10)
+    {
+        Scene* gameClearScene = SceneManager::GetInstance().GetScene(SceneID::GameClear);
+        SetNextScene(gameClearScene);
+        StartFadeOut();
+        return;
+    }
 }
 
 void GameScene::Render() const

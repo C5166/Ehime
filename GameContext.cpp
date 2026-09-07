@@ -16,12 +16,6 @@ void GameContext::Init()
 	Game_start = RM().GridAt(ResourceKeys::game_start);
 	
 
-	gameclear_background = RM().GridAt(ResourceKeys::gameclear_background);
-	gameclear_character_1 = RM().GridAt(ResourceKeys::gameclear_character_1);
-	gameclear_character_2 = RM().GridAt(ResourceKeys::gameclear_character_2);
-
-
-
 	playerHP = 3;
 	totalScore = 0;
 	timer = GAME_TIME_LIMIT;
@@ -46,8 +40,6 @@ void GameContext::Reset()
 	sequenceState = SequenceState::Explanation;
 	sequenceTimer = 0.0f;
 
-
-	isGameCleared = false; // ゲームクリアフラグをリセット
 
 }
 
@@ -124,39 +116,6 @@ void GameContext::Update(bool& input)
 			break;
 		}
 	}
-
-	using namespace DxPlus::Input;
-	int bottom = GetButtonDown(PLAYER1);
-
-	
-
-	if (Isinit == GameNamber::Game_3 && totalScore >= 10)
-	{
-		isGameCleared = true; // ゲームクリアフラグを立てる
-
-		if (bottom & BUTTON_START || bottom & BUTTON_TRIGGER2)
-		{
-			isGameClearInput = true;
-			isGameClearInputCount++;
-		}
-		else if (isGameClearInput)
-		{
-			isGameClearInput = false;
-		}
-
-		if (isGameClearInputCount == isGameClearInputMax)
-		{
-			//タイトル画面(TitleScene)に戻る
-			input = true;
-			totalScore = 0;
-
-			// ゲームオーバー入力カウントをリセット
-
-			isGameClearInputCount = 0;
-
-		}
-	}
-
 
 }
 
@@ -328,24 +287,5 @@ void GameContext::Draw() const
 	backgroundSpr2->Draw({ 0, 0 });
 	DrawTimer();
 	DrawHP();
-
-	if (isGameCleared)
-	{
-		backgroundSpr->Draw({});
-		backgroundSpr2->Draw({ 0, 0 });
-		gameclear_background->Draw({ 0, 0 });
-
-		if(isGameClearInput == false)
-		{
-			gameclear_character_1->Draw({ 0, 0 });
-		}
-		if(isGameClearInput)
-		{
-			gameclear_character_2->Draw({ 0, 0 });
-		}
 	
-	}
-
-	
-
 }

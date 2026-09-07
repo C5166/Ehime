@@ -55,6 +55,9 @@
     <Filter Include="30_Scenes\GameOver">
       <UniqueIdentifier>{fa2b175a-ea53-4d88-95f3-2261a1be7b2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="30_Scenes\GameClear">
+      <UniqueIdentifier>{29f31dec-7726-4426-8a4c-b64dd4384914}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DxPlus\Debug.h">
@@ -218,6 +221,9 @@
     <ClInclude Include="GameOverScene.h">
       <Filter>30_Scenes\GameOver</Filter>
     </ClInclude>
+    <ClInclude Include="GameClearScene.h">
+      <Filter>30_Scenes\GameClear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DxPlus\Debug.cpp">
@@ -328,6 +334,9 @@
     <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="GameOverScene.cpp">
       <Filter>30_Scenes\GameOver</Filter>
+    </ClCompile>
+    <ClCompile Include="GameClearScene.cpp">
+      <Filter>30_Scenes\GameClear</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
