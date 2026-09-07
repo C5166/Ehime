@@ -82,7 +82,7 @@ private:
     int playerHP{ 3 };
     int totalScore{ 0 };
 
-    const float GAME_TIME_LIMIT{ 500.0f };
+    const float GAME_TIME_LIMIT{ 10000000.0f };
     const float TIME_SPEED_RATE{ 1.0f };
     float timer{ 10.0f };
 

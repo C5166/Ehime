@@ -3,9 +3,9 @@
         "active": true,
         "name": "Neko_01",
         "objType": 1,
-        "position.x": 581.0,
-        "position.y": 688.0,
-        "rotation": 0.0,
+        "position.x": 1127.0,
+        "position.y": 802.0,
+        "rotation": -0.33713388442993164,
         "size.x": 80.0,
         "size.y": 80.0,
         "type": 3
@@ -20,5 +20,49 @@
         "size.x": 100.0,
         "size.y": 70.0,
         "type": 4
+    },
+    {
+        "active": true,
+        "name": "Hitu",
+        "objType": 2,
+        "position.x": 1192.0,
+        "position.y": 843.0,
+        "rotation": 0.014491796493530273,
+        "size.x": 80.0,
+        "size.y": 80.0,
+        "type": 3
+    },
+    {
+        "active": true,
+        "name": "Kesi2",
+        "objType": 5,
+        "position.x": 668.0,
+        "position.y": 668.0,
+        "rotation": 2.0512022972106934,
+        "size.x": 100.0,
+        "size.y": 70.0,
+        "type": 4
+    },
+    {
+        "active": true,
+        "name": "Hitu",
+        "objType": 2,
+        "position.x": 225.0,
+        "position.y": 656.0,
+        "rotation": -0.25926339626312256,
+        "size.x": 80.0,
+        "size.y": 80.0,
+        "type": 3
+    },
+    {
+        "active": true,
+        "name": "Nekosima",
+        "objType": 0,
+        "position.x": 1561.0,
+        "position.y": 765.0,
+        "rotation": 0.2543680667877197,
+        "size.x": 100.0,
+        "size.y": 100.0,
+        "type": 3
     }
 ]

@@ -95,7 +95,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>c:\DxLib\;C:\チーム愛媛県\チーム愛媛県\imgui;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\DxLib\;C:\チーム愛媛県\チーム愛媛県\imgui;C:\Ehime\imgui;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -114,7 +114,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>c:\DxLib\;C:\チーム愛媛県\チーム愛媛県\imgui;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\DxLib\;C:\チーム愛媛県\チーム愛媛県\imgui;C:\Ehime\imgui;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -133,7 +133,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>c:\DxLib\;C:\チーム愛媛県\チーム愛媛県\imgui;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\DxLib\;C:\チーム愛媛県\チーム愛媛県\imgui;C:\Ehime\imgui;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -152,7 +152,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>c:\DxLib\;C:\チーム愛媛県\チーム愛媛県\imgui;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\DxLib\;C:\チーム愛媛県\チーム愛媛県\imgui;C:\Ehime\imgui;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
