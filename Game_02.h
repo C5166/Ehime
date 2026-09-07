@@ -32,6 +32,8 @@ private:
     int perfectSheetID;
 	int notsheetID;
 
+    int poti;
+
 	bool Animating = false; 
 
     struct notFrameRect {
@@ -39,4 +41,11 @@ private:
     };
 
     int frame = 0;
+
+    int bubu;
+
+    int good[3];
+
+    int perfect;
+
 };

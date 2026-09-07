@@ -15,6 +15,16 @@ void Game_00::Init()
 {
     Reset();
     LoadFromFile();
+
+	CAMERA = RM().GetSound(ResourceKeys::SE_Camera);
+
+	bubu = RM().GetSound(ResourceKeys::SE_bubu);
+
+    good[0] = RM().GetSound(ResourceKeys::SE_GoodVoice1);
+    good[1] = RM().GetSound(ResourceKeys::SE_GoodVoice2);
+    good[2] = RM().GetSound(ResourceKeys::SE_GoodVoice3);
+
+	perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
 }
 
 // --- JSON へ保存 ---
@@ -72,13 +82,13 @@ void Game_00::AddObject(ObjectType type, const char* defaultName)
     case ObjectType::Hitu:
     case ObjectType::Inu:
         obj.type = BallType::Target;
-        obj.size = { 80.0f, 80.0f };
+        obj.size = { 120.0f, 120.0f };
         break;
     case ObjectType::Kesi1:
     case ObjectType::Kesi2:
     case ObjectType::Kesi3:
         obj.type = BallType::Penalty;
-        obj.size = { 100.0f, 70.0f };
+        obj.size = { 120.0f, 120.0f };
         break;
     }
 
@@ -169,6 +179,9 @@ void Game_00::Update(int& hp, int& score)
 
     if (isEnterTriggered || isMousePressed)
     {
+        if (CheckSoundMem(CAMERA) == 0) {
+            PlaySoundMem(CAMERA, DX_PLAYTYPE_BACK);
+        }
         shutterAnimTimer = 1.0f;
         flashAlpha = 180;
 
@@ -191,12 +204,15 @@ void Game_00::Update(int& hp, int& score)
                 subj.active = false;
                 score++;
                 hitTarget = true;
+				int a = GetRand(2);
+				PlaySoundMem(good[a], DX_PLAYTYPE_BACK);
             }
         }
-
+        
         if (!hitTarget)
         {
             hp--;
+			PlaySoundMem(bubu, DX_PLAYTYPE_BACK);
         }
     }
 

@@ -11,6 +11,8 @@ void GameContext::Init()
 	backgroundSpr = RM().GridAt(ResourceKeys::Background);
 	backgroundSpr2 = RM().GridAt(ResourceKeys::title_frame_2);
 
+	gamestart = RM().GetSound(ResourceKeys::SE_GameStart);
+
 	// ↓ Game_start123 のこの行は削除してください（Draw時にコマ指定で直接取得するため）
 	// Game_start123 = RM().GridAt(ResourceKeys::game_start123); 
 
@@ -210,7 +212,12 @@ void GameContext::DrawSequenceUI() const
 
 	case SequenceState::StartMsg:
 	{
-		if (Game_start) Game_start->Draw(START_MSG_POS);
+		if (Game_start) {
+			Game_start->Draw(START_MSG_POS);
+			if (CheckSoundMem(gamestart) == 0) {
+				PlaySoundMem(gamestart, DX_PLAYTYPE_BACK);
+			}
+		}
 	}
 	break;
 

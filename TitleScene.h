@@ -12,10 +12,16 @@ public:
     void Init() override;
     void Update() override;
     void Render() const override;
+    void Draw() const;
 
 private:
 //10‰ñƒJƒEƒ“ƒg
 	int TenCount{ 1 };
     int frameCount{ 0 };
     int fontHandle{ -1 };
+    int  touch[5];
+    int poti;
+    int kirakira;
+    int a=0;
+    int startvoice;
 };

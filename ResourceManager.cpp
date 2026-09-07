@@ -19,6 +19,8 @@ void ResourceManager::LoadAll()
     LoadTextureAsSpriteCenter(ResourceKeys::Player_Shot, L"./Data/Images/player_shot.png");
     LoadGridCenter(ResourceKeys::Explosion, L"./Data/Images/explosion.png", { 0,0 }, { 10,3 }, { 256,256 });
 
+	LoadTextureAsSpriteLeftTop(ResourceKeys::title_background, L"./Data/Images/title_background.png");
+
     LoadGridCenter(ResourceKeys::number_countdown_b, L"./Data/Images/number_countdown_b.png", { 0,0 }, { 10,1 }, { 180,126 });
     LoadGridCenter(ResourceKeys::number_countdown_321, L"./Data/Images/number_countdown_321.png", { 0,0 }, { 10,18 }, { 180,126 });
 
@@ -34,6 +36,8 @@ void ResourceManager::LoadAll()
 	LoadTextureAsSpriteLeftTop(ResourceKeys::game2_back, L"./Data/Images/mihon_3.png");
 	LoadTextureAsSpriteLeftTop(ResourceKeys::title_frame_2, L"./Data/Images/title_frame_2.png");
 
+	
+
 	LoadTextureAsSpriteCenter(ResourceKeys::game_1_heart_1, L"./Data/Images/game_1_heart_1.png");
     LoadTextureAsSpriteCenter(ResourceKeys::game_1_heart_2, L"./Data/Images/game_1_heart_2.png");
 	LoadTextureAsSpriteCenter(ResourceKeys::game_1_heart_3, L"./Data/Images/game_1_heart_3.png");
@@ -48,9 +52,27 @@ void ResourceManager::LoadAll()
 	LoadTextureAsSpriteCenter(ResourceKeys::game_3_kesi2, L"./Data/Images/game_3_kesi2.png");
 	LoadTextureAsSpriteCenter(ResourceKeys::game_3_kesi3, L"./Data/Images/game_3_kesi3.png");
 
-    LoadMusic(ResourceKeys::BGM_Game,       L"./Data/Sounds/maou_bgm_8bit14.mp3");
+    LoadMusic(ResourceKeys::BGM_Game,       L"./Data/Sounds/sanjinooyatsu.mp3");
     LoadSound(ResourceKeys::SE_Explosion,   L"./Data/Sounds/Explosion.mp3");
     LoadSound(ResourceKeys::SE_PlayerShot,  L"./Data/Sounds/PlayerShot.wav");
+
+	LoadSound(ResourceKeys::SE_TouchVoice1, L"./Data/Sounds/タイトル_胸を押したときのボイス/voice_mune_baka.mp3");
+	LoadSound(ResourceKeys::SE_TouchVoice2, L"./Data/Sounds/タイトル_胸を押したときのボイス/voice_mune_kya.mp3");
+	LoadSound(ResourceKeys::SE_TouchVoice3, L"./Data/Sounds/タイトル_胸を押したときのボイス/voice_mune_mou.mp3");
+	LoadSound(ResourceKeys::SE_TouchVoice4, L"./Data/Sounds/タイトル_胸を押したときのボイス/voice_mune_nnn.mp3");
+	LoadSound(ResourceKeys::SE_TouchVoice5, L"./Data/Sounds/タイトル_胸を押したときのボイス/voice_mune_wa.mp3");
+	LoadSound(ResourceKeys::SE_GoodVoice1, L"./Data/Sounds/正解オブジェクトを選択した/voice_seikai_1.mp3");
+	LoadSound(ResourceKeys::SE_GoodVoice2, L"./Data/Sounds/正解オブジェクトを選択した/voice_seikai_2.mp3");
+	LoadSound(ResourceKeys::SE_GoodVoice3, L"./Data/Sounds/正解オブジェクトを選択した/voice_seikai_3.mp3");
+	LoadSound(ResourceKeys::SE_PerfectVoice, L"./Data/Sounds/パーフェクト/voice_perfect.mp3");
+	LoadSound(ResourceKeys::SE_poti, L"./Data/Sounds/se_poti.mp3");
+	LoadSound(ResourceKeys::SE_kirakira, L"./Data/Sounds/se_kirakira.mp3");
+
+	LoadSound(ResourceKeys::SE_bubu, L"./Data/Sounds/se_bubu.mp3");
+
+	LoadSound(ResourceKeys::SE_StartVoice, L"./Data/Sounds/はじまります！/voice_hazimarimasu.mp3");
+	LoadSound(ResourceKeys::SE_GameStart, L"./Data/Sounds/se_start.mp3");
+	LoadSound(ResourceKeys::SE_Camera, L"./Data/Sounds/se_camera.mp3");
 
     LoadFont(ResourceKeys::Font_Title, L"./Data/Fonts/Bitcount/static/Bitcount-Light.ttf");
 }

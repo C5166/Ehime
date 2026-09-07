@@ -5,14 +5,38 @@
 #include "ResourceManager.h"
 #include "SceneManager.h"
 #include "ResourceKeys.h"
+#include "GameContext.h"
 
 void TitleScene::Init()
 {
     DxLib::SetBackgroundColor(16, 128, 224);
     frameCount = 0;
 
+	startvoice = RM().GetSound(ResourceKeys::SE_StartVoice);
+
     fontHandle = RM().GetFont(ResourceKeys::Font_Title);
 
+	poti = RM().GetSound(ResourceKeys::SE_poti);
+	kirakira = RM().GetSound(ResourceKeys::SE_kirakira);
+
+    touch[0] = RM().GetSound(ResourceKeys::SE_TouchVoice1);
+    touch[1] = RM().GetSound(ResourceKeys::SE_TouchVoice2);
+    touch[2] = RM().GetSound(ResourceKeys::SE_TouchVoice3);
+    touch[3] = RM().GetSound(ResourceKeys::SE_TouchVoice4);
+    touch[4] = RM().GetSound(ResourceKeys::SE_TouchVoice5);
+
+	//titlecharacter[0] = LoadGraph(L"./Data/Images/title_character.png");
+	//titlecharacter[1] = LoadGraph(L"./Data/Images/title_character_2.png");
+
+   /* LoadDivGraph(L"./Data/Images/title_background.png", 84, 10, 8, 960, 540, titlebackground);*/
+
+    int bgm = RM().GetMusic(ResourceKeys::BGM_Game);
+    if (bgm >= 0)
+    {
+        DxLib::StopSoundMem(bgm);
+        DxLib::ChangeVolumeSoundMem(128, bgm);
+        DxLib::PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
+    }
     StartFadeIn();
 }
 
@@ -21,12 +45,29 @@ void TitleScene::Update()
     using namespace DxPlus::Input;
     if (GetButtonDown(PLAYER1) & BUTTON_START||GetButtonDown(PLAYER1)& BUTTON_TRIGGER2)
     {
-        if(TenCount >= 10)
+        PlaySoundMem(poti, DX_PLAYTYPE_BACK);
+        if(TenCount == 10)
         {
             Scene* gameScene = SceneManager::GetInstance().GetScene(SceneID::Game);
             SetNextScene(gameScene);
             StartFadeOut();
+            if (CheckSoundMem(kirakira) == 0) {
+                PlaySoundMem(kirakira, DX_PLAYTYPE_BACK);
+            }
+			WaitTimer(1500);
+            if (CheckSoundMem(startvoice) == 0) {
+                PlaySoundMem(startvoice, DX_PLAYTYPE_BACK);
+            }
 		}
+        else
+        {
+            a++;
+            PlaySoundMem(touch[a], DX_PLAYTYPE_BACK);
+            if(a >= 4)
+            {
+                a = 0;
+			}
+        }
 		TenCount++;
         
         return;
@@ -48,4 +89,23 @@ void TitleScene::Render() const
             { DxPlus::CLIENT_WIDTH * 0.5f, DxPlus::CLIENT_HEIGHT * 0.75f }, 
             yellow, DxPlus::Text::TextAlign::MIDDLE_CENTER, { 1,1 }, 0, fontHandle);
     }
+
+}
+
+void TitleScene::Draw() const
+{
+
+    /*while (TenCount <= 10)
+    {
+        i++;
+        DrawGraph(0, 0, titlebackground[i], FALSE);
+
+        if (i >= 84) i = 1;
+    }
+
+    for (i = 0; i < 84; i++)
+    {
+        DeleteGraph(titlebackground[i]);
+    }*/
+    
 }
