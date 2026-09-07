@@ -24,7 +24,7 @@ void ResourceManager::LoadAll()
     LoadTextureAsSpriteCenter(ResourceKeys::title_character, L"./Data/Images/title_character.png");
     LoadTextureAsSpriteCenter(ResourceKeys::title_character_2, L"./Data/Images/title_character_2.png");
 
-	LoadTextureAsSpriteLeftTop(ResourceKeys::title_background, L"./Data/Images/title_background.png");
+    LoadGridBottom(ResourceKeys::title_background, L"./Data/Images/title_background.png.png", { 0,0 }, { 10,4 }, { 768, 432 });
 
     LoadGridCenter(ResourceKeys::number_countdown_b, L"./Data/Images/number_countdown_b.png", { 0,0 }, { 10,1 }, { 180,126 });
     LoadGridCenter(ResourceKeys::number_countdown_321, L"./Data/Images/number_countdown_321.png", { 0,0 }, { 10,18 }, { 180,126 });

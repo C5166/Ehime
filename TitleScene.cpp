@@ -12,19 +12,18 @@ void TitleScene::Init()
     DxLib::SetBackgroundColor(16, 128, 224);
     frameCount = 0;
 
-	startvoice = RM().GetSound(ResourceKeys::SE_StartVoice);
-
+    startvoice = RM().GetSound(ResourceKeys::SE_StartVoice);
     fontHandle = RM().GetFont(ResourceKeys::Font_Title);
 
     bgSprite = RM().GridAt(ResourceKeys::Title_frame);
-	title_character = RM().GridAt(ResourceKeys::title_character);
-	title_character2 = RM().GridAt(ResourceKeys::title_character_2);
+    title_character = RM().GridAt(ResourceKeys::title_character);
+    title_character2 = RM().GridAt(ResourceKeys::title_character_2);
 
-	isTitleInput = false;
-	isTitleInputCount = 0;
+    isTitleInput = false;
+    isTitleInputCount = 0;
 
-	poti = RM().GetSound(ResourceKeys::SE_poti);
-	kirakira = RM().GetSound(ResourceKeys::SE_kirakira);
+    poti = RM().GetSound(ResourceKeys::SE_poti);
+    kirakira = RM().GetSound(ResourceKeys::SE_kirakira);
 
     touch[0] = RM().GetSound(ResourceKeys::SE_TouchVoice1);
     touch[1] = RM().GetSound(ResourceKeys::SE_TouchVoice2);
@@ -32,10 +31,9 @@ void TitleScene::Init()
     touch[3] = RM().GetSound(ResourceKeys::SE_TouchVoice4);
     touch[4] = RM().GetSound(ResourceKeys::SE_TouchVoice5);
 
-	//titlecharacter[0] = LoadGraph(L"./Data/Images/title_character.png");
-	//titlecharacter[1] = LoadGraph(L"./Data/Images/title_character_2.png");
-
-   /* LoadDivGraph(L"./Data/Images/title_background.png", 84, 10, 8, 960, 540, titlebackground);*/
+    // アニメーション制御変数のリセット
+    bgAnimTimer = 0;
+    currentBgIndex = 0;
 
     int bgm = RM().GetMusic(ResourceKeys::BGM_Game);
     if (bgm >= 0)
@@ -50,101 +48,103 @@ void TitleScene::Init()
 void TitleScene::Update()
 {
     using namespace DxPlus::Input;
-    if (GetButtonDown(PLAYER1) & BUTTON_START||GetButtonDown(PLAYER1)& BUTTON_TRIGGER2)
+    if (GetButtonDown(PLAYER1) & BUTTON_START || GetButtonDown(PLAYER1) & BUTTON_TRIGGER2)
     {
         PlaySoundMem(poti, DX_PLAYTYPE_BACK);
-        if(TenCount == 10)
+        if (TenCount == 10)
         {
             Scene* gameScene = SceneManager::GetInstance().GetScene(SceneID::Game);
             SetNextScene(gameScene);
-			TenCount = 0;
+            TenCount = 0;
             StartFadeOut();
             if (CheckSoundMem(kirakira) == 0) {
                 PlaySoundMem(kirakira, DX_PLAYTYPE_BACK);
             }
-			WaitTimer(1500);
+            WaitTimer(1500);
             if (CheckSoundMem(startvoice) == 0) {
                 PlaySoundMem(startvoice, DX_PLAYTYPE_BACK);
             }
-		}
-
+        }
         else
         {
             a++;
             PlaySoundMem(touch[a], DX_PLAYTYPE_BACK);
-            if(a >= 4)
+            if (a >= 4)
             {
                 a = 0;
-			}
+            }
         }
 
-		TenCount++;
+        TenCount++;
 
         if (isTitleInput == false)
         {
             isTitleInput = true;
         }
-        
+
         return;
     }
 
     if (isTitleInput)
     {
-		isTitleInputCount++;
+        isTitleInputCount++;
     }
 
     if (isTitleInput && isTitleInputCount > isTitleInputMax)
     {
         isTitleInput = false;
-		isTitleInputCount = 0;
+        isTitleInputCount = 0;
     }
 
     frameCount++;
+
+    // 背景アニメーションの更新（無限ループ）
+    UpdateTitleBgAnimation();
+}
+
+void TitleScene::UpdateTitleBgAnimation()
+{
+    bgAnimTimer++;
+    if (bgAnimTimer >= animFrameInterval)
+    {
+        bgAnimTimer = 0;
+        currentBgIndex++;
+
+        // 総フレーム数（37）を超えたら 0 に戻して無限ループ
+        if (currentBgIndex >= totalBgFrames)
+        {
+            currentBgIndex = 0;
+        }
+    }
 }
 
 void TitleScene::Render() const
 {
+    // --- 1. アニメーション背景の描画 ---
+    int gridX = currentBgIndex % bgColumns;
+    int gridY = currentBgIndex / bgColumns;
 
+    const auto* titleBgAnim = RM().GridAt(ResourceKeys::title_background, gridX, gridY);
+    if (titleBgAnim)
+    {
+        titleBgAnim->Draw(bgPos, bgScale);
+    }
     if (bgSprite)
     {
+        // フォールバック描画
         bgSprite->Draw({ 0, 0 });
     }
-    const int white = DxLib::GetColor(255, 255, 255);
-    DxPlus::Text::DrawString(L"ehime",
-        { DxPlus::CLIENT_WIDTH * 0.5f, DxPlus::CLIENT_HEIGHT * 0.25f },
-        white, DxPlus::Text::TextAlign::MIDDLE_CENTER, { 2, 2 }, 0, fontHandle);
 
-    const int yellow = DxLib::GetColor(255, 255, 0);
-    if (frameCount & 0x20)
-    {
-        DxPlus::Text::DrawString(L"Push Enter",
-            { DxPlus::CLIENT_WIDTH * 0.5f, DxPlus::CLIENT_HEIGHT * 0.75f },
-            yellow, DxPlus::Text::TextAlign::MIDDLE_CENTER, { 1,1 }, 0, fontHandle);
-    }
     if (isTitleInput)
     {
-        title_character2->Draw({ 960, 540 });
+        if (title_character2) title_character2->Draw({ 960, 540 });
     }
-    else if (!isTitleInput)
+    else
     {
-        title_character->Draw({ 960, 540 });
+        if (title_character) title_character->Draw({ 960, 540 });
     }
 }
 
 void TitleScene::Draw() const
 {
-
-    /*while (TenCount <= 10)
-    {
-        i++;
-        DrawGraph(0, 0, titlebackground[i], FALSE);
-
-        if (i >= 84) i = 1;
-    }
-
-    for (i = 0; i < 84; i++)
-    {
-        DeleteGraph(titlebackground[i]);
-    }*/
-    
 }
