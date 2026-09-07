@@ -14,6 +14,10 @@ void GameClearScene::Init()
     isGameClearInput = false;
     isGameClearInputCount = 0;
 
+    // アニメーション用タイマーのリセット
+    logoAnimTimer = 0;
+    currentLogoIndex = 0;
+
     StartFadeIn();
 }
 
@@ -39,6 +43,39 @@ void GameClearScene::Update()
         SetNextScene(titleScene);
         StartFadeOut();
     }
+
+    // ロゴのアニメーションを更新（常にループ）
+    UpdateGameClearLogoAnimation();
+}
+
+void GameClearScene::UpdateGameClearLogoAnimation()
+{
+    logoAnimTimer++;
+    if (logoAnimTimer >= animFrameInterval)
+    {
+        logoAnimTimer = 0;
+        currentLogoIndex++;
+
+        // 総コマ数（21コマ）を超えたら 0 に戻してループさせる
+        if (currentLogoIndex >= totalLogoFrames)
+        {
+            currentLogoIndex = 0;
+        }
+    }
+}
+
+void GameClearScene::DrawGameClearUI() const
+{
+    // 現在のインデックスから X (列) と Y (行) を計算
+    int gridX = currentLogoIndex % logoColumns;
+    int gridY = currentLogoIndex / logoColumns;
+
+    const auto* Gameclear_logo = RM().GridAt(ResourceKeys::gameclear_logo, gridX, gridY);
+    if (Gameclear_logo)
+    {
+        // 拡大率(logoScale)を指定して描画
+        Gameclear_logo->Draw(logoPos, logoScale);
+    }
 }
 
 void GameClearScene::Render() const
@@ -55,4 +92,7 @@ void GameClearScene::Render() const
     {
         gameclear_character_2->Draw({ 0, 0 });
     }
+
+    // ゲームクリアロゴを描画
+    DrawGameClearUI();
 }

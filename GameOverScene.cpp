@@ -14,6 +14,10 @@ void GameOverScene::Init()
     isGameOverInput = false;
     isGameOverInputCount = 0;
 
+    // アニメーション用タイマーのリセット
+    logoAnimTimer = 0;
+    currentLogoIndex = 0;
+
     StartFadeIn();
 }
 
@@ -39,36 +43,38 @@ void GameOverScene::Update()
         SetNextScene(titleScene);
         StartFadeOut();
     }
+
+    // ロゴのアニメーションを更新（常にループ）
+    UpdateGameOverLogoAnimation();
+}
+
+void GameOverScene::UpdateGameOverLogoAnimation()
+{
+    logoAnimTimer++;
+    if (logoAnimTimer >= animFrameInterval)
+    {
+        logoAnimTimer = 0;
+        currentLogoIndex++;
+
+        // 総コマ数（26）を超えたら 0 に戻して永遠にループさせる
+        if (currentLogoIndex >= totalLogoFrames)
+        {
+            currentLogoIndex = 0;
+        }
+    }
 }
 
 void GameOverScene::DrawGameOverUI() const
 {
-    static int GameOverlogoTotalfram = 0;
-    static int GameOverlogoCountX = 0;
-    static int GameOverlogoCountY = 0;
+    // 現在のインデックスから X (列) と Y (行) を計算
+    int gridX = currentLogoIndex % logoColumns;
+    int gridY = currentLogoIndex / logoColumns;
 
-    // Gameover_logoのアニメーション計算
-    if (GameOverlogoCountX < 12 && GameOverlogoCountY < 5)
-    {
-        GameOverlogoTotalfram++;
-        GameOverlogoCountX++;
-        if (GameOverlogoCountX > 10)
-        {
-            GameOverlogoCountX = 0;
-            GameOverlogoCountY++;
-            if (GameOverlogoTotalfram == 26)
-            {
-                GameOverlogoCountX = 0;
-                GameOverlogoCountY = 0;
-                GameOverlogoTotalfram = 0;
-            }
-        }
-    }
-
-    const auto* Gameover_logo = RM().GridAt(ResourceKeys::gameover_logo, GameOverlogoCountX, GameOverlogoCountY);
+    const auto* Gameover_logo = RM().GridAt(ResourceKeys::gameover_logo, gridX, gridY);
     if (Gameover_logo)
     {
-        Gameover_logo->Draw({ 960, 540 });
+        // 拡大率(logoScale)を指定して描画
+        Gameover_logo->Draw(logoPos, logoScale);
     }
 }
 

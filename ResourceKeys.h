@@ -63,6 +63,7 @@ namespace ResourceKeys
 	inline constexpr const wchar_t* gameclear_background = L"gameclear_background";
 	inline constexpr const wchar_t* gameclear_character_1 = L"gameclear_character_1";
 	inline constexpr const wchar_t* gameclear_character_2 = L"gameclear_character_2";
+	inline constexpr const wchar_t* gameclear_logo = L"gameclear_logo";
 
 
     // ===== Game03 =====

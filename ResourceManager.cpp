@@ -33,6 +33,7 @@ void ResourceManager::LoadAll()
     LoadTextureAsSpriteLeftTop(ResourceKeys::gameclear_background, L"./Data/Images/gameclear_background.png");
     LoadTextureAsSpriteLeftTop(ResourceKeys::gameclear_character_1, L"./Data/Images/gameclear_character_1.png");
     LoadTextureAsSpriteLeftTop(ResourceKeys::gameclear_character_2, L"./Data/Images/gameclear_character_2.png");
+    LoadGridCenter(ResourceKeys::gameclear_logo, L"./Data/Images/gameclear_logo.png", { 0,0 }, { 10,3 }, { 496,165 });
 
 	LoadTextureAsSpriteLeftTop(ResourceKeys::gameover_background, L"./Data/Images/gameover_background.png");
 	LoadTextureAsSpriteLeftTop(ResourceKeys::gameover_character_1, L"./Data/Images/gameover_character_1.png");
