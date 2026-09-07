@@ -11,11 +11,17 @@ void GameContext::Init()
 	backgroundSpr = RM().GridAt(ResourceKeys::Background);
 	backgroundSpr2 = RM().GridAt(ResourceKeys::title_frame_2); 
 
+	Game_setumei_2 = RM().GridAt(ResourceKeys::game_setumei_2);
+
 	Game_start = RM().GridAt(ResourceKeys::game_start);
 	Gameover_background = RM().GridAt(ResourceKeys::gameover_background);
 	Gameover_character_1 = RM().GridAt(ResourceKeys::gameover_character_1);
 	Gameover_character_2 = RM().GridAt(ResourceKeys::gameover_character_2);
 	/*Gameover_logo = RM().GridAt(ResourceKeys::gameover_logo);*/
+
+	gameclear_background = RM().GridAt(ResourceKeys::gameclear_background);
+	gameclear_character_1 = RM().GridAt(ResourceKeys::gameclear_character_1);
+	gameclear_character_2 = RM().GridAt(ResourceKeys::gameclear_character_2);
 
 
 	playerHP = 3;
@@ -46,6 +52,8 @@ void GameContext::Reset()
 	sequenceTimer = 0.0f;
 
 	isGameOverInput = false;
+
+	isGameCleared = false; // ゲームクリアフラグをリセット
 }
 
 void GameContext::Update(bool& input)
@@ -101,7 +109,7 @@ void GameContext::Update(bool& input)
 		sequenceState = SequenceState::Explanation;
 		sequenceTimer = 0.0f;
 	}
-	if (!(playerHP < 0)) {
+	if (!(playerHP < 1)) {
 		// 各ゲームの更新
 		switch (Isinit)
 		{
@@ -122,10 +130,12 @@ void GameContext::Update(bool& input)
 		}
 	}
 
-	if(playerHP < 0)
+	using namespace DxPlus::Input;
+	int bottom = GetButtonDown(PLAYER1);
+
+	if(playerHP < 1)
 	{
-		using namespace DxPlus::Input;
-		int bottom = GetButtonDown(PLAYER1);
+		
 		if (bottom & BUTTON_START || bottom & BUTTON_TRIGGER2)
 		{
 			isGameOverInput = true;
@@ -147,6 +157,33 @@ void GameContext::Update(bool& input)
 
 		}
 
+	}
+
+	if (Isinit == GameNamber::Game_3 && totalScore >= 10)
+	{
+		isGameCleared = true; // ゲームクリアフラグを立てる
+
+		if (bottom & BUTTON_START || bottom & BUTTON_TRIGGER2)
+		{
+			isGameClearInput = true;
+			isGameClearInputCount++;
+		}
+		else if (isGameClearInput)
+		{
+			isGameClearInput = false;
+		}
+
+		if (isGameClearInputCount == isGameClearInputMax)
+		{
+			//タイトル画面(TitleScene)に戻る
+			input = true;
+			totalScore = 0;
+
+			// ゲームオーバー入力カウントをリセット
+
+			isGameClearInputCount = 0;
+
+		}
 	}
 }
 
@@ -240,7 +277,7 @@ void GameContext::DrawSequenceUI() const
 	{
 	case SequenceState::Explanation:
 	{
-		if (Game_setumei_2) Game_setumei_2->Draw(EXPLANATION_POS);
+		if (Game_setumei_2) Game_setumei_2->Draw({0,0});
 	}
 	break;
 
@@ -292,15 +329,15 @@ void GameContext::Draw() const
 	default:
 		break;
 	}
-	DrawSequenceUI();
+
 
 	// 最前面に演出画像を描画
-
+	DrawSequenceUI();
 	backgroundSpr2->Draw({ 0, 0 });
 	DrawTimer();
 	DrawHP();
 
-	if(playerHP < 0)
+	if(playerHP  < 1)
 	{
 		backgroundSpr->Draw({});
 		backgroundSpr2->Draw({ 0, 0 });
@@ -317,5 +354,24 @@ void GameContext::Draw() const
 		/*DrawGameOverLogo();*/
 		
 	}
+
+	if (isGameCleared)
+	{
+		backgroundSpr->Draw({});
+		backgroundSpr2->Draw({ 0, 0 });
+		gameclear_background->Draw({ 0, 0 });
+
+		if(isGameClearInput == false)
+		{
+			gameclear_character_1->Draw({ 0, 0 });
+		}
+		if(isGameClearInput)
+		{
+			gameclear_character_2->Draw({ 0, 0 });
+		}
+	
+	}
+
+	
 
 }

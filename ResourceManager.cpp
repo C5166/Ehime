@@ -27,6 +27,11 @@ void ResourceManager::LoadAll()
     LoadGridCenter(ResourceKeys::number_countdown_b, L"./Data/Images/number_countdown_b.png", { 0,0 }, { 10,1 }, { 180,126 });
     LoadGridCenter(ResourceKeys::number_countdown_321, L"./Data/Images/number_countdown_321.png", { 0,0 }, { 10,18 }, { 180,126 });
 
+	//GameClearの画像
+    LoadTextureAsSpriteLeftTop(ResourceKeys::gameclear_background, L"./Data/Images/gameclear_background.png");
+    LoadTextureAsSpriteLeftTop(ResourceKeys::gameclear_character_1, L"./Data/Images/gameclear_character_1.png");
+    LoadTextureAsSpriteLeftTop(ResourceKeys::gameclear_character_2, L"./Data/Images/gameclear_character_2.png");
+
 	LoadTextureAsSpriteLeftTop(ResourceKeys::gameover_background, L"./Data/Images/gameover_background.png");
 	LoadTextureAsSpriteLeftTop(ResourceKeys::gameover_character_1, L"./Data/Images/gameover_character_1.png");
 	LoadTextureAsSpriteLeftTop(ResourceKeys::gameover_character_2, L"./Data/Images/gameover_character_2.png");

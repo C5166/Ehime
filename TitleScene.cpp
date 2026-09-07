@@ -32,6 +32,7 @@ void TitleScene::Update()
         {
             Scene* gameScene = SceneManager::GetInstance().GetScene(SceneID::Game);
             SetNextScene(gameScene);
+			TenCount = 0;
             StartFadeOut();
 		}
 

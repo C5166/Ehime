@@ -101,4 +101,19 @@ private:
 	int isGameOverInputCount{ 0 };//ゲームオーバーのときボタンを押す回数
 
 	int isGameOverInputMax{ 10 };//ゲームオーバーのときボタンを押す回数の最大値
+
+	//GameClear
+
+    bool isGameCleared{ false }; // ゲームクリアフラグ
+
+	bool isGameClearInput{ false }; // ゲームクリア時の入力フラグ
+
+	int isGameClearInputCount{ 0 }; // ゲームクリア時の入力カウント
+
+	int isGameClearInputMax{ 10 }; // ゲームクリア時の入力カウント最大値
+
+    const DxPlus::Sprite::SpriteBase* gameclear_background{ nullptr };
+    const DxPlus::Sprite::SpriteBase* gameclear_character_1{ nullptr };
+    const DxPlus::Sprite::SpriteBase* gameclear_character_2{ nullptr };
+
 };
