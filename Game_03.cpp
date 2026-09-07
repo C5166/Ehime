@@ -70,12 +70,20 @@ void Game_03::Init()
 
     perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
 
-    Reset();
+
+    setumeivoice = RM().GetSound(ResourceKeys::SE_GameVoice1);
+
+    //Reset();
 }
 
 void Game_03::Reset()
 {
     SpawnBalls();
+
+    if (setumeivoice >= 0)
+    {
+        DxLib::PlaySoundMem(setumeivoice, DX_PLAYTYPE_BACK);
+    }
 }
 
 void Game_03::SpawnBalls()
@@ -135,7 +143,7 @@ void Game_03::Update(int& hp, int& score)
         PlaySoundMem(poti, DX_PLAYTYPE_BACK);
         DxLib::GetMousePoint(&mouseX, &mouseY);
     }
-
+    
     // 1. 位置更新 ＆ 画面端バウンド
     for (auto& ball : balls)
     {
@@ -199,6 +207,7 @@ void Game_03::Update(int& hp, int& score)
 
 void Game_03::Draw(int hp, int score) const
 {
+
     for (const auto& ball : balls)
     {
         if (!ball.active) continue;

@@ -25,6 +25,8 @@ void Game_00::Init()
     good[2] = RM().GetSound(ResourceKeys::SE_GoodVoice3);
 
 	perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
+
+    setumeivoice = RM().GetSound(ResourceKeys::SE_GameVoice1);
 }
 
 // --- JSON へ保存 ---

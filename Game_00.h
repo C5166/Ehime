@@ -54,4 +54,6 @@ private:
     int good[3];
 
     int perfect;
+
+    int setumeivoice;
 };

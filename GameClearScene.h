@@ -21,4 +21,11 @@ private:
     const DxPlus::Sprite::SpriteBase* gameclear_background{ nullptr };
     const DxPlus::Sprite::SpriteBase* gameclear_character_1{ nullptr };
     const DxPlus::Sprite::SpriteBase* gameclear_character_2{ nullptr };
+
+    int voice;
+
+    int  touch[5];
+    int poti;
+    int kirakira;
+    int a = 0;
 };

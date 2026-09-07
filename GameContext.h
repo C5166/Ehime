@@ -93,6 +93,7 @@ private:
 
     int gamestart;
 
+
     // --- ‰‰oŠÇ——p•Ï” ---
     SequenceState sequenceState{ SequenceState::Explanation };
     float sequenceTimer{ 0.0f };

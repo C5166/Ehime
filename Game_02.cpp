@@ -87,6 +87,8 @@ void Game_02::Init()
 
     perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
 
+    setumeivoice = RM().GetSound(ResourceKeys::SE_GameVoice2);
+
 }
 
 void Game_02::Reset()
