@@ -6,10 +6,39 @@
 #include <cstdlib>
 #include <cmath>
 #include <string>
+#include <fstream>
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
 
 void Game_00::Init()
 {
     Reset();
+    LoadFromFile();
+}
+
+// --- JSON へ保存 ---
+void Game_00::SaveToFile(const std::string& filename)
+{
+    json j = subjects; // nlohmann/json が自動で vector<Object> を配列化
+    std::ofstream file(filename);
+    if (file.is_open())
+    {
+        file << j.dump(4); // インデント幅4で読みやすく保存
+    }
+}
+
+// --- JSON から読み込み ---
+void Game_00::LoadFromFile(const std::string& filename)
+{
+    std::ifstream file(filename);
+    if (file.is_open())
+    {
+        json j;
+        file >> j;
+        subjects = j.get<std::vector<Object>>();
+        selectedObjectIndex = -1; // 選択状態をリセット
+    }
 }
 
 void Game_00::Reset()
@@ -18,6 +47,7 @@ void Game_00::Reset()
     shutterAnimTimer = 0.0f;
     flashAlpha = 0;
     selectedObjectIndex = -1;
+    isCameraLocked = false;
 
     subjects.clear();
 
@@ -82,11 +112,45 @@ void Game_00::Update(int& hp, int& score)
 
     using namespace DxPlus::Input;
 
+    // --- 【デバッグ機能】右クリックでカメラ追従の ON / OFF 切り替え ---
+    // 右クリックが押された瞬間を判定 (ImGui操作上でない場合のみ)
+    int mouseButton = GetButtonDown(PLAYER1); // または DxLib::GetMouseInput()
+    static bool prevRightMouse = false;
+    bool isRightMousePressed = (DxLib::GetMouseInput() & MOUSE_INPUT_RIGHT) != 0;
+
+    if (isRightMousePressed && !prevRightMouse)
+    {
+        // ImGuiのウィンドウ操作中でなければカメラのロック状態を反転
+        if (!ImGui::GetIO().WantCaptureMouse)
+        {
+            isCameraLocked = !isCameraLocked;
+        }
+    }
+    prevRightMouse = isRightMousePressed;
+
+
     // --- カメラ操作 ---
+    // WASDキー移動は常時可能にしておく場合
     if (DxLib::CheckHitKey(KEY_INPUT_W)) cameraPos.y -= cameraSpeed;
     if (DxLib::CheckHitKey(KEY_INPUT_S)) cameraPos.y += cameraSpeed;
     if (DxLib::CheckHitKey(KEY_INPUT_A)) cameraPos.x -= cameraSpeed;
     if (DxLib::CheckHitKey(KEY_INPUT_D)) cameraPos.x += cameraSpeed;
+
+    // カメラがロック（固定）されていない場合のみマウスに追従させる
+    if (!isCameraLocked && !ImGui::GetIO().WantCaptureMouse)
+    {
+        int mouseX = 0, mouseY = 0;
+        DxLib::GetMousePoint(&mouseX, &mouseY);
+        static int prevMouseX = mouseX, prevMouseY = mouseY;
+
+        if (mouseX != prevMouseX || mouseY != prevMouseY)
+        {
+            cameraPos.x = static_cast<float>(mouseX);
+            cameraPos.y = static_cast<float>(mouseY);
+            prevMouseX = mouseX;
+            prevMouseY = mouseY;
+        }
+    }
 
     // カメラ枠制限
     if (cameraPos.x < cameraSize.x * 0.5f) cameraPos.x = cameraSize.x * 0.5f;
@@ -250,6 +314,18 @@ void Game_00::DrawImGui()
             ImGui::EndPopup();
         }
 
+        // 保存・読み込みボタンを追加
+        if (ImGui::Button("Save Scene"))
+        {
+            SaveToFile();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Load Scene"))
+        {
+            LoadFromFile();
+        }
+        ImGui::Separator();
+
         ImGui::PopID();
     }
 
@@ -389,3 +465,4 @@ void Game_00::DrawGizmo(Object& obj)
         }
     }
 }
+

@@ -17,6 +17,9 @@ public:
     // ImGui 用 UI・ギズモの描画関数（SceneManager や DebugInspector の ImGui 描画部から呼び出す）
     void DrawImGui();
 
+    void SaveToFile(const std::string& filename = "scene_game00.json");
+    void LoadFromFile(const std::string& filename = "scene_game00.json");
+
 private:
     std::vector<Object> subjects;
     int selectedObjectIndex{ -1 }; // 選択中のオブジェクトのインデックス（-1は未選択）
@@ -41,4 +44,6 @@ private:
 
     // 2D ギズモ描画・操作処理
     void DrawGizmo(Object& obj);
+
+    bool isCameraLocked{ false };
 };

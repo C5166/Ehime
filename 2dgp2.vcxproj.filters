@@ -52,6 +52,9 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{5d342dfd-a1ce-4ec2-a2c7-41b49800183c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="nlohmann">
+      <UniqueIdentifier>{002d5246-a054-4fd3-8f48-5f1af65bb157}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DxPlus\Debug.h">
@@ -150,9 +153,6 @@
     <ClInclude Include="Game_00.h">
       <Filter>40_Gameplay\Actors</Filter>
     </ClInclude>
-    <ClInclude Include="Game_01.h">
-      <Filter>40_Gameplay\Actors</Filter>
-    </ClInclude>
     <ClInclude Include="Game_02.h">
       <Filter>40_Gameplay\Actors</Filter>
     </ClInclude>
@@ -206,6 +206,16 @@
     </ClInclude>
     <ClInclude Include="imgui\ImZoomSlider.h">
       <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimClipRef.h" />
+    <ClInclude Include="DebugInspector.h" />
+    <ClInclude Include="imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="imgui\imgui_impl_win32.h" />
+    <ClInclude Include="nlohmann\json.hpp">
+      <Filter>nlohmann</Filter>
+    </ClInclude>
+    <ClInclude Include="nlohmann\json_fwd.hpp">
+      <Filter>nlohmann</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -278,9 +288,6 @@
     <ClCompile Include="Game_00.cpp">
       <Filter>40_Gameplay\Actors</Filter>
     </ClCompile>
-    <ClCompile Include="Game_01.cpp">
-      <Filter>40_Gameplay\Actors</Filter>
-    </ClCompile>
     <ClCompile Include="Game_02.cpp">
       <Filter>40_Gameplay\Actors</Filter>
     </ClCompile>
@@ -317,5 +324,9 @@
     <ClCompile Include="imgui\ImVectorEditor.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="AnimClipRef.cpp" />
+    <ClCompile Include="DebugInspector.cpp" />
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="imgui\imgui_impl_win32.cpp" />
   </ItemGroup>
 </Project>

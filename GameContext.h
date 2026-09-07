@@ -43,6 +43,7 @@ public:
     // ゲッターを追加
     Game_00& GetGame00() { return game_00; }
 
+
 private:
     // --- 【設定】演出位置・表示時間 ---
     const float EXPLANATION_DURATION = 2.0f; // 説明表示時間(秒)
