@@ -51,8 +51,39 @@ void TitleScene::Init()
 void TitleScene::Update()
 {
     using namespace DxPlus::Input;
+
+    // --- デバッグ用パラメータ調整操作 ---
+    // [UP / DOWN]: キャラクター判定半径の変更
+    if (DxLib::CheckHitKey(KEY_INPUT_UP))   characterRadius += 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_DOWN)) characterRadius = (std::max)(1.0f, characterRadius - 1.0f);
+
+    // [RIGHT / LEFT]: マウス判定半径の変更
+    if (DxLib::CheckHitKey(KEY_INPUT_RIGHT)) mouseCollisionRadius += 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_LEFT))  mouseCollisionRadius = (std::max)(1.0f, mouseCollisionRadius - 1.0f);
+
+    // [W / S / A / D]: キャラクター判定円の中心位置の調整
+    if (DxLib::CheckHitKey(KEY_INPUT_W)) characterOffsetY -= 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_S)) characterOffsetY += 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_A)) characterOffsetX -= 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_D)) characterOffsetX += 1.0f;
+
+    // --- クリック・決定処理 ---
     if (GetButtonDown(PLAYER1) & BUTTON_START || GetButtonDown(PLAYER1) & BUTTON_TRIGGER2)
     {
+        int mouseX = 0, mouseY = 0;
+        DxLib::GetMousePoint(&mouseX, &mouseY);
+
+        // オフセットを加味したキャラ判定位置
+        float targetCenterX = characterX + characterOffsetX;
+        float targetCenterY = characterY + characterOffsetY;
+
+        // 円の範囲外をクリックした場合はカウントしない
+        if (!CheckMouseCircleCollision(mouseX, mouseY, mouseCollisionRadius, targetCenterX, targetCenterY, characterRadius))
+        {
+            return;
+        }
+
+        // --- 以下、円内クリック成功時の処理 ---
         PlaySoundMem(poti, DX_PLAYTYPE_BACK);
         if (TenCount == 10)
         {
@@ -138,18 +169,39 @@ void TitleScene::Render() const
         bgSprite->Draw({ 0, 0 });
     }
 
+    // キャラクター本体描画
     if (isTitleInput)
     {
-        if (title_character2) title_character2->Draw({ 960, 540 });
+        if (title_character2) title_character2->Draw({ characterX, characterY });
     }
     else
     {
-        if (title_character) title_character->Draw({ 960, 540 });
+        if (title_character) title_character->Draw({ characterX, characterY });
     }
 
-    int mouseX = 0;
-    int mouseY = 0;
+    int mouseX = 0, mouseY = 0;
     DxLib::GetMousePoint(&mouseX, &mouseY);
+
+    // 判定円の実際の中心位置
+    float targetCenterX = characterX + characterOffsetX;
+    float targetCenterY = characterY + characterOffsetY;
+
+    // 当たり判定チェック
+    bool isHit = CheckMouseCircleCollision(mouseX, mouseY, mouseCollisionRadius, targetCenterX, targetCenterY, characterRadius);
+
+    // 接触時は黄色円を赤色に変化
+    unsigned int charCircleColor = isHit ? DxLib::GetColor(255, 0, 0) : DxLib::GetColor(255, 255, 0);
+
+    // --- 当たり判定ガイドライン（円）の描画 ---
+    /*DxLib::DrawCircle(static_cast<int>(targetCenterX), static_cast<int>(targetCenterY), static_cast<int>(characterRadius), charCircleColor, FALSE);
+    DxLib::DrawCircle(mouseX, mouseY, static_cast<int>(mouseCollisionRadius), DxLib::GetColor(0, 255, 0), FALSE);*/
+
+    // --- 調整値ガイドライン情報描画 ---
+   /* int white = DxLib::GetColor(255, 255, 255);
+    DxLib::DrawFormatString(10, 10, charCircleColor, L"Hit: %s (Count: %d / 10)", isHit ? L"HIT!" : L"OUT", TenCount);
+    DxLib::DrawFormatString(10, 30, white, L"Char Radius [UP/DOWN]: %.1f", characterRadius);
+    DxLib::DrawFormatString(10, 50, white, L"Mouse Radius [LEFT/RIGHT]: %.1f", mouseCollisionRadius);
+    DxLib::DrawFormatString(10, 70, white, L"Char Offset [W/A/S/D]: X:%.1f, Y:%.1f", characterOffsetX, characterOffsetY);*/
 
     // マウス左ボタンが押されているか判定
     bool isClicking = (DxLib::GetMouseInput() & MOUSE_INPUT_LEFT) != 0;
@@ -163,12 +215,12 @@ void TitleScene::Render() const
         int handle = sprite->GetID();
         if (handle != -1)
         {
-            DxLib::DrawGraph(mouseX-35, mouseY-10, handle, TRUE);
+            DxLib::DrawGraph(mouseX - 52, mouseY - 50, handle, TRUE);
         }
     }
 }
 
 void TitleScene::Draw() const
 {
-    
+
 }

@@ -8,6 +8,9 @@
 
 void GameScene::Init()
 {
+    // OS標準のマウスカーソルを非表示にする
+    DxLib::SetMouseDispFlag(FALSE);
+
     DxLib::SetBackgroundColor(64, 64, 128);
     gameContext->Reset();
 
@@ -19,14 +22,23 @@ void GameScene::Init()
         DxLib::PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
     }
 
-	isGameOverInput = false;
+    isGameOverInput = false;
 
     StartFadeIn();
 }
 
 void GameScene::Update()
 {
-	gameContext->Update(isGameOverInput);
+    // --- デバッグ用パラメータ調整操作 ---
+    // [UP / DOWN]: マウス描画サイズ（スケール）の変更
+    if (DxLib::CheckHitKey(KEY_INPUT_UP))   mouseScale += 0.05f;
+    if (DxLib::CheckHitKey(KEY_INPUT_DOWN)) mouseScale = (std::max)(0.1f, mouseScale - 0.05f);
+
+    // [RIGHT / LEFT]: マウス判定半径の変更
+    if (DxLib::CheckHitKey(KEY_INPUT_RIGHT)) mouseCollisionRadius += 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_LEFT))  mouseCollisionRadius = (std::max)(1.0f, mouseCollisionRadius - 1.0f);
+
+    gameContext->Update(isGameOverInput);
 
     using namespace DxPlus::Input;
     int buttonDown = GetButtonDown(PLAYER1);
@@ -57,6 +69,14 @@ void GameScene::Render() const
     int mouseY = 0;
     DxLib::GetMousePoint(&mouseX, &mouseY);
 
+    // --- 当たり判定ガイドライン（緑の円）の描画 ---
+ /*   DxLib::DrawCircle(mouseX, mouseY, static_cast<int>(mouseCollisionRadius), DxLib::GetColor(0, 255, 0), FALSE);*/
+
+    // --- デバッグ情報描画 ---
+  /*  int white = DxLib::GetColor(255, 255, 255);
+    DxLib::DrawFormatString(10, 10, white, L"Mouse Scale [UP/DOWN]: %.2f", mouseScale);
+    DxLib::DrawFormatString(10, 30, white, L"Mouse Radius [LEFT/RIGHT]: %.1f", mouseCollisionRadius);*/
+
     // マウス左ボタンが押されているか判定
     bool isClicking = (DxLib::GetMouseInput() & MOUSE_INPUT_LEFT) != 0;
 
@@ -69,7 +89,8 @@ void GameScene::Render() const
         int handle = sprite->GetID();
         if (handle != -1)
         {
-            DxLib::DrawGraph(mouseX - 35, mouseY - 10, handle, TRUE);
+            // スケールを指定して中心位置基準で回転・拡大縮小描画
+            DxLib::DrawRotaGraph(mouseX, mouseY, static_cast<double>(mouseScale), 0.0, handle, TRUE);
         }
     }
 }

@@ -74,7 +74,6 @@ namespace ResourceKeys
 	inline constexpr const wchar_t* gameclear_character_2 = L"gameclear_character_2";
 	inline constexpr const wchar_t* gameclear_logo = L"gameclear_logo";
 
-
     // ===== Game03 =====
 	inline constexpr const wchar_t* game_1_heart_1 = L"game_1_heart_1";
 	inline constexpr const wchar_t* game_1_heart_2 = L"game_1_heart_2";
@@ -108,9 +107,12 @@ namespace ResourceKeys
 	inline constexpr const wchar_t* game_setumei_14 = L"game_setumei_14";
 	inline constexpr const wchar_t* game_setumei_15 = L"game_setumei_15";
 
+	inline constexpr const wchar_t* game_stage_1 = L"game_stage_1";
+	inline constexpr const wchar_t* game_stage_2 = L"game_stage_2";
+
 	// ===== Transition =====
-	inline constexpr const wchar_t* transition_1 = L"transition_1"; // フェードイン用
-	inline constexpr const wchar_t* transition_2 = L"transition_2"; // フェードアウト用
+	//inline constexpr const wchar_t* transition_1 = L"transition_1"; // フェードイン用
+	//inline constexpr const wchar_t* transition_2 = L"transition_2"; // フェードアウト用
 
     // ===== Fonts =====
     inline constexpr const wchar_t* Font_Title = L"Bitcount Light";

@@ -5,6 +5,9 @@
 
 void GameOverScene::Init()
 {
+    // OS標準のマウスカーソルを非表示にする
+    DxLib::SetMouseDispFlag(FALSE);
+
     backgroundSpr = RM().GridAt(ResourceKeys::Background);
     backgroundSpr2 = RM().GridAt(ResourceKeys::title_frame_2);
     gameover_background = RM().GridAt(ResourceKeys::gameover_background);
@@ -13,7 +16,6 @@ void GameOverScene::Init()
 
     // Reset game context once when entering GameOverScene (avoid per-frame reset)
     gameContext.Reset();
-
 
     touch[0] = RM().GetSound(ResourceKeys::SE_TouchVoice1);
     touch[1] = RM().GetSound(ResourceKeys::SE_TouchVoice2);
@@ -24,16 +26,16 @@ void GameOverScene::Init()
     poti = RM().GetSound(ResourceKeys::SE_poti);
     kirakira = RM().GetSound(ResourceKeys::SE_kirakira);
 
-
-	voice = RM().GetSound(ResourceKeys::SE_GameOverVoice);
+    voice = RM().GetSound(ResourceKeys::SE_GameOverVoice);
     isGameOverInput = false;
     isGameOverInputCount = 0;
+    a = 0;
 
     // アニメーション用タイマーのリセット
     logoAnimTimer = 0;
     currentLogoIndex = 0;
 
-	bgm = RM().GetMusic(ResourceKeys::SE_GameOver);
+    bgm = RM().GetMusic(ResourceKeys::SE_GameOver);
     if (bgm >= 0)
     {
         PlaySoundMem(voice, DX_PLAYTYPE_BACK);
@@ -47,19 +49,44 @@ void GameOverScene::Init()
 void GameOverScene::Update()
 {
     using namespace DxPlus::Input;
+
+    // --- デバッグ用パラメータ調整操作 ---
+    if (DxLib::CheckHitKey(KEY_INPUT_UP))   characterRadius += 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_DOWN)) characterRadius = (std::max)(1.0f, characterRadius - 1.0f);
+
+    if (DxLib::CheckHitKey(KEY_INPUT_RIGHT)) mouseCollisionRadius += 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_LEFT))  mouseCollisionRadius = (std::max)(1.0f, mouseCollisionRadius - 1.0f);
+
+    if (DxLib::CheckHitKey(KEY_INPUT_W)) characterOffsetY -= 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_S)) characterOffsetY += 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_A)) characterOffsetX -= 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_D)) characterOffsetX += 1.0f;
+
     int buttonDown = GetButtonDown(PLAYER1);
 
     if (buttonDown & BUTTON_START || buttonDown & BUTTON_TRIGGER2)
     {
-        if(isGameOverInputCount<= isGameOverInputMax)
+        int mouseX = 0, mouseY = 0;
+        DxLib::GetMousePoint(&mouseX, &mouseY);
+
+        float targetCenterX = characterX + characterOffsetX;
+        float targetCenterY = characterY + characterOffsetY;
+
+        // 円の当たり判定外の場合は入力を受け付けない
+        if (!CheckMouseCircleCollision(mouseX, mouseY, mouseCollisionRadius, targetCenterX, targetCenterY, characterRadius))
+        {
+            return;
+        }
+
+        if (isGameOverInputCount <= isGameOverInputMax)
+        {
+            a++;
+            PlaySoundMem(touch[a], DX_PLAYTYPE_BACK);
+            if (a >= 4)
             {
-                a++;
-                PlaySoundMem(touch[a], DX_PLAYTYPE_BACK);
-                if (a >= 4)
-                {
-                    a = 0;
-                }
+                a = 0;
             }
+        }
 
         isGameOverInput = true;
         isGameOverInputCount++;
@@ -68,7 +95,7 @@ void GameOverScene::Update()
     {
         isGameOverInput = false;
     }
-    
+
     // カウント上限に達したら TitleScene へ遷移
     if (isGameOverInputCount >= isGameOverInputMax)
     {
@@ -99,7 +126,6 @@ void GameOverScene::UpdateGameOverLogoAnimation()
             currentLogoIndex = 0;
         }
     }
-
 }
 
 void GameOverScene::DrawGameOverUI() const
@@ -138,6 +164,27 @@ void GameOverScene::Render() const
     int mouseY = 0;
     DxLib::GetMousePoint(&mouseX, &mouseY);
 
+    // 判定円の実際の中心位置
+    float targetCenterX = characterX + characterOffsetX;
+    float targetCenterY = characterY + characterOffsetY;
+
+    // 当たり判定チェック
+    bool isHit = CheckMouseCircleCollision(mouseX, mouseY, mouseCollisionRadius, targetCenterX, targetCenterY, characterRadius);
+
+    // 接触時は判定円の色を変更
+    unsigned int charCircleColor = isHit ? DxLib::GetColor(255, 0, 0) : DxLib::GetColor(255, 255, 0);
+
+    // --- 当たり判定ガイドライン（円）の描画 ---
+   /* DxLib::DrawCircle(static_cast<int>(targetCenterX), static_cast<int>(targetCenterY), static_cast<int>(characterRadius), charCircleColor, FALSE);
+    DxLib::DrawCircle(mouseX, mouseY, static_cast<int>(mouseCollisionRadius), DxLib::GetColor(0, 255, 0), FALSE);*/
+
+    // --- 調整値ガイドライン情報描画 ---
+   /* int white = DxLib::GetColor(255, 255, 255);
+    DxLib::DrawFormatString(10, 10, charCircleColor, L"Hit: %s (Count: %d / %d)", isHit ? L"HIT!" : L"OUT", isGameOverInputCount, isGameOverInputMax);
+    DxLib::DrawFormatString(10, 30, white, L"Char Radius [UP/DOWN]: %.1f", characterRadius);
+    DxLib::DrawFormatString(10, 50, white, L"Mouse Radius [LEFT/RIGHT]: %.1f", mouseCollisionRadius);
+    DxLib::DrawFormatString(10, 70, white, L"Char Offset [W/A/S/D]: X:%.1f, Y:%.1f", characterOffsetX, characterOffsetY);*/
+
     // マウス左ボタンが押されているか判定
     bool isClicking = (DxLib::GetMouseInput() & MOUSE_INPUT_LEFT) != 0;
 
@@ -150,7 +197,7 @@ void GameOverScene::Render() const
         int handle = sprite->GetID();
         if (handle != -1)
         {
-            DxLib::DrawGraph(mouseX - 35, mouseY - 10, handle, TRUE);
+            DxLib::DrawGraph(mouseX - 52, mouseY - 50, handle, TRUE);
         }
     }
 }

@@ -25,8 +25,8 @@ void ResourceManager::LoadAll()
     LoadGridCenter(ResourceKeys::number_countdown_b, L"./Data/Images/number_countdown_b.png", { 0,0 }, { 10,1 }, { 180,126 });
     LoadGridCenter(ResourceKeys::number_countdown_321, L"./Data/Images/number_countdown_321.png", { 0,0 }, { 10,18 }, { 180,126 });
 
-    LoadGridLeftTop(ResourceKeys::transition_1, L"./Data/Images/transition_2.png", { 0, 0 }, { 10, 2 }, { 768, 432 });
-    LoadGridLeftTop(ResourceKeys::transition_2, L"./Data/Images/transition_1.png", { 0, 0 }, { 10, 2 }, { 768, 432 });
+   /* LoadGridLeftTop(ResourceKeys::transition_1, L"./Data/Images/transition_2.png", { 0, 0 }, { 10, 2 }, { 768, 432 });
+    LoadGridLeftTop(ResourceKeys::transition_2, L"./Data/Images/transition_1.png", { 0, 0 }, { 10, 2 }, { 768, 432 });*/
 
     LoadTextureAsSpriteLeftTop(ResourceKeys::cursor_1, L"./Data/Images/cursor_1.png");
     LoadTextureAsSpriteLeftTop(ResourceKeys::cursor_2, L"./Data/Images/cursor_2.png");
@@ -82,6 +82,9 @@ void ResourceManager::LoadAll()
 	LoadTextureAsSpriteCenter(ResourceKeys::game_3_kesi1, L"./Data/Images/game_3_kesi1.png");
 	LoadTextureAsSpriteCenter(ResourceKeys::game_3_kesi2, L"./Data/Images/game_3_kesi2.png");
 	LoadTextureAsSpriteCenter(ResourceKeys::game_3_kesi3, L"./Data/Images/game_3_kesi3.png");
+
+    LoadGridCenter(ResourceKeys::game_stage_1, L"./Data/Images/game_stage_2.png", { 0, 0 }, { 10, 3 }, { 100, 100 });
+    LoadGridCenter(ResourceKeys::game_stage_2, L"./Data/Images/game_stage_1.png", { 0, 0 }, { 10, 3 }, { 100, 100 });
 
     LoadMusic(ResourceKeys::BGM_Game,       L"./Data/Sounds/sanjinooyatsu.mp3");
     LoadMusic(ResourceKeys::SE_GameOver,       L"./Data/Sounds/bgm_gameover.mp3");

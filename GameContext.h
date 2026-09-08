@@ -70,6 +70,8 @@ private:
     void SetupCurrentGame();
     void AdvanceToNextGame(bool perfectAchieved);
 
+    void DrawStageProgress() const;
+
     const DxPlus::Sprite::SpriteBase* backgroundSpr{ nullptr };
     const DxPlus::Sprite::SpriteBase* backgroundSpr2{ nullptr };
     const DxPlus::Sprite::SpriteBase* Game_start123{ nullptr };
@@ -110,7 +112,7 @@ private:
     int totalScore{ 0 };
 
     const float GAME_TIME_LIMIT{ 10.0f };
-    const float TIME_SPEED_RATE{ 1.0f };
+    const float TIME_SPEED_RATE{ 0.5f };
     float timer{ 10.0f };
 
     int gamestart;
@@ -122,4 +124,7 @@ private:
 
     SequenceState sequenceState{ SequenceState::Explanation };
     float sequenceTimer{ 0.0f };
+
+    const DxPlus::Vec2 STAGE_PROGRESS_POS = { 760.0f, 1020.0f }; // 開始基準座標
+    const float STAGE_PROGRESS_OFFSET_X = 100.0f;              // アイコン間隔
 };

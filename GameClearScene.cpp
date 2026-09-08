@@ -44,10 +44,35 @@ void GameClearScene::Init()
 void GameClearScene::Update()
 {
     using namespace DxPlus::Input;
+
+    // --- デバッグ用パラメータ調整操作 ---
+    if (DxLib::CheckHitKey(KEY_INPUT_UP))   characterRadius += 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_DOWN)) characterRadius = (std::max)(1.0f, characterRadius - 1.0f);
+
+    if (DxLib::CheckHitKey(KEY_INPUT_RIGHT)) mouseCollisionRadius += 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_LEFT))  mouseCollisionRadius = (std::max)(1.0f, mouseCollisionRadius - 1.0f);
+
+    if (DxLib::CheckHitKey(KEY_INPUT_W)) characterOffsetY -= 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_S)) characterOffsetY += 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_A)) characterOffsetX -= 1.0f;
+    if (DxLib::CheckHitKey(KEY_INPUT_D)) characterOffsetX += 1.0f;
+
     int buttonDown = GetButtonDown(PLAYER1);
 
     if (buttonDown & BUTTON_START || buttonDown & BUTTON_TRIGGER2)
     {
+        int mouseX = 0, mouseY = 0;
+        DxLib::GetMousePoint(&mouseX, &mouseY);
+
+        float targetCenterX = characterX + characterOffsetX;
+        float targetCenterY = characterY + characterOffsetY;
+
+        // 円の判定外をクリックした場合は処理しない
+        if (!CheckMouseCircleCollision(mouseX, mouseY, mouseCollisionRadius, targetCenterX, targetCenterY, characterRadius))
+        {
+            return;
+        }
+
         if (isGameClearInputCount <= isGameClearInputMax)
         {
             a++;
@@ -57,6 +82,7 @@ void GameClearScene::Update()
                 a = 0;
             }
         }
+
         isGameClearInput = true;
         isGameClearInputCount++;
     }
@@ -65,9 +91,10 @@ void GameClearScene::Update()
         isGameClearInput = false;
     }
 
-    // カウント上限に達したら TitleScene へ遷移
+    // カウント上限達成でタイトルシーンへ遷移
     if (isGameClearInputCount >= isGameClearInputMax)
     {
+        DxLib::StopSoundMem(bgm);
         Scene* titleScene = SceneManager::GetInstance().GetScene(SceneID::Title);
         SetNextScene(titleScene);
         StartFadeOut();
@@ -76,7 +103,6 @@ void GameClearScene::Update()
         }
     }
 
-    // ロゴのアニメーションを更新（常にループ）
     UpdateGameClearLogoAnimation();
 }
 
@@ -88,7 +114,6 @@ void GameClearScene::UpdateGameClearLogoAnimation()
         logoAnimTimer = 0;
         currentLogoIndex++;
 
-        // 総コマ数（21コマ）を超えたら 0 に戻してループさせる
         if (currentLogoIndex >= totalLogoFrames)
         {
             currentLogoIndex = 0;
@@ -98,14 +123,13 @@ void GameClearScene::UpdateGameClearLogoAnimation()
 
 void GameClearScene::DrawGameClearUI() const
 {
-    // 現在のインデックスから X (列) と Y (行) を計算
     int gridX = currentLogoIndex % logoColumns;
     int gridY = currentLogoIndex / logoColumns;
 
     const auto* Gameclear_logo = RM().GridAt(ResourceKeys::gameclear_logo, gridX, gridY);
+
     if (Gameclear_logo)
     {
-        // 拡大率(logoScale)を指定して描画
         Gameclear_logo->Draw(logoPos, logoScale);
     }
 }
@@ -125,17 +149,35 @@ void GameClearScene::Render() const
         gameclear_character_2->Draw({ 0, 0 });
     }
 
-    // ゲームクリアロゴを描画
     DrawGameClearUI();
 
     int mouseX = 0;
     int mouseY = 0;
     DxLib::GetMousePoint(&mouseX, &mouseY);
 
-    // マウス左ボタンが押されているか判定
-    bool isClicking = (DxLib::GetMouseInput() & MOUSE_INPUT_LEFT) != 0;
+    // 判定円の中心座標
+    float targetCenterX = characterX + characterOffsetX;
+    float targetCenterY = characterY + characterOffsetY;
 
-    // 押されている場合は cursor_2（グー）、離している場合は cursor_1（パー）
+    // 当たり判定チェック
+    bool isHit = CheckMouseCircleCollision(mouseX, mouseY, mouseCollisionRadius, targetCenterX, targetCenterY, characterRadius);
+
+    // 接触時は判定円の色を変更
+    unsigned int charCircleColor = isHit ? DxLib::GetColor(255, 0, 0) : DxLib::GetColor(255, 255, 0);
+
+    // --- 当たり判定ガイドライン（円）描画 ---
+   /* DxLib::DrawCircle(static_cast<int>(targetCenterX), static_cast<int>(targetCenterY), static_cast<int>(characterRadius), charCircleColor, FALSE);
+    DxLib::DrawCircle(mouseX, mouseY, static_cast<int>(mouseCollisionRadius), DxLib::GetColor(0, 255, 0), FALSE);*/
+
+    // --- 調整値デバッグ情報描画 ---
+ /*   int white = DxLib::GetColor(255, 255, 255);
+    DxLib::DrawFormatString(10, 10, charCircleColor, L"Hit: %s (Count: %d / %d)", isHit ? L"HIT!" : L"OUT", isGameClearInputCount, isGameClearInputMax);
+    DxLib::DrawFormatString(10, 30, white, L"Char Radius [UP/DOWN]: %.1f", characterRadius);
+    DxLib::DrawFormatString(10, 50, white, L"Mouse Radius [LEFT/RIGHT]: %.1f", mouseCollisionRadius);
+    DxLib::DrawFormatString(10, 70, white, L"Char Offset [W/A/S/D]: X:%.1f, Y:%.1f", characterOffsetX, characterOffsetY);*/
+
+    // カーソル描画
+    bool isClicking = (DxLib::GetMouseInput() & MOUSE_INPUT_LEFT) != 0;
     const wchar_t* cursorKey = isClicking ? ResourceKeys::cursor_2 : ResourceKeys::cursor_1;
 
     const auto* sprite = RM().GridAt(cursorKey);
@@ -144,7 +186,7 @@ void GameClearScene::Render() const
         int handle = sprite->GetID();
         if (handle != -1)
         {
-            DxLib::DrawGraph(mouseX - 35, mouseY - 10, handle, TRUE);
+            DxLib::DrawGraph(mouseX - 52, mouseY - 50, handle, TRUE);
         }
     }
 }

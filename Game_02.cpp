@@ -93,24 +93,24 @@ void Game_02::Reset()
     change = 0;
     int ruleIdx = rand() % 2 == 0;
     // 指示画像をランダムで切り替え（game_setumei_7: 多いほう / game_setumei_8: 少ないほう）
-    if (ruleIdx==0)
+    if (ruleIdx == 0)
     {
         instructionType = Game02InstructionType::More;
         currentExplanationSpr = RM().GridAt(ResourceKeys::game_setumei_7);
-		PlaySoundMem(setumeivoice[0], DX_PLAYTYPE_BACK);
+        PlaySoundMem(setumeivoice[0], DX_PLAYTYPE_BACK);
     }
-    else if(ruleIdx==1)
+    else if (ruleIdx == 1)
     {
         instructionType = Game02InstructionType::Less;
         currentExplanationSpr = RM().GridAt(ResourceKeys::game_setumei_8);
         PlaySoundMem(setumeivoice[1], DX_PLAYTYPE_BACK);
     }
 
-    // TODO: leftValue/rightValue に問題ごとの数値（合計や積）を設定してください。
-    // 例: 左が 5x3, 右が 3x4 の場合は leftValue[0]=15, rightValue[0]=12 のように設定します。
-    // デフォルトでは -1 のままで、既存の leftIsMoreTable が使用されます。
-    // デフォルトでは未設定(-1)にして既存のテーブルを使用する
-    for (int i = 0; i < 6; ++i) { leftValue[i] = -1; rightValue[i] = -1; }
+    // .h で指定した problems 配列の合計値をそのままセット
+    for (int i = 0; i < 6; ++i) {
+        leftValue[i] = problems[i].leftValue;
+        rightValue[i] = problems[i].rightValue;
+    }
 
     // リセット時に正解カウント等をクリア
     correctCount = 0;
@@ -137,25 +137,13 @@ void Game_02::Update(int& hp, int& score)
 
         if (isLeftClicked || isRightClicked)
         {
-            // 現在の画像で「合計が多いほう」は左か？
-            bool leftIsMore = false;
-            if ((leftValue[change] >= 0) || (rightValue[change] >= 0))
-            {
-                int lv = (leftValue[change] >= 0) ? leftValue[change] : 0;
-                int rv = (rightValue[change] >= 0) ? rightValue[change] : 0;
-                leftIsMore = (lv > rv);
-            }
-            else
-            {
-                // フォールバック: 既存のテーブルを使用
-                leftIsMore = leftIsMoreTable[change];
-            }
+            // 1. 現在の問題の左右の合計値を比較して「左が多いか」を判定
+            bool leftIsMore = (leftValue[change] > rightValue[change]);
 
-            // 今回の指示における「正解」は左かどうか
-            // More（多いほう）なら leftIsMore、Less（少ないほう）ならその逆
+            // 2. 指示（More: 多いほうを選べ / Less: 少ないほうを選べ）に応じて正解の左右を決定
             bool leftIsCorrect = (instructionType == Game02InstructionType::More) ? leftIsMore : !leftIsMore;
 
-            // プレイヤーが正解を選べたか判定
+            // 3. プレイヤーがクリックした側と正解が一致しているか判定
             bool isCorrect = (isLeftClicked && leftIsCorrect) || (isRightClicked && !leftIsCorrect);
 
             if (isCorrect)
