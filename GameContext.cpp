@@ -246,7 +246,24 @@ void GameContext::Update(bool& input)
 	}
 
 	timer -= deltaTime * TIME_SPEED_RATE;
+	int currentSecond = static_cast<int>(std::ceil(timer));
+	// 秒数が前回の判定から変化した瞬間に音を鳴らす
+	if (currentSecond != lastPlayTime && currentSecond >= 0)
+	{
+		if (currentSecond <= 3 && currentSecond > 0)
+		{
+			// 残り3秒以下のカウントダウン音
+			PlaySoundMem(CountSE_2, DX_PLAYTYPE_BACK);
+		}
+		else if (currentSecond > 3)
+		{
+			// 通常のカウントダウン音
+			PlaySoundMem(CountSE_1, DX_PLAYTYPE_BACK);
+		}
 
+		// 再生した秒数を記録
+		lastPlayTime = currentSecond;
+	}
 	// 10秒経過で次のミニゲームへ移行
 	if (timer <= 0.0f)
 	{
