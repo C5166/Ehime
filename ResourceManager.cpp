@@ -83,6 +83,9 @@ void ResourceManager::LoadAll()
 	LoadTextureAsSpriteCenter(ResourceKeys::game_3_kesi2, L"./Data/Images/game_3_kesi2.png");
 	LoadTextureAsSpriteCenter(ResourceKeys::game_3_kesi3, L"./Data/Images/game_3_kesi3.png");
 
+    LoadGridCenter(ResourceKeys::game_stage_1, L"./Data/Images/game_stage_2.png", { 0, 0 }, { 10, 3 }, { 100, 100 });
+    LoadGridCenter(ResourceKeys::game_stage_2, L"./Data/Images/game_stage_1.png", { 0, 0 }, { 10, 3 }, { 100, 100 });
+
     LoadMusic(ResourceKeys::BGM_Game,       L"./Data/Sounds/sanjinooyatsu.mp3");
     LoadMusic(ResourceKeys::SE_GameOver,       L"./Data/Sounds/bgm_gameover.mp3");
     LoadSound(ResourceKeys::SE_GameOverVoice, L"./Data/Sounds/ゲームオーバ/voice_gameover.mp3");

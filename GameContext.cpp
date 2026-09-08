@@ -60,6 +60,43 @@ void GameContext::AdvanceToNextGame(bool perfectAchieved)
 	sequenceTimer = 0.0f;
 }
 
+void GameContext::DrawStageProgress() const
+{
+	const int TOTAL_FRAMES = 23;
+	const int COLUMNS = 10;
+
+	// タイマーに連動したアニメーションフレーム計算 (0〜22コマ)
+	int currentFrame = static_cast<int>((10.0f - timer) * 20.0f) % TOTAL_FRAMES;
+	if (currentFrame < 0) currentFrame = 0;
+
+	int animX = currentFrame % COLUMNS;
+	int animY = currentFrame / COLUMNS;
+
+	// TOTAL_MINI_GAMES (5回分) を右から左（または左から右）へ並べて描画
+	// 画像サンプルに合わせて右側から古いステージ（クリア済み）として描画する配置例
+	for (int i = 0; i < TOTAL_MINI_GAMES; ++i)
+	{
+		// 右から左に並べる場合: (TOTAL_MINI_GAMES - 1 - i)
+		DxPlus::Vec2 pos = {
+			STAGE_PROGRESS_POS.x + (TOTAL_MINI_GAMES - 1 - i) * STAGE_PROGRESS_OFFSET_X,
+			STAGE_PROGRESS_POS.y
+		};
+
+		// クリア済み・通過済み(i < currentGameIndex) は game_stage_2（暗い矢印）
+		// 未クリア・挑戦中(i >= currentGameIndex) は game_stage_1（明るい矢印）
+		if (i < currentGameIndex)
+		{
+			const auto* spr = RM().GridAt(ResourceKeys::game_stage_2, animX, animY);
+			if (spr) spr->Draw(pos); // スケールは表示サイズに合わせて調整
+		}
+		else
+		{
+			const auto* spr = RM().GridAt(ResourceKeys::game_stage_1, animX, animY);
+			if (spr) spr->Draw(pos);
+		}
+	}
+}
+
 void GameContext::Init()
 {
 	backgroundSpr = RM().GridAt(ResourceKeys::Background);
@@ -454,6 +491,8 @@ void GameContext::Draw() const
 	backgroundSpr2->Draw({ 0, 0 });
 	DrawTimer();
 	DrawHP();
+
+	DrawStageProgress();
 
 	// 最前面に説明・カウントダウン画像を描画
 	DrawSequenceUI();
