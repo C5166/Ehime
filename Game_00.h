@@ -25,7 +25,7 @@ public:
     void Reset();
     void Update(int& hp, int& score);
     void Draw(int hp, int score) const;
-
+    const DxPlus::Sprite::SpriteBase* GetMoziSprite() const { return currentMoziSpr; }
     // ImGui 用 UI・ギズモの描画関数
     void DrawImGui();
 
@@ -42,6 +42,10 @@ public:
     // 目標がすべて選択されたか
     bool AllTargetsCollected() const;
 
+    const DxPlus::Sprite::SpriteBase* GetTargetSprite() const {
+        return GetSpriteForType(targetObjectType);
+    }
+
 private:
     std::vector<Object> subjects;
     int selectedObjectIndex{ -1 }; // 選択中のオブジェクトのインデックス
@@ -56,6 +60,8 @@ private:
     DxPlus::Vec2 cameraPos{ 960.0f, 540.0f };
     DxPlus::Vec2 cameraSize{ 240.0f, 180.0f };
     float cameraSpeed{ 10.0f };
+
+    const DxPlus::Sprite::SpriteBase* currentMoziSpr{ nullptr };
 
     // 演出用
     float shutterAnimTimer{ 0.0f };

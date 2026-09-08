@@ -14,18 +14,19 @@ using json = nlohmann::json;
 
 struct TargetInfo {
     const wchar_t* explanationKey; // ResourceKeys 内の文字列定数を受ける型
+    const wchar_t* moziKey;
     ObjectType targetType;
     const char* jsonFileName;
 };
 
 static const TargetInfo g_TargetTable[] = {
-    { ResourceKeys::game_setumei_9,  ObjectType::Nekosima, "game_setumei_9.json" },
-    { ResourceKeys::game_setumei_10, ObjectType::Neko,     "game_setumei_10.json" },
-    { ResourceKeys::game_setumei_11, ObjectType::Hitu,     "game_setumei_11.json" },
-    { ResourceKeys::game_setumei_12, ObjectType::Inu,      "game_setumei_12.json" },
-    { ResourceKeys::game_setumei_13, ObjectType::Kesi1,    "game_setumei_13.json" },
-    { ResourceKeys::game_setumei_14, ObjectType::Kesi2,    "game_setumei_14.json" },
-    { ResourceKeys::game_setumei_15, ObjectType::Kesi3,    "game_setumei_15.json" },
+    { ResourceKeys::game_setumei_9,  ResourceKeys::game_mozi_9,  ObjectType::Nekosima, "game_setumei_9.json" },
+    { ResourceKeys::game_setumei_10, ResourceKeys::game_mozi_10, ObjectType::Neko,     "game_setumei_10.json" },
+    { ResourceKeys::game_setumei_11, ResourceKeys::game_mozi_11, ObjectType::Hitu,     "game_setumei_11.json" },
+    { ResourceKeys::game_setumei_12, ResourceKeys::game_mozi_12, ObjectType::Inu,      "game_setumei_12.json" },
+    { ResourceKeys::game_setumei_13, ResourceKeys::game_mozi_13, ObjectType::Kesi1,    "game_setumei_13.json" },
+    { ResourceKeys::game_setumei_14, ResourceKeys::game_mozi_14, ObjectType::Kesi2,    "game_setumei_14.json" },
+    { ResourceKeys::game_setumei_15, ResourceKeys::game_mozi_15, ObjectType::Kesi3,    "game_setumei_15.json" },
 };
 
 void Game_00::Init()
@@ -109,6 +110,7 @@ void Game_00::Reset()
     // 目標となるオブジェクトタイプと説明画像ポインタをセット
     targetObjectType = targetInfo.targetType;
     currentExplanationSpr = RM().GridAt(targetInfo.explanationKey);
+    currentMoziSpr = RM().GridAt(targetInfo.moziKey);
 
     // バッファを更新して該当の JSON をロード
     strcpy_s(saveFileNameBuf, sizeof(saveFileNameBuf), targetInfo.jsonFileName);
@@ -333,6 +335,7 @@ void Game_00::Draw(int hp, int score) const
         DxLib::DrawBox(0, 0, static_cast<int>(screenWidth), static_cast<int>(screenHeight), DxLib::GetColor(255, 255, 255), TRUE);
         DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
     }
+
 }
 #ifdef _DEBUG
 void Game_00::DrawImGui()

@@ -110,6 +110,17 @@ namespace ResourceKeys
 	inline constexpr const wchar_t* game_stage_1 = L"game_stage_1";
 	inline constexpr const wchar_t* game_stage_2 = L"game_stage_2";
 
+
+	inline const wchar_t* game_mozi_9 = L"game_mozi_9";
+	inline const wchar_t* game_mozi_10 = L"game_mozi_10";
+	inline const wchar_t* game_mozi_11 = L"game_mozi_11";
+	inline const wchar_t* game_mozi_12 = L"game_mozi_12";
+	inline const wchar_t* game_mozi_13 = L"game_mozi_13";
+	inline const wchar_t* game_mozi_14 = L"game_mozi_14";
+	inline const wchar_t* game_mozi_15 = L"game_mozi_15";
+
+	inline constexpr const wchar_t* sousasetumei = L"sousasetumei";
+
 	// ===== Transition =====
 	//inline constexpr const wchar_t* transition_1 = L"transition_1"; // フェードイン用
 	//inline constexpr const wchar_t* transition_2 = L"transition_2"; // フェードアウト用

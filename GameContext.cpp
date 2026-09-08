@@ -493,6 +493,37 @@ void GameContext::Draw() const
 
 	// 枠・タイマー・HPの描画
 	backgroundSpr2->Draw({ 0, 0 });
+	// =========================================================
+	// 最前列（画面の一番手前）に Game_00 のターゲットアイコンを描画
+	// =========================================================
+	if (Isinit == GameNamber::Game_0)
+	{
+		const auto* targetSpr = game_00.GetTargetSprite();
+		//if (targetSpr)
+		//{
+		//	// アルファブレンド等の状態をリセット
+		//	DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+		//	DxPlus::Vec2 targetPos = { 100.0f, DxPlus::CLIENT_HEIGHT - 50.0f };
+		//	DxPlus::Vec2 targetScale = { 0.5f, 0.5f };
+
+		//	targetSpr->Draw(targetPos, targetScale);
+		//}
+
+		const auto* moziSpr = game_00.GetMoziSprite();
+		if (moziSpr)
+		{
+			DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+			// アイコンの右隣（X: 300など）に調整して描画
+			DxPlus::Vec2 moziPos = { 300.0f, DxPlus::CLIENT_HEIGHT - 50.0f };
+			DxPlus::Vec2 moziScale = { 1.0f, 1.0f }; // 画像サイズに合わせて変更
+
+			moziSpr->Draw(moziPos, moziScale);
+		}
+
+
+	}
 	DrawTimer();
 	DrawHP();
 
@@ -500,6 +531,7 @@ void GameContext::Draw() const
 
 	// 最前面に説明・カウントダウン画像を描画
 	DrawSequenceUI();
+
 
 	// 完了演出の描画
     if (showPerfect && perfectSheetID >= 0)

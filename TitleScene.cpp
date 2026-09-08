@@ -25,6 +25,8 @@ void TitleScene::Init()
     isTitleInput = false;
     isTitleInputCount = 0;
 
+	sousasetumei = RM().GridAt(ResourceKeys::sousasetumei);
+
     poti = RM().GetSound(ResourceKeys::SE_poti);
     kirakira = RM().GetSound(ResourceKeys::SE_kirakira);
 
@@ -191,6 +193,8 @@ void TitleScene::Render() const
 
     // 接触時は黄色円を赤色に変化
     unsigned int charCircleColor = isHit ? DxLib::GetColor(255, 0, 0) : DxLib::GetColor(255, 255, 0);
+
+	sousasetumei->Draw({ 241, DxPlus::CLIENT_HEIGHT - 50});
 
     // --- 当たり判定ガイドライン（円）の描画 ---
     /*DxLib::DrawCircle(static_cast<int>(targetCenterX), static_cast<int>(targetCenterY), static_cast<int>(characterRadius), charCircleColor, FALSE);

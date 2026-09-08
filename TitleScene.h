@@ -51,6 +51,7 @@ private:
     const DxPlus::Sprite::SpriteBase* bgSprite{ nullptr };
     const DxPlus::Sprite::SpriteBase* title_character{ nullptr };
     const DxPlus::Sprite::SpriteBase* title_character2{ nullptr };
+    const DxPlus::Sprite::SpriteBase* sousasetumei{ nullptr };
 
     int touch[5];
     int poti;
