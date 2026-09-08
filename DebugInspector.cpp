@@ -5,6 +5,7 @@
 #include "DxPlus/DxPlus.h"
 #include <DxLib.h>
 #include "imgui.h"
+#include <string>
 
 namespace
 {
@@ -70,6 +71,34 @@ void DebugInspector::Draw()
     if (ImGui::Button("Game 02 [F2]")) gc.SetCurrentMiniGame(GameNamber::Game_2);
     ImGui::SameLine();
     if (ImGui::Button("Game 03 [F3]")) gc.SetCurrentMiniGame(GameNamber::Game_3);
+
+    // ---------------------------------------------------------------------
+    // Game_00 指示別デバッグ切替UI
+    // ---------------------------------------------------------------------
+    ImGui::Separator();
+    ImGui::Text("Game_00 Instruction Presets");
+
+    // setumei_9 ～ setumei_15 までのプリセットボタンを配置
+    for (int i = 9; i <= 15; ++i)
+    {
+        std::string btnText = "Setumei " + std::to_string(i);
+
+        // 4個ごとに改行して整列
+        if ((i - 9) % 4 != 0)
+        {
+            ImGui::SameLine();
+        }
+
+        if (ImGui::Button(btnText.c_str()))
+        {
+            // 自動的に Game_00 に切り替え
+            gc.SetCurrentMiniGame(GameNamber::Game_0);
+
+            // 対応するJSON配置データを読み込み
+            std::string fileName = "game_setumei_" + std::to_string(i) + ".json";
+            gc.GetGame00().LoadFromFile(fileName);
+        }
+    }
 
     ImGui::End();
 

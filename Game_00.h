@@ -3,6 +3,7 @@
 #include "DxPlus/DxPlus.h"
 #include "GameObject.h"
 #include <vector>
+#include <string>
 
 class Game_00
 {
@@ -14,15 +15,24 @@ public:
     void Update(int& hp, int& score);
     void Draw(int hp, int score) const;
 
-    // ImGui 用 UI・ギズモの描画関数（SceneManager や DebugInspector の ImGui 描画部から呼び出す）
+    // ImGui 用 UI・ギズモの描画関数
     void DrawImGui();
 
+    // ファイル名を指定して保存・読み込み
     void SaveToFile(const std::string& filename = "scene_game00.json");
     void LoadFromFile(const std::string& filename = "scene_game00.json");
 
+    void SetTargetObjectType(ObjectType type) { targetObjectType = type; }
+    ObjectType GetTargetObjectType() const { return targetObjectType; }
+
 private:
     std::vector<Object> subjects;
-    int selectedObjectIndex{ -1 }; // 選択中のオブジェクトのインデックス（-1は未選択）
+    int selectedObjectIndex{ -1 }; // 選択中のオブジェクトのインデックス
+
+    ObjectType targetObjectType{ ObjectType::Nekosima }; // デフォルトターゲット
+
+    // ImGuiでの保存・読み込み用ファイル名バッファ
+    char saveFileNameBuf[128]{ "game_setumei_9.json" };
 
     // カメラ情報
     DxPlus::Vec2 cameraPos{ 960.0f, 540.0f };
@@ -48,10 +58,23 @@ private:
     bool isCameraLocked{ false };
 
     int CAMERA;
-
     int bubu;
-
     int good[3];
-
     int perfect;
+
+    int nextUniqueId{ 1 };          // ID自動インクリメント用
+    int copiedObjectId{ -1 };        // コピー中のオブジェクトID
+
+    // ID検索ヘルパー
+    Object* FindObjectById(int id);
+    const Object* FindObjectById(int id) const;
+
+    // 階層関係の追加・解除
+    void SetParent(int childId, int newParentId);
+
+    // ツリー再生描画用関数
+    void DrawHierarchyTree(int objId);
+
+    // ディープコピー処理（子要素もまとめて複製）
+    int DuplicateObjectRecursive(int srcId, int newParentId = -1);
 };

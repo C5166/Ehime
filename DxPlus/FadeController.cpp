@@ -1,8 +1,9 @@
-// =============================
-// FadeController.cpp
-// =============================
+﻿// FadeController.cpp
 #include "FadeController.h"
 #include "DxPlus.h"
+#include "../ResourceManager.h"
+#include "../ResourceKeys.h"
+#include <algorithm>
 
 namespace DxPlus
 {
@@ -17,7 +18,7 @@ namespace DxPlus
             state = State::Stay;
             return;
         }
-        timer = duration;
+        timer = duration; // duration から 0.0f へカウントダウン
         state = State::FadeIn;
     }
 
@@ -30,7 +31,7 @@ namespace DxPlus
             state = State::FadeOut;
             return;
         }
-        timer = 0.0f;
+        timer = 0.0f; // 0.0f から duration へカウントアップ
         state = State::FadeOut;
     }
 
@@ -63,15 +64,44 @@ namespace DxPlus
 
     void FadeController::Draw() const
     {
-        if (state == State::Stay) { return; }
-        if (duration <= 0.0f) { return; }
+        if (state == State::Stay || duration <= 0.0f) { return; }
 
-        float alpha = timer / duration;
-        DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * alpha));
-        DxPlus::Primitive2D::DrawRect(
-            { 0.0f, 0.0f }, { DxPlus::CLIENT_WIDTH, DxPlus::CLIENT_HEIGHT },
-            DxLib::GetColor(0, 0, 0));
-        DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+        int frameIndex = 0;
+
+        if (state == State::FadeIn)
+        {
+            // 前半15コマ (14 -> 0)
+            float progress = std::clamp(timer / duration, 0.0f, 1.0f);
+            int totalFrames = 15;
+            int offset = static_cast<int>(progress * (totalFrames - 1));
+            frameIndex = offset; // 14から0に向かって再生
+        }
+        else if (state == State::FadeOut)
+        {
+            // 後半15コマ (15 -> 29)
+            float progress = std::clamp(timer / duration, 0.0f, 1.0f);
+            int totalFrames = 15;
+            int offset = static_cast<int>(progress * (totalFrames - 1));
+            frameIndex = 15 + offset; // 15から29に向かって再生
+        }
+
+        int gridX = frameIndex % 10;
+        int gridY = frameIndex / 10;
+
+        const auto* sprite = RM().GridAt(ResourceKeys::transition, gridX, gridY);
+        if (sprite)
+        {
+            int handle = sprite->GetID();
+            if (handle != -1)
+            {
+                DxLib::DrawExtendGraph(
+                    0, 0,
+                    static_cast<int>(DxPlus::CLIENT_WIDTH),
+                    static_cast<int>(DxPlus::CLIENT_HEIGHT),
+                    handle, TRUE
+                );
+            }
+        }
     }
 
     FadeController::State DxPlus::FadeController::GetState() const

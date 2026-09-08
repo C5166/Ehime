@@ -58,11 +58,11 @@ private:
 
     // --- タイマー描画位置の設定 ---
     const DxPlus::Vec2 TIMER_POS = { 960.0f, 50.0f };
-    const float DIGIT_OFFSET_X = 85.0f;
+    const float DIGIT_OFFSET_X = 65.0f;
 
     // --- HP表示設定 ---
     const int MAX_PLAYER_HP = 3;
-    const DxPlus::Vec2 HP_POS = { 50.0f, 50.0f };
+    const DxPlus::Vec2 HP_POS = { 80.5f, 50.0f };
     const float HP_ICON_OFFSET_X = 80.0f;
 
     void DrawTimer() const;
@@ -87,7 +87,7 @@ private:
     int playerHP{ 3 };
     int totalScore{ 0 };
 
-    const float GAME_TIME_LIMIT{ 10000000.0f };
+    const float GAME_TIME_LIMIT{ 10.0f };
     const float TIME_SPEED_RATE{ 1.0f };
     float timer{ 10.0f };
 

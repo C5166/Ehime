@@ -6,7 +6,6 @@
 
 namespace
 {
-    // 点 (px, py) が三角形 (p0, p1, p2) の内部にあるか判定する外積計算
     bool IsPointInTriangle(DxPlus::Vec2 p, DxPlus::Vec2 p0, DxPlus::Vec2 p1, DxPlus::Vec2 p2)
     {
         float area = 0.5f * (-p1.y * p2.x + p0.y * (-p1.x + p2.x) + p0.x * (p1.y - p2.y) + p1.x * p2.y);
@@ -15,59 +14,49 @@ namespace
         return s >= 0.0f && t >= 0.0f && (1.0f - s - t) >= 0.0f;
     }
 
-    // ハート形状の当たり判定 (2つの円 + 下部三角形)
     bool IsPointInsideHeart(DxPlus::Vec2 point, DxPlus::Vec2 center, DxPlus::Vec2 size)
     {
         float w = size.x;
         float h = size.y;
 
-        // 1. 左上の円判定
         DxPlus::Vec2 leftCircleCenter = { center.x - w * 0.25f, center.y - h * 0.12f };
         float circleRadius = w * 0.27f;
         float dxL = point.x - leftCircleCenter.x;
         float dyL = point.y - leftCircleCenter.y;
-        if (dxL * dxL + dyL * dyL <= circleRadius * circleRadius)
-        {
-            return true;
-        }
+        if (dxL * dxL + dyL * dyL <= circleRadius * circleRadius) return true;
 
-        // 2. 右上の円判定
         DxPlus::Vec2 rightCircleCenter = { center.x + w * 0.25f, center.y - h * 0.12f };
         float dxR = point.x - rightCircleCenter.x;
         float dyR = point.y - rightCircleCenter.y;
-        if (dxR * dxR + dyR * dyR <= circleRadius * circleRadius)
-        {
-            return true;
-        }
+        if (dxR * dxR + dyR * dyR <= circleRadius * circleRadius) return true;
 
-        // 3. 下部の逆三角形判定
         DxPlus::Vec2 tLeft = { center.x - w * 0.48f, center.y - h * 0.05f };
         DxPlus::Vec2 tRight = { center.x + w * 0.48f, center.y - h * 0.05f };
         DxPlus::Vec2 tBottom = { center.x,             center.y + h * 0.48f };
 
-        if (IsPointInTriangle(point, tLeft, tRight, tBottom))
-        {
-            return true;
-        }
-
-        return false;
+        return IsPointInTriangle(point, tLeft, tRight, tBottom);
     }
 }
 
 void Game_03::Init()
 {
-    Herat1ID = RM().GridAt(ResourceKeys::game_1_heart_1);
-    Herat2ID = RM().GridAt(ResourceKeys::game_1_heart_2);
-    Herat3ID = RM().GridAt(ResourceKeys::game_1_heart_3);
+    Herat1ID = RM().GridAt(ResourceKeys::game_1_heart_1); // 青
+    Herat2ID = RM().GridAt(ResourceKeys::game_1_heart_2); // 赤
+    Herat3ID = RM().GridAt(ResourceKeys::game_1_heart_3); // 緑
+
+    // 6種の説明画像を ResourceManager から読み込み（キーは各プロジェクトの定義に合わせてください）
+    explanationSprites[0] = RM().GridAt(ResourceKeys::game_setumei_1);
+    explanationSprites[1] = RM().GridAt(ResourceKeys::game_setumei_2);
+    explanationSprites[2] = RM().GridAt(ResourceKeys::game_setumei_3);
+    explanationSprites[3] = RM().GridAt(ResourceKeys::game_setumei_4);
+    explanationSprites[4] = RM().GridAt(ResourceKeys::game_setumei_5);
+    explanationSprites[5] = RM().GridAt(ResourceKeys::game_setumei_6);
 
     poti = RM().GetSound(ResourceKeys::SE_poti);
-
     bubu = RM().GetSound(ResourceKeys::SE_bubu);
-
     good[0] = RM().GetSound(ResourceKeys::SE_GoodVoice1);
     good[1] = RM().GetSound(ResourceKeys::SE_GoodVoice2);
     good[2] = RM().GetSound(ResourceKeys::SE_GoodVoice3);
-
     perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
 
     Reset();
@@ -75,6 +64,11 @@ void Game_03::Init()
 
 void Game_03::Reset()
 {
+    // 0~5 のランダムでルールを決定
+    int ruleIdx = rand() % 6;
+    currentRule = static_cast<RuleType>(ruleIdx);
+    currentExplanationSpr = explanationSprites[ruleIdx];
+
     SpawnBalls();
 }
 
@@ -90,18 +84,9 @@ void Game_03::SpawnBalls()
     {
         Object ball;
 
-        if (i < totalRed)
-        {
-            ball.type = BallType::Red;
-        }
-        else if (i < totalRed + totalBlue)
-        {
-            ball.type = BallType::Blue;
-        }
-        else
-        {
-            ball.type = BallType::Green;
-        }
+        if (i < totalRed) ball.type = BallType::Red;
+        else if (i < totalRed + totalBlue) ball.type = BallType::Blue;
+        else ball.type = BallType::Green;
 
         ball.size = { 112.0f, 112.0f };
         ball.active = true;
@@ -109,7 +94,6 @@ void Game_03::SpawnBalls()
         float halfW = ball.size.x * 0.5f;
         float halfH = ball.size.y * 0.5f;
 
-        // screenX / screenY を基準座標として生成位置を計算
         ball.position.x = screenX + static_cast<float>(rand() % static_cast<int>(screenWidth - ball.size.x) + halfW);
         ball.position.y = screenY + static_cast<float>(rand() % static_cast<int>(screenHeight - ball.size.y) + halfH);
 
@@ -136,7 +120,7 @@ void Game_03::Update(int& hp, int& score)
         DxLib::GetMousePoint(&mouseX, &mouseY);
     }
 
-    // 1. 位置更新 ＆ 画面端バウンド
+    // 移動および壁反射処理
     for (auto& ball : balls)
     {
         if (!ball.active) continue;
@@ -147,50 +131,55 @@ void Game_03::Update(int& hp, int& score)
         ball.position.x += ball.velocity.x;
         ball.position.y += ball.velocity.y;
 
-        // 左右の壁バウンド判定（screenX 基準）
         if (ball.position.x - halfW < screenX || ball.position.x + halfW > screenX + screenWidth)
         {
             ball.velocity.x *= -1.0f;
         }
-        // 上下の壁バウンド判定（screenY 基準）
         if (ball.position.y - halfH < screenY || ball.position.y + halfH > screenY + screenHeight)
         {
             ball.velocity.y *= -1.0f;
         }
     }
 
-    // 2. クリック判定（手前にある個体のみを1つ選択して消去）
+    // クリック判定
     if (isClicked)
     {
         DxPlus::Vec2 mousePos = { static_cast<float>(mouseX), static_cast<float>(mouseY) };
 
-        // 手前に描画されているもの（配列の後ろ）から優先して判定
         for (int i = static_cast<int>(balls.size()) - 1; i >= 0; --i)
         {
             auto& ball = balls[i];
             if (!ball.active) continue;
 
-            // ハートの形状範囲内をクリックしたか判定
             if (IsPointInsideHeart(mousePos, ball.position, ball.size))
             {
-                ball.active = false; // 1つだけ消す
+                ball.active = false;
 
-                if (ball.type == BallType::Red)
+                // ルールに基づいて正解・不正解を判定
+                bool isCorrect = false;
+
+                switch (currentRule)
+                {
+                case RuleType::PickGreen:  isCorrect = (ball.type == BallType::Green); break;
+                case RuleType::PickRed:    isCorrect = (ball.type == BallType::Red); break;
+                case RuleType::PickBlue:   isCorrect = (ball.type == BallType::Blue); break;
+                case RuleType::AvoidBlue:  isCorrect = (ball.type != BallType::Blue); break;
+                case RuleType::AvoidRed:   isCorrect = (ball.type != BallType::Red); break;
+                case RuleType::AvoidGreen: isCorrect = (ball.type != BallType::Green); break;
+                }
+
+                if (isCorrect)
                 {
                     int a = GetRand(2);
                     PlaySoundMem(good[a], DX_PLAYTYPE_BACK);
-
                     score++;
                 }
-                else if (ball.type == BallType::Blue || ball.type == BallType::Green)
+                else
                 {
-
                     PlaySoundMem(bubu, DX_PLAYTYPE_BACK);
-
                     hp--;
                 }
 
-                // 1つクリックしたらループを抜けて同時に複数が消えるのを防ぐ
                 break;
             }
         }
@@ -207,42 +196,9 @@ void Game_03::Draw(int hp, int score) const
 
         switch (ball.type)
         {
-        case BallType::Blue:
-            Herat1ID->Draw(drawPos);
-            break;
-        case BallType::Red:
-            Herat2ID->Draw(drawPos);
-            break;
-        case BallType::Green:
-            Herat3ID->Draw(drawPos);
-            break;
+        case BallType::Blue:  Herat1ID->Draw(drawPos); break;
+        case BallType::Red:   Herat2ID->Draw(drawPos); break;
+        case BallType::Green: Herat3ID->Draw(drawPos); break;
         }
-
-        // --------------------------------------------------
-        // デバッグ用：ハート形状の判定可視化
-        // --------------------------------------------------
-
-#ifdef _DEBUG
-
-
-        float w = ball.size.x;
-        float h = ball.size.y;
-        unsigned int debugColor = DxLib::GetColor(255, 0, 0);
-
-        // 左右の円枠
-        DxLib::DrawCircle(static_cast<int>(ball.position.x - w * 0.25f), static_cast<int>(ball.position.y - h * 0.12f), static_cast<int>(w * 0.27f), debugColor, FALSE);
-        DxLib::DrawCircle(static_cast<int>(ball.position.x + w * 0.25f), static_cast<int>(ball.position.y - h * 0.12f), static_cast<int>(w * 0.27f), debugColor, FALSE);
-
-        // 下部三角形枠
-        int x1 = static_cast<int>(ball.position.x - w * 0.48f);
-        int y1 = static_cast<int>(ball.position.y - h * 0.05f);
-        int x2 = static_cast<int>(ball.position.x + w * 0.48f);
-        int y2 = static_cast<int>(ball.position.y - h * 0.05f);
-        int x3 = static_cast<int>(ball.position.x);
-        int y3 = static_cast<int>(ball.position.y + h * 0.48f);
-
-        DxLib::DrawTriangle(x1, y1, x2, y2, x3, y3, debugColor, FALSE);
-#endif
     }
-
 }

@@ -14,10 +14,6 @@ ResourceManager& ResourceManager::GetInstance()
 void ResourceManager::LoadAll()
 {
     LoadTextureAsSpriteLeftTop(ResourceKeys::Background, L"./Data/Images/game_background.png");
-    LoadGridBottom(ResourceKeys::Player, L"./Data/Images/player.png", { 0,0 }, { 3,4 }, { 96,128 });
-    LoadGridBottom(ResourceKeys::Enemy_Yankee, L"./Data/Images/yankee.png", { 0,0 }, { 3,4 }, { 96, 128 });
-    LoadTextureAsSpriteCenter(ResourceKeys::Player_Shot, L"./Data/Images/player_shot.png");
-    LoadGridCenter(ResourceKeys::Explosion, L"./Data/Images/explosion.png", { 0,0 }, { 10,3 }, { 256,256 });
 
    /* LoadGridCenter(ResourceKeys::Title_background, L"./Data/Images/title_background.png", { 0,0 }, { 10,8 }, { 960, 540 });*/
 	LoadTextureAsSpriteLeftTop(ResourceKeys::Title_frame, L"./Data/Images/title_frame.png");
@@ -28,6 +24,8 @@ void ResourceManager::LoadAll()
 
     LoadGridCenter(ResourceKeys::number_countdown_b, L"./Data/Images/number_countdown_b.png", { 0,0 }, { 10,1 }, { 180,126 });
     LoadGridCenter(ResourceKeys::number_countdown_321, L"./Data/Images/number_countdown_321.png", { 0,0 }, { 10,18 }, { 180,126 });
+
+    LoadGridLeftTop(ResourceKeys::transition, L"./Data/Images/transition.png", { 0, 0 }, { 10, 3 }, { 768, 432 });
 
 	//GameClearの画像
     LoadTextureAsSpriteLeftTop(ResourceKeys::gameclear_background, L"./Data/Images/gameclear_background.png");
@@ -42,7 +40,12 @@ void ResourceManager::LoadAll()
 
     LoadGridCenter(ResourceKeys::game_hp_1, L"./Data/Images/game_hp_1.png", { 0,0 }, { 10,2 }, { 70,70 });
     LoadGridCenter(ResourceKeys::game_hp_2, L"./Data/Images/game_hp_2.png", { 0,0 }, { 10,2 }, { 70,70 });
+    LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_1, L"./Data/Images/game_setumei_1.png");
     LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_2, L"./Data/Images/game_setumei_2.png");
+    LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_3, L"./Data/Images/game_setumei_3.png");
+    LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_4, L"./Data/Images/game_setumei_4.png");
+    LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_5, L"./Data/Images/game_setumei_5.png");
+    LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_6, L"./Data/Images/game_setumei_6.png");
 
     LoadGridCenter(ResourceKeys::game_start123, L"./Data/Images/game_start123.png", { 0, 0 }, { 3, 1 }, { 300, 379 });
 
@@ -69,7 +72,6 @@ void ResourceManager::LoadAll()
 
     LoadMusic(ResourceKeys::BGM_Game,       L"./Data/Sounds/sanjinooyatsu.mp3");
     LoadSound(ResourceKeys::SE_Explosion,   L"./Data/Sounds/Explosion.mp3");
-    LoadSound(ResourceKeys::SE_PlayerShot,  L"./Data/Sounds/PlayerShot.wav");
 
 	LoadSound(ResourceKeys::SE_TouchVoice1, L"./Data/Sounds/タイトル_胸を押したときのボイス/voice_mune_baka.mp3");
 	LoadSound(ResourceKeys::SE_TouchVoice2, L"./Data/Sounds/タイトル_胸を押したときのボイス/voice_mune_kya.mp3");

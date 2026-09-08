@@ -7,6 +7,7 @@
 #include <cmath>
 #include <string>
 #include <fstream>
+#include <algorithm>
 #include "nlohmann/json.hpp"
 
 using json = nlohmann::json;
@@ -16,25 +17,24 @@ void Game_00::Init()
     Reset();
     LoadFromFile();
 
-	CAMERA = RM().GetSound(ResourceKeys::SE_Camera);
-
-	bubu = RM().GetSound(ResourceKeys::SE_bubu);
+    CAMERA = RM().GetSound(ResourceKeys::SE_Camera);
+    bubu = RM().GetSound(ResourceKeys::SE_bubu);
 
     good[0] = RM().GetSound(ResourceKeys::SE_GoodVoice1);
     good[1] = RM().GetSound(ResourceKeys::SE_GoodVoice2);
     good[2] = RM().GetSound(ResourceKeys::SE_GoodVoice3);
 
-	perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
+    perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
 }
 
 // --- JSON へ保存 ---
 void Game_00::SaveToFile(const std::string& filename)
 {
-    json j = subjects; // nlohmann/json が自動で vector<Object> を配列化
+    json j = subjects;
     std::ofstream file(filename);
     if (file.is_open())
     {
-        file << j.dump(4); // インデント幅4で読みやすく保存
+        file << j.dump(4);
     }
 }
 
@@ -48,6 +48,14 @@ void Game_00::LoadFromFile(const std::string& filename)
         file >> j;
         subjects = j.get<std::vector<Object>>();
         selectedObjectIndex = -1; // 選択状態をリセット
+
+        // ロード時に nextUniqueId を更新（IDの重複防止）
+        int maxId = 0;
+        for (const auto& obj : subjects)
+        {
+            if (obj.id > maxId) maxId = obj.id;
+        }
+        nextUniqueId = maxId + 1;
     }
 }
 
@@ -58,6 +66,7 @@ void Game_00::Reset()
     flashAlpha = 0;
     selectedObjectIndex = -1;
     isCameraLocked = false;
+    nextUniqueId = 1;
 
     subjects.clear();
 
@@ -69,12 +78,12 @@ void Game_00::Reset()
 void Game_00::AddObject(ObjectType type, const char* defaultName)
 {
     Object obj;
+    obj.id = nextUniqueId++; // 【修正 3】IDを個別に採番
     obj.name = defaultName;
     obj.objType = type;
     obj.position = { screenWidth * 0.5f, screenHeight * 0.5f };
     obj.active = true;
 
-    // タイプごとの初期化設定
     switch (type)
     {
     case ObjectType::Nekosima:
@@ -93,7 +102,7 @@ void Game_00::AddObject(ObjectType type, const char* defaultName)
     }
 
     subjects.push_back(obj);
-    selectedObjectIndex = static_cast<int>(subjects.size()) - 1; // 生成したものを自動選択
+    selectedObjectIndex = static_cast<int>(subjects.size()) - 1;
 }
 
 const DxPlus::Sprite::SpriteBase* Game_00::GetSpriteForType(ObjectType type) const
@@ -113,8 +122,6 @@ const DxPlus::Sprite::SpriteBase* Game_00::GetSpriteForType(ObjectType type) con
 
 void Game_00::Update(int& hp, int& score)
 {
-    // ※ ImGui操作中はゲーム内入力（カメラや判定など）をスキップしたい場合は
-    // ImGui::GetIO().WantCaptureMouse をチェックしてください
     if (ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard)
     {
         return;
@@ -122,15 +129,12 @@ void Game_00::Update(int& hp, int& score)
 
     using namespace DxPlus::Input;
 
-    // --- 【デバッグ機能】右クリックでカメラ追従の ON / OFF 切り替え ---
-    // 右クリックが押された瞬間を判定 (ImGui操作上でない場合のみ)
-    int mouseButton = GetButtonDown(PLAYER1); // または DxLib::GetMouseInput()
+    int mouseButton = GetButtonDown(PLAYER1);
     static bool prevRightMouse = false;
     bool isRightMousePressed = (DxLib::GetMouseInput() & MOUSE_INPUT_RIGHT) != 0;
 
     if (isRightMousePressed && !prevRightMouse)
     {
-        // ImGuiのウィンドウ操作中でなければカメラのロック状態を反転
         if (!ImGui::GetIO().WantCaptureMouse)
         {
             isCameraLocked = !isCameraLocked;
@@ -138,15 +142,11 @@ void Game_00::Update(int& hp, int& score)
     }
     prevRightMouse = isRightMousePressed;
 
-
-    // --- カメラ操作 ---
-    // WASDキー移動は常時可能にしておく場合
     if (DxLib::CheckHitKey(KEY_INPUT_W)) cameraPos.y -= cameraSpeed;
     if (DxLib::CheckHitKey(KEY_INPUT_S)) cameraPos.y += cameraSpeed;
     if (DxLib::CheckHitKey(KEY_INPUT_A)) cameraPos.x -= cameraSpeed;
     if (DxLib::CheckHitKey(KEY_INPUT_D)) cameraPos.x += cameraSpeed;
 
-    // カメラがロック（固定）されていない場合のみマウスに追従させる
     if (!isCameraLocked && !ImGui::GetIO().WantCaptureMouse)
     {
         int mouseX = 0, mouseY = 0;
@@ -162,13 +162,11 @@ void Game_00::Update(int& hp, int& score)
         }
     }
 
-    // カメラ枠制限
     if (cameraPos.x < cameraSize.x * 0.5f) cameraPos.x = cameraSize.x * 0.5f;
     if (cameraPos.x > screenWidth - cameraSize.x * 0.5f) cameraPos.x = screenWidth - cameraSize.x * 0.5f;
     if (cameraPos.y < cameraSize.y * 0.5f) cameraPos.y = cameraSize.y * 0.5f;
     if (cameraPos.y > screenHeight - cameraSize.y * 0.5f) cameraPos.y = screenHeight - cameraSize.y * 0.5f;
 
-    // --- シャッター判定 ---
     bool isEnterPressed = (DxLib::CheckHitKey(KEY_INPUT_RETURN) == 1);
     static bool prevEnterState = false;
     bool isEnterTriggered = (isEnterPressed && !prevEnterState);
@@ -196,23 +194,25 @@ void Game_00::Update(int& hp, int& score)
         {
             if (!subj.active) continue;
 
-            bool isInCamera = (subj.position.x >= camMinX && subj.position.x <= camMaxX &&
-                subj.position.y >= camMinY && subj.position.y <= camMaxY);
+            // ワールド座標で判定
+            DxPlus::Vec2 worldPos = subj.GetWorldPosition(subjects);
+            bool isInCamera = (worldPos.x >= camMinX && worldPos.x <= camMaxX &&
+                worldPos.y >= camMinY && worldPos.y <= camMaxY);
 
-            if (isInCamera && subj.type == BallType::Target)
+            if (isInCamera && subj.objType == targetObjectType)
             {
                 subj.active = false;
                 score++;
                 hitTarget = true;
-				int a = GetRand(2);
-				PlaySoundMem(good[a], DX_PLAYTYPE_BACK);
+                int a = GetRand(2);
+                PlaySoundMem(good[a], DX_PLAYTYPE_BACK);
             }
         }
-        
+
         if (!hitTarget)
         {
-            hp--;
-			PlaySoundMem(bubu, DX_PLAYTYPE_BACK);
+            hp++;
+            PlaySoundMem(bubu, DX_PLAYTYPE_BACK);
         }
     }
 
@@ -230,7 +230,6 @@ void Game_00::Update(int& hp, int& score)
 
 void Game_00::Draw(int hp, int score) const
 {
-    // 1. オブジェクト描画
     for (const auto& subj : subjects)
     {
         if (!subj.active) continue;
@@ -238,32 +237,31 @@ void Game_00::Draw(int hp, int score) const
         const auto* spr = GetSpriteForType(subj.objType);
         if (spr)
         {
-            DxPlus::Vec2 scale = { subj.size.x / 100.0f, subj.size.y / 100.0f };
+            DxPlus::Vec2 worldPos = subj.GetWorldPosition(subjects);
+            float worldRot = subj.GetWorldRotation(subjects);
 
-            // スケールと回転の両方を渡す
-            spr->Draw(subj.position, scale, subj.rotation);
+            DxPlus::Vec2 scale = { subj.size.x / 100.0f, subj.size.y / 100.0f };
+            spr->Draw(worldPos, scale, worldRot);
         }
         else
         {
-            // フォールバック描画
+            DxPlus::Vec2 worldPos = subj.GetWorldPosition(subjects);
             DxLib::DrawBox(
-                static_cast<int>(subj.position.x - 20),
-                static_cast<int>(subj.position.y - 20),
-                static_cast<int>(subj.position.x + 20),
-                static_cast<int>(subj.position.y + 20),
+                static_cast<int>(worldPos.x - 20),
+                static_cast<int>(worldPos.y - 20),
+                static_cast<int>(worldPos.x + 20),
+                static_cast<int>(worldPos.y + 20),
                 DxLib::GetColor(255, 0, 0), TRUE
             );
         }
     }
 
-    // 2. カメラ描画
     const auto* cameraSpr = RM().GridAt(ResourceKeys::game3_camera);
     if (cameraSpr)
     {
         cameraSpr->Draw(cameraPos);
     }
 
-    // 3. フラッシュ演出
     if (flashAlpha > 0)
     {
         DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, flashAlpha);
@@ -282,8 +280,8 @@ void Game_00::DrawImGui()
     // ---------------------------------------------------------------------
     ImGui::Begin("Hierarchy");
 
-    // リスト領域での右クリックメニュー（オブジェクト追加）
-    if (ImGui::BeginPopupContextWindow("HierarchyContext", ImGuiPopupFlags_MouseButtonRight))
+    // リスト背景の右クリックメニュー（オブジェクト生成）
+    if (ImGui::BeginPopupContextWindow("HierarchyContext", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
     {
         if (ImGui::BeginMenu("Create Object"))
         {
@@ -300,49 +298,62 @@ void Game_00::DrawImGui()
         ImGui::EndPopup();
     }
 
-    // オブジェクト一覧描画
-    for (int i = 0; i < static_cast<int>(subjects.size()); ++i)
+    // ショートカットキーでのコピペ
+    if (ImGui::IsWindowFocused())
     {
-        ImGui::PushID(i);
-        bool isSelected = (selectedObjectIndex == i);
-
-        std::string label = subjects[i].name + (subjects[i].active ? "" : " (Disabled)");
-        if (ImGui::Selectable(label.c_str(), isSelected))
+        if (ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_C) && selectedObjectIndex != -1)
         {
-            selectedObjectIndex = i;
+            copiedObjectId = subjects[selectedObjectIndex].id;
         }
-
-        // 要素個別の右クリックコンテキストメニュー（削除など）
-        if (ImGui::BeginPopupContextItem())
+        if (ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_V) && copiedObjectId != -1)
         {
-            selectedObjectIndex = i;
-            if (ImGui::MenuItem("Delete Object"))
-            {
-                subjects.erase(subjects.begin() + i);
-                if (selectedObjectIndex >= static_cast<int>(subjects.size()))
-                {
-                    selectedObjectIndex = static_cast<int>(subjects.size()) - 1;
-                }
-                ImGui::EndPopup();
-                ImGui::PopID();
-                break;
-            }
-            ImGui::EndPopup();
+            DuplicateObjectRecursive(copiedObjectId, -1);
         }
+    }
 
-        // 保存・読み込みボタンを追加
-        if (ImGui::Button("Save Scene"))
+    // 【修正 2】旧リスト表示を削除し、ルート要素のみツリー描画を開始
+    for (size_t i = 0; i < subjects.size(); ++i)
+    {
+        if (subjects[i].parentId == -1)
         {
-            SaveToFile();
+            DrawHierarchyTree(subjects[i].id);
         }
-        ImGui::SameLine();
-        if (ImGui::Button("Load Scene"))
-        {
-            LoadFromFile();
-        }
-        ImGui::Separator();
+    }
 
-        ImGui::PopID();
+    ImGui::Separator();
+
+    // シーンデータの保存・読み込みUI
+    ImGui::Text("Scene Save / Load");
+    ImGui::InputText("File Name", saveFileNameBuf, sizeof(saveFileNameBuf));
+
+    if (ImGui::Button("Save Scene"))
+    {
+        SaveToFile(saveFileNameBuf);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Load Scene"))
+    {
+        LoadFromFile(saveFileNameBuf);
+    }
+
+    ImGui::Text("Presets:");
+    const char* presets[] = {
+        "game_setumei_9.json",  "game_setumei_10.json",
+        "game_setumei_11.json", "game_setumei_12.json",
+        "game_setumei_13.json", "game_setumei_14.json",
+        "game_setumei_15.json"
+    };
+
+    for (int i = 0; i < 7; ++i)
+    {
+        std::string btnLabel = std::to_string(i + 9);
+        if (i > 0) ImGui::SameLine();
+
+        if (ImGui::Button(btnLabel.c_str()))
+        {
+            strcpy_s(saveFileNameBuf, sizeof(saveFileNameBuf), presets[i]);
+            LoadFromFile(saveFileNameBuf);
+        }
     }
 
     ImGui::End();
@@ -356,9 +367,8 @@ void Game_00::DrawImGui()
     {
         Object& obj = subjects[selectedObjectIndex];
 
-        // 名前変更
         char nameBuf[128];
-        strncpy_s(nameBuf, obj.name.c_str(), sizeof(nameBuf));
+        strcpy_s(nameBuf, sizeof(nameBuf), obj.name.c_str());
         if (ImGui::InputText("Name", nameBuf, sizeof(nameBuf)))
         {
             obj.name = nameBuf;
@@ -367,10 +377,8 @@ void Game_00::DrawImGui()
         ImGui::Checkbox("Active", &obj.active);
         ImGui::Separator();
 
-        // --- Transform セクション ---
         if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            // Position
             float pos[2] = { obj.position.x, obj.position.y };
             if (ImGui::DragFloat2("Position", pos, 1.0f))
             {
@@ -378,14 +386,12 @@ void Game_00::DrawImGui()
                 obj.position.y = pos[1];
             }
 
-            // Rotation (度数法で操作して内部ではラジアン保持)
             float deg = obj.rotation * (180.0f / 3.14159265f);
             if (ImGui::DragFloat("Rotation", &deg, 0.5f))
             {
                 obj.rotation = deg * (3.14159265f / 180.0f);
             }
 
-            // Size (Scale)
             float sz[2] = { obj.size.x, obj.size.y };
             if (ImGui::DragFloat2("Size", sz, 1.0f, 1.0f, 2000.0f))
             {
@@ -394,7 +400,6 @@ void Game_00::DrawImGui()
             }
         }
 
-        // 画面上ギズモの描画処理を適用
         DrawGizmo(obj);
     }
     else
@@ -405,16 +410,13 @@ void Game_00::DrawImGui()
     ImGui::End();
 }
 
-// -------------------------------------------------------------------------
-// 3. 2D ギズモ描画・ドラッグ移動/回転機能
-// -------------------------------------------------------------------------
 void Game_00::DrawGizmo(Object& obj)
 {
     ImDrawList* drawList = ImGui::GetForegroundDrawList();
-    ImVec2 pos = ImVec2(obj.position.x, obj.position.y);
+    DxPlus::Vec2 worldPos = obj.GetWorldPosition(subjects);
+    ImVec2 pos = ImVec2(worldPos.x, worldPos.y);
     ImVec2 mousePos = ImGui::GetMousePos();
 
-    // 選択枠（バウンディングボックス）描画
     float hw = obj.size.x * 0.5f;
     float hh = obj.size.y * 0.5f;
     drawList->AddRect(
@@ -423,7 +425,6 @@ void Game_00::DrawGizmo(Object& obj)
         IM_COL32(255, 255, 0, 255), 0.0f, 0, 1.5f
     );
 
-    // 中心ハンドル (ドラッグで移動)
     static bool isDraggingMove = false;
     static ImVec2 dragOffset = ImVec2(0, 0);
 
@@ -452,7 +453,6 @@ void Game_00::DrawGizmo(Object& obj)
         }
     }
 
-    // 回転ハンドル (上の青い円)
     static bool isDraggingRot = false;
     ImVec2 rotHandlePos = ImVec2(pos.x, pos.y - hh - 30.0f);
     drawList->AddLine(ImVec2(pos.x, pos.y - hh), rotHandlePos, IM_COL32(0, 255, 255, 255), 2.0f);
@@ -473,7 +473,7 @@ void Game_00::DrawGizmo(Object& obj)
         {
             float dx = mousePos.x - pos.x;
             float dy = mousePos.y - pos.y;
-            obj.rotation = std::atan2(dy, dx) + (3.14159265f * 0.5f); // 上方向を0度とする調整
+            obj.rotation = std::atan2(dy, dx) + (3.14159265f * 0.5f);
         }
         else
         {
@@ -482,3 +482,184 @@ void Game_00::DrawGizmo(Object& obj)
     }
 }
 
+Object* Game_00::FindObjectById(int id)
+{
+    for (auto& obj : subjects) { if (obj.id == id) return &obj; }
+    return nullptr;
+}
+
+const Object* Game_00::FindObjectById(int id) const
+{
+    for (const auto& obj : subjects) { if (obj.id == id) return &obj; }
+    return nullptr;
+}
+
+void Game_00::SetParent(int childId, int newParentId)
+{
+    Object* child = FindObjectById(childId);
+    if (!child || child->parentId == newParentId) return;
+
+    if (child->parentId != -1)
+    {
+        Object* oldParent = FindObjectById(child->parentId);
+        if (oldParent)
+        {
+            auto& list = oldParent->childIds;
+            list.erase(std::remove(list.begin(), list.end(), childId), list.end());
+        }
+    }
+
+    child->parentId = newParentId;
+    if (newParentId != -1)
+    {
+        Object* newParent = FindObjectById(newParentId);
+        if (newParent)
+        {
+            newParent->childIds.push_back(childId);
+        }
+    }
+}
+
+void Game_00::DrawHierarchyTree(int objId)
+{
+    Object* obj = FindObjectById(objId);
+    if (!obj) return;
+
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+    if (selectedObjectIndex != -1 && subjects[selectedObjectIndex].id == objId)
+    {
+        flags |= ImGuiTreeNodeFlags_Selected;
+    }
+    if (obj->childIds.empty())
+    {
+        flags |= ImGuiTreeNodeFlags_Leaf;
+    }
+
+    std::string label = obj->name + (obj->active ? "" : " (Disabled)");
+
+    // TreeNodeEx に intptr_t キャストした objId を渡すことでツリー自体の ID を一意化
+    bool nodeOpen = ImGui::TreeNodeEx((void*)(intptr_t)objId, flags, "%s", label.c_str());
+
+    // 選択状態の更新
+    if (ImGui::IsItemClicked())
+    {
+        for (int i = 0; i < static_cast<int>(subjects.size()); ++i)
+        {
+            if (subjects[i].id == objId)
+            {
+                selectedObjectIndex = i;
+                break;
+            }
+        }
+    }
+
+    // --- コンテキストメニュー（ポップアップ）の修正 ---
+    // 第1引数に "HierarchyObjContext" を渡すことでポップアップ自体のIDを固定・一意化します
+    if (ImGui::BeginPopupContextItem("HierarchyObjContext"))
+    {
+        ImGui::PushID(objId); // ポップアップ内部で objId を Push してボタン等の ID 衝突を回避
+
+        if (ImGui::MenuItem("Copy (Include Children)"))
+        {
+            copiedObjectId = objId;
+        }
+        if (ImGui::MenuItem("Paste As Child", nullptr, false, copiedObjectId != -1))
+        {
+            int createdId = DuplicateObjectRecursive(copiedObjectId, objId);
+            SetParent(createdId, objId);
+        }
+        if (obj->parentId != -1)
+        {
+            if (ImGui::MenuItem("Unparent"))
+            {
+                SetParent(objId, -1);
+            }
+        }
+        if (ImGui::MenuItem("Delete"))
+        {
+            SetParent(objId, -1);
+            for (int cId : obj->childIds) { SetParent(cId, -1); }
+            subjects.erase(std::remove_if(subjects.begin(), subjects.end(),
+                [objId](const Object& o) { return o.id == objId; }), subjects.end());
+            selectedObjectIndex = -1;
+
+            ImGui::PopID();
+            ImGui::EndPopup();
+            if (nodeOpen) ImGui::TreePop();
+            return;
+        }
+
+        ImGui::PopID();
+        ImGui::EndPopup();
+    }
+
+    // Drag & Drop
+    if (ImGui::BeginDragDropSource())
+    {
+        ImGui::SetDragDropPayload("HIERARCHY_OBJ", &objId, sizeof(int));
+        ImGui::Text("Move %s", obj->name.c_str());
+        ImGui::EndDragDropSource();
+    }
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_OBJ"))
+        {
+            int draggedId = *(const int*)payload->Data;
+            if (draggedId != objId)
+            {
+                SetParent(draggedId, objId);
+            }
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+    // 子ノードの再帰描画
+    if (nodeOpen)
+    {
+        std::vector<int> children = obj->childIds;
+        for (int childId : children)
+        {
+            DrawHierarchyTree(childId);
+        }
+        ImGui::TreePop();
+    }
+}
+
+// 【修正 1】安全なディープコピー処理（再帰）
+int Game_00::DuplicateObjectRecursive(int srcId, int newParentId)
+{
+    const Object* src = FindObjectById(srcId);
+    if (!src) return -1;
+
+    Object newObj = *src;
+    int newId = nextUniqueId++;
+    newObj.id = newId;
+    newObj.name += "_Copy";
+    newObj.parentId = newParentId;
+    newObj.childIds.clear();
+
+    if (newParentId == -1)
+    {
+        newObj.position.x += 20.0f;
+        newObj.position.y += 20.0f;
+    }
+
+    subjects.push_back(newObj);
+
+    // 子オブジェクトの複製（元の src の childIds を保持してループ）
+    std::vector<int> srcChildren = src->childIds;
+    for (int childId : srcChildren)
+    {
+        int newChildId = DuplicateObjectRecursive(childId, newId);
+
+        // vector が再確保された可能性があるため、あらためてポインタを取得
+        Object* parentObj = FindObjectById(newId);
+        if (parentObj && newChildId != -1)
+        {
+            parentObj->childIds.push_back(newChildId);
+        }
+    }
+
+    return newId;
+}

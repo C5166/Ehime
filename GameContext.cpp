@@ -50,7 +50,6 @@ void GameContext::Update(bool& input)
 {
 	float deltaTime = 1.0f / 60.0f;
 
-	// --- 演出フェーズの更新 ---
 	if (sequenceState != SequenceState::Playing)
 	{
 		sequenceTimer += deltaTime;
@@ -82,44 +81,45 @@ void GameContext::Update(bool& input)
 			break;
 		}
 
-		// 演出再生中はゲームの処理を行わずリターン
 		return;
 	}
 
-	// --- メインゲームの更新（演出終了後のみ進行） ---
 	timer -= deltaTime * TIME_SPEED_RATE;
 
-	// 10秒経過したら次のゲームに移行＆演出リセット
+	// 10秒経過で次のゲームへ移行＆演出リセット
 	if (timer <= 0.0f)
 	{
 		timer = GAME_TIME_LIMIT;
 		Isinit++;
 
-		// 次のミニゲーム用に演出を初期化
+		// 次のゲーム用にResetを実行してランダム要素・指示画像を再初期化
+		switch (Isinit)
+		{
+		case GameNamber::Game_3: game_03.Reset(); break;
+		case GameNamber::Game_2: game_02.Reset(); break;
+		case GameNamber::Game_0: game_00.Reset(); break;
+		}
+
 		sequenceState = SequenceState::Explanation;
 		sequenceTimer = 0.0f;
 	}
+
 	if (!(playerHP < 1)) {
-		// 各ゲームの更新
 		switch (Isinit)
 		{
 		case GameNamber::Game_3:
 			game_03.Update(playerHP, totalScore);
 			break;
-
 		case GameNamber::Game_2:
 			game_02.Update(playerHP, totalScore);
 			break;
-
 		case GameNamber::Game_0:
 			game_00.Update(playerHP, totalScore);
 			break;
-
 		default:
 			break;
 		}
 	}
-
 }
 
 void GameContext::DrawTimer() const
@@ -136,13 +136,13 @@ void GameContext::DrawTimer() const
 			const auto* sprTens = RM().GridAt(ResourceKeys::number_countdown_b, tens, 0);
 			const auto* sprOnes = RM().GridAt(ResourceKeys::number_countdown_b, ones, 0);
 
-			if (sprTens) sprTens->Draw({ TIMER_POS.x - DIGIT_OFFSET_X * 0.5f, TIMER_POS.y });
-			if (sprOnes) sprOnes->Draw({ TIMER_POS.x + DIGIT_OFFSET_X * 0.5f, TIMER_POS.y });
+			if (sprTens) sprTens->Draw({ TIMER_POS.x - DIGIT_OFFSET_X * 0.5f, TIMER_POS.y },{0.7,0.7});
+			if (sprOnes) sprOnes->Draw({ TIMER_POS.x + DIGIT_OFFSET_X * 0.5f, TIMER_POS.y },{ 0.7,0.7 });
 		}
 		else
 		{
 			const auto* spr = RM().GridAt(ResourceKeys::number_countdown_b, displayTime, 0);
-			if (spr) spr->Draw(TIMER_POS);
+			if (spr) spr->Draw(TIMER_POS,{ 0.7,0.7 });
 		}
 	}
 	else
@@ -157,7 +157,7 @@ void GameContext::DrawTimer() const
 		const auto* animSpr = RM().GridAt(ResourceKeys::number_countdown_321, gridX, gridY);
 		if (animSpr)
 		{
-			animSpr->Draw(TIMER_POS);
+			animSpr->Draw(TIMER_POS, { 0.7,0.7 });
 		}
 	}
 }
@@ -196,18 +196,25 @@ void GameContext::DrawSequenceUI() const
 	{
 	case SequenceState::Explanation:
 	{
-		if (Game_setumei_2) Game_setumei_2->Draw({0,0});
+		// Game_03 が選択されている場合は動的説明画像を描画
+		if (Isinit == GameNamber::Game_3)
+		{
+			const auto* spr = game_03.GetExplanationSprite();
+			if (spr) spr->Draw({ 0, 0 });
+		}
+		else
+		{
+			if (Game_setumei_2) Game_setumei_2->Draw({ 0,0 });
+		}
 	}
 	break;
 
 	case SequenceState::Countdown:
 	{
-		// 3 -> 2 -> 1 の順に切り替え (0.0s~1.0s: '3' / 1.0s~2.0s: '2' / 2.0s~3.0s: '1')
 		int countStep = static_cast<int>(sequenceTimer / COUNTDOWN_STEP_TIME);
-		int animX = 2 - countStep; // コマ0='1', 1='2', 2='3' なので 3 からカウントダウン
+		int animX = 2 - countStep;
 		if (animX < 0) animX = 0;
 
-		// ↓↓↓ 直接 RM().GridAt に animX を渡して描画します ↓↓↓
 		const auto* spr = RM().GridAt(ResourceKeys::game_start123, animX, 0);
 		if (spr) spr->Draw(COUNTDOWN_POS);
 	}
@@ -225,7 +232,6 @@ void GameContext::DrawSequenceUI() const
 	break;
 
 	case SequenceState::Playing:
-
 		break;
 	}
 }
