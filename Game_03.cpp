@@ -14,6 +14,8 @@ namespace
         return s >= 0.0f && t >= 0.0f && (1.0f - s - t) >= 0.0f;
     }
 
+
+
     bool IsPointInsideHeart(DxPlus::Vec2 point, DxPlus::Vec2 center, DxPlus::Vec2 size)
     {
         float w = size.x;

@@ -99,6 +99,11 @@ private:
     const int perfectColumns{ 10 };
     int perfectFrameW{ 0 };
     int perfectFrameH{ 0 };
+    // 完了演出（game_perfect）の表示時間とフェード設定
+    int perfectDisplayFrames{ 120 }; // 表示時間（フレーム、60fpsで2秒）
+    int perfectFadeFrames{ 12 };     // フェードイン／アウト時間（フレーム）
+    int perfectElapsedFrames{ 0 };
+    int perfectAlpha{ 255 };
 
     int playerHP{ 3 };
     int totalScore{ 0 };

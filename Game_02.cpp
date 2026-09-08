@@ -107,12 +107,12 @@ void Game_02::Reset()
     // TODO: leftValue/rightValue に問題ごとの数値（合計や積）を設定してください。
     // 例: 左が 5x3, 右が 3x4 の場合は leftValue[0]=15, rightValue[0]=12 のように設定します。
     // デフォルトでは -1 のままで、既存の leftIsMoreTable が使用されます。
-    leftValue[0] = 12; rightValue[0] = 15;
-    leftValue[1] = 100; rightValue[1] = 48;
-    leftValue[2] = 1.3; rightValue[2] = 2;
-    leftValue[3] = 2126; rightValue[3] = 10020;
-    leftValue[4] = -100; rightValue[4] = -90;
-    leftValue[5] = 0.20833333333; rightValue[5] = 1;
+    // デフォルトでは未設定(-1)にして既存のテーブルを使用する
+    for (int i = 0; i < 6; ++i) { leftValue[i] = -1; rightValue[i] = -1; }
+
+    // リセット時に正解カウント等をクリア
+    correctCount = 0;
+    completed = false;
 }
 
 void Game_02::Update(int& hp, int& score)
@@ -161,6 +161,13 @@ void Game_02::Update(int& hp, int& score)
                 int soundIdx = GetRand(2);
                 PlaySoundMem(good[soundIdx], DX_PLAYTYPE_BACK);
                 score++;
+                correctCount++;
+                if (correctCount >= 6)
+                {
+                    completed = true;
+                    // play perfect sound
+                    if (perfect >= 0) PlaySoundMem(perfect, DX_PLAYTYPE_BACK);
+                }
             }
             else
             {
