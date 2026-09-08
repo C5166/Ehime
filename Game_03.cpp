@@ -62,7 +62,8 @@ void Game_03::Init()
     perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
 
 
-    setumeivoice = RM().GetSound(ResourceKeys::SE_GameVoice1);
+    setumeivoice[0] = RM().GetSound(ResourceKeys::SE_GameVoice1_1);
+    setumeivoice[1] = RM().GetSound(ResourceKeys::SE_GameVoice1_2);
 
     //Reset();
 }
@@ -73,13 +74,14 @@ void Game_03::Reset()
     int ruleIdx = rand() % 6;
     currentRule = static_cast<RuleType>(ruleIdx);
     currentExplanationSpr = explanationSprites[ruleIdx];
-
+    if (ruleIdx <= 2) {
+        DxLib::PlaySoundMem(setumeivoice[0], DX_PLAYTYPE_BACK);
+    }
+    else if(ruleIdx >= 2){
+        DxLib::PlaySoundMem(setumeivoice[1], DX_PLAYTYPE_BACK);
+	}
     SpawnBalls();
 
-    if (setumeivoice >= 0)
-    {
-        DxLib::PlaySoundMem(setumeivoice, DX_PLAYTYPE_BACK);
-    }
 }
 
 void Game_03::SpawnBalls()

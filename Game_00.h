@@ -96,7 +96,7 @@ private:
     // ディープコピー処理（子要素もまとめて複製）
     int DuplicateObjectRecursive(int srcId, int newParentId = -1);
 
-    int setumeivoice;
+    int setumeivoice[4];
 
     // 現在選択されているパターンのインデックス
     int currentTargetIndex{ 0 };

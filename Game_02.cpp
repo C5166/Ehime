@@ -83,25 +83,27 @@ void Game_02::Init()
     poti = RM().GetSound(ResourceKeys::SE_poti);
     bubu = RM().GetSound(ResourceKeys::SE_bubu);
     perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
-    setumeivoice = RM().GetSound(ResourceKeys::SE_GameVoice2);
+    setumeivoice[0] = RM().GetSound(ResourceKeys::SE_GameVoice2_1);
+    setumeivoice[1] = RM().GetSound(ResourceKeys::SE_GameVoice2_2);
 
-    Reset();
 }
 
 void Game_02::Reset()
 {
     change = 0;
-
+    int ruleIdx = rand() % 2 == 0;
     // 指示画像をランダムで切り替え（game_setumei_7: 多いほう / game_setumei_8: 少ないほう）
-    if (rand() % 2 == 0)
+    if (ruleIdx==0)
     {
         instructionType = Game02InstructionType::More;
         currentExplanationSpr = RM().GridAt(ResourceKeys::game_setumei_7);
+		PlaySoundMem(setumeivoice[0], DX_PLAYTYPE_BACK);
     }
-    else
+    else if(ruleIdx==1)
     {
         instructionType = Game02InstructionType::Less;
         currentExplanationSpr = RM().GridAt(ResourceKeys::game_setumei_8);
+        PlaySoundMem(setumeivoice[1], DX_PLAYTYPE_BACK);
     }
 
     // TODO: leftValue/rightValue に問題ごとの数値（合計や積）を設定してください。

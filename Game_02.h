@@ -69,7 +69,7 @@ private:
 
     int perfect;
 
-    int setumeivoice;
+    int setumeivoice[2];
 
     // 正解カウントと完了フラグ
     int correctCount{ 0 };
