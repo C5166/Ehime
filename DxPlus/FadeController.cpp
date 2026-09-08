@@ -18,7 +18,7 @@ namespace DxPlus
             state = State::Stay;
             return;
         }
-        timer = duration; // duration から 0.0f へカウントダウン
+        timer = 0.0f; // 0.0f から duration へカウントアップする方式に統一
         state = State::FadeIn;
     }
 
@@ -28,7 +28,7 @@ namespace DxPlus
         if (duration <= 0.0f)
         {
             timer = 0.0f;
-            state = State::FadeOut;
+            state = State::Stay;
             return;
         }
         timer = 0.0f; // 0.0f から duration へカウントアップ
@@ -37,27 +37,20 @@ namespace DxPlus
 
     void FadeController::Update()
     {
-        if (duration <= 0.0f)
+        if (duration <= 0.0f || state == State::Stay)
         {
             return;
         }
 
         float speed = 1.0f / (duration * 60.0f);
-        if (state == State::FadeIn)
+        timer += speed;
+
+        if (timer >= duration)
         {
-            timer -= speed;
-            if (timer <= 0.0f)
+            timer = duration;
+            if (state == State::FadeIn)
             {
-                timer = 0.0f;
-                state = State::Stay;
-            }
-        }
-        else if (state == State::FadeOut)
-        {
-            timer += speed;
-            if (timer >= duration)
-            {
-                timer = duration;
+                state = State::Stay; // フェードイン完了で非表示状態へ
             }
         }
     }
@@ -67,28 +60,32 @@ namespace DxPlus
         if (state == State::Stay || duration <= 0.0f) { return; }
 
         int frameIndex = 0;
+        const wchar_t* resourceKey = nullptr;
+
+        // 進行度: 開始(0.0) -> 終了(1.0)
+        float progress = std::clamp(timer / duration, 0.0f, 1.0f);
 
         if (state == State::FadeIn)
         {
-            // 前半15コマ (14 -> 0)
-            float progress = std::clamp(timer / duration, 0.0f, 1.0f);
-            int totalFrames = 15;
-            int offset = static_cast<int>(progress * (totalFrames - 1));
-            frameIndex = offset; // 14から0に向かって再生
+            // transition_1: 0コマ目(完全に覆う) -> 15コマ目(画面が開く)
+            int offset = static_cast<int>(progress * 15.0f + 0.5f);
+            frameIndex = std::clamp(offset, 0, 15);
+            resourceKey = ResourceKeys::transition_1;
         }
         else if (state == State::FadeOut)
         {
-            // 後半15コマ (15 -> 29)
-            float progress = std::clamp(timer / duration, 0.0f, 1.0f);
-            int totalFrames = 15;
-            int offset = static_cast<int>(progress * (totalFrames - 1));
-            frameIndex = 15 + offset; // 15から29に向かって再生
+            // transition_2: 0コマ目(画面が開いている) -> 15コマ目(完全に覆う)
+            int offset = static_cast<int>(progress * 15.0f + 0.5f);
+            frameIndex = std::clamp(offset, 0, 15);
+            resourceKey = ResourceKeys::transition_2;
         }
+
+        if (!resourceKey) { return; }
 
         int gridX = frameIndex % 10;
         int gridY = frameIndex / 10;
 
-        const auto* sprite = RM().GridAt(ResourceKeys::transition, gridX, gridY);
+        const auto* sprite = RM().GridAt(resourceKey, gridX, gridY);
         if (sprite)
         {
             int handle = sprite->GetID();

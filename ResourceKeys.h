@@ -91,8 +91,13 @@ namespace ResourceKeys
     inline constexpr const wchar_t* game_3_kesi3 = L"game_3_kesi3";
 
 	// ===== Transition =====
-	inline constexpr const wchar_t* transition = L"transition";
+	inline constexpr const wchar_t* transition_1 = L"transition_1"; // フェードイン用
+	inline constexpr const wchar_t* transition_2 = L"transition_2"; // フェードアウト用
 
     // ===== Fonts =====
     inline constexpr const wchar_t* Font_Title = L"Bitcount Light";
+
+	// ===== Mouse Cursor =====
+	inline constexpr const wchar_t* cursor_1 = L"cursor_1";
+	inline constexpr const wchar_t* cursor_2 = L"cursor_2";
 }

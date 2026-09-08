@@ -25,7 +25,12 @@ void ResourceManager::LoadAll()
     LoadGridCenter(ResourceKeys::number_countdown_b, L"./Data/Images/number_countdown_b.png", { 0,0 }, { 10,1 }, { 180,126 });
     LoadGridCenter(ResourceKeys::number_countdown_321, L"./Data/Images/number_countdown_321.png", { 0,0 }, { 10,18 }, { 180,126 });
 
-    LoadGridLeftTop(ResourceKeys::transition, L"./Data/Images/transition.png", { 0, 0 }, { 10, 3 }, { 768, 432 });
+    LoadGridLeftTop(ResourceKeys::transition_1, L"./Data/Images/transition_2.png", { 0, 0 }, { 10, 2 }, { 768, 432 });
+    LoadGridLeftTop(ResourceKeys::transition_2, L"./Data/Images/transition_1.png", { 0, 0 }, { 10, 2 }, { 768, 432 });
+
+    LoadTextureAsSpriteLeftTop(ResourceKeys::cursor_1, L"./Data/Images/cursor_1.png");
+    LoadTextureAsSpriteLeftTop(ResourceKeys::cursor_2, L"./Data/Images/cursor_2.png");
+
 
 	//GameClearの画像
     LoadTextureAsSpriteLeftTop(ResourceKeys::gameclear_background, L"./Data/Images/gameclear_background.png");
