@@ -103,6 +103,16 @@ void Game_02::Reset()
         instructionType = Game02InstructionType::Less;
         currentExplanationSpr = RM().GridAt(ResourceKeys::game_setumei_8);
     }
+
+    // TODO: leftValue/rightValue に問題ごとの数値（合計や積）を設定してください。
+    // 例: 左が 5x3, 右が 3x4 の場合は leftValue[0]=15, rightValue[0]=12 のように設定します。
+    // デフォルトでは -1 のままで、既存の leftIsMoreTable が使用されます。
+    leftValue[0] = 12; rightValue[0] = 15;
+    leftValue[1] = 100; rightValue[1] = 48;
+    leftValue[2] = 1.3; rightValue[2] = 2;
+    leftValue[3] = 2126; rightValue[3] = 10020;
+    leftValue[4] = -100; rightValue[4] = -90;
+    leftValue[5] = 0.20833333333; rightValue[5] = 1;
 }
 
 void Game_02::Update(int& hp, int& score)
@@ -126,7 +136,18 @@ void Game_02::Update(int& hp, int& score)
         if (isLeftClicked || isRightClicked)
         {
             // 現在の画像で「合計が多いほう」は左か？
-            bool leftIsMore = leftIsMoreTable[change];
+            bool leftIsMore = false;
+            if ((leftValue[change] >= 0) || (rightValue[change] >= 0))
+            {
+                int lv = (leftValue[change] >= 0) ? leftValue[change] : 0;
+                int rv = (rightValue[change] >= 0) ? rightValue[change] : 0;
+                leftIsMore = (lv > rv);
+            }
+            else
+            {
+                // フォールバック: 既存のテーブルを使用
+                leftIsMore = leftIsMoreTable[change];
+            }
 
             // 今回の指示における「正解」は左かどうか
             // More（多いほう）なら leftIsMore、Less（少ないほう）ならその逆
