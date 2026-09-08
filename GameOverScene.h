@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "GameContext.h"
+#include <algorithm>
 
 class GameOverScene final : public Scene
 {
@@ -15,6 +16,16 @@ public:
 private:
     void UpdateGameOverLogoAnimation(); // アニメーション計算用
     void DrawGameOverUI() const;
+
+    // マウス中心点と円形オブジェクトの当たり判定
+    bool CheckMouseCircleCollision(int mouseX, int mouseY, float mouseRadius, float targetX, float targetY, float targetRadius) const
+    {
+        float dx = static_cast<float>(mouseX) - targetX;
+        float dy = static_cast<float>(mouseY) - targetY;
+        float distanceSq = dx * dx + dy * dy;
+        float radiusSum = mouseRadius + targetRadius;
+        return distanceSq <= (radiusSum * radiusSum);
+    }
 
 private:
     bool isGameOverInput{ false };
@@ -40,13 +51,20 @@ private:
 
     int bgm;
 
-    int  touch[5];
+    int touch[5];
     int a;
     int poti;
     int kirakira;
 
     int voice;
 
-	GameContext gameContext;
+    GameContext gameContext;
 
+    // --- 当たり判定設定（調整可能パラメータ） ---
+    float mouseCollisionRadius = 50.0f;       // マウスの判定半径
+    float characterX = 960.0f;                // キャラクター基準位置X
+    float characterY = 540.0f;                // キャラクター基準位置Y
+    float characterOffsetX = 0.0f;            // 判定円のオフセットX
+    float characterOffsetY = 0.0f;            // 判定円のオフセットY
+    float characterRadius = 400.0f;           // キャラクターの判定半径
 };

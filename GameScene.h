@@ -4,6 +4,7 @@
 #pragma once
 #include "Scene.h"
 #include "GameContext.h"
+#include <algorithm>
 
 class GameScene final : public Scene
 {
@@ -14,11 +15,13 @@ public:
     void Render() const override;
     void End() override;
 
-	void SetGameOverInput(bool input) { isGameOverInput = input; }
-	bool GetGameOverInput() const { return isGameOverInput; }
+    void SetGameOverInput(bool input) { isGameOverInput = input; }
+    bool GetGameOverInput() const { return isGameOverInput; }
 
 private:
+    bool isGameOverInput{ false };
 
-	bool isGameOverInput{ false };
-
+    // --- マウス設定（サイズ＆判定） ---
+    float mouseScale = 1.0f;            // マウスカーソルの表示スケール
+    float mouseCollisionRadius = 60.0f; // マウスの判定半径
 };

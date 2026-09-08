@@ -108,8 +108,8 @@ namespace ResourceKeys
 	inline constexpr const wchar_t* game_stage_2 = L"game_stage_2";
 
 	// ===== Transition =====
-	inline constexpr const wchar_t* transition_1 = L"transition_1"; // フェードイン用
-	inline constexpr const wchar_t* transition_2 = L"transition_2"; // フェードアウト用
+	//inline constexpr const wchar_t* transition_1 = L"transition_1"; // フェードイン用
+	//inline constexpr const wchar_t* transition_2 = L"transition_2"; // フェードアウト用
 
     // ===== Fonts =====
     inline constexpr const wchar_t* Font_Title = L"Bitcount Light";

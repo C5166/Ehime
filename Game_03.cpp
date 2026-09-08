@@ -38,6 +38,16 @@ namespace
 
         return IsPointInTriangle(point, tLeft, tRight, tBottom);
     }
+
+    // 円と円の当たり判定関数
+    bool CheckCircleCollision(DxPlus::Vec2 pos1, float radius1, DxPlus::Vec2 pos2, float radius2)
+    {
+        float dx = pos1.x - pos2.x;
+        float dy = pos1.y - pos2.y;
+        float distanceSq = dx * dx + dy * dy;
+        float radiusSum = radius1 + radius2;
+        return distanceSq <= (radiusSum * radiusSum);
+    }
 }
 
 void Game_03::Init()
@@ -119,7 +129,7 @@ void Game_03::SpawnBalls()
     }
 }
 
-void Game_03::Update(int& hp, int& score)
+void Game_03::Update(int& hp, int& score, float mouseRadius)
 {
     using namespace DxPlus::Input;
     int button = GetButtonDown(PLAYER1);
@@ -133,7 +143,6 @@ void Game_03::Update(int& hp, int& score)
     }
 
     // 移動および壁反射処理
-
     for (auto& ball : balls)
     {
         if (!ball.active) continue;
@@ -164,7 +173,11 @@ void Game_03::Update(int& hp, int& score)
             auto& ball = balls[i];
             if (!ball.active) continue;
 
-            if (IsPointInsideHeart(mousePos, ball.position, ball.size))
+            // ハート側の判定半径（サイズに合わせて調整可能。0.4f〜0.45f程度が適正）
+            float ballRadius = ball.size.x * 0.4f;
+
+            // マウスの円とハートの円の当たり判定
+            if (CheckCircleCollision(mousePos, mouseRadius, ball.position, ballRadius))
             {
                 ball.active = false;
 
@@ -204,23 +217,39 @@ bool Game_03::AllTargetsCollected() const
     switch (currentRule)
     {
     case RuleType::PickGreen:
-        for (const auto& ball : balls)
-        {
+        for (const auto& ball : balls) {
             if (ball.active && ball.type == BallType::Green) return false;
         }
         return true;
 
     case RuleType::PickRed:
-        for (const auto& ball : balls)
-        {
+        for (const auto& ball : balls) {
             if (ball.active && ball.type == BallType::Red) return false;
         }
         return true;
 
     case RuleType::PickBlue:
-        for (const auto& ball : balls)
-        {
+        for (const auto& ball : balls) {
             if (ball.active && ball.type == BallType::Blue) return false;
+        }
+        return true;
+
+        // --- 以下の回避ルールを追加 ---
+    case RuleType::AvoidBlue: // 青以外（赤と緑）がなくなったらクリア
+        for (const auto& ball : balls) {
+            if (ball.active && (ball.type == BallType::Red || ball.type == BallType::Green)) return false;
+        }
+        return true;
+
+    case RuleType::AvoidRed: // 赤以外（青と緑）がなくなったらクリア
+        for (const auto& ball : balls) {
+            if (ball.active && (ball.type == BallType::Blue || ball.type == BallType::Green)) return false;
+        }
+        return true;
+
+    case RuleType::AvoidGreen: // 緑以外（赤と青）がなくなったらクリア
+        for (const auto& ball : balls) {
+            if (ball.active && (ball.type == BallType::Red || ball.type == BallType::Blue)) return false;
         }
         return true;
 

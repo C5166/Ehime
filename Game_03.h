@@ -20,7 +20,7 @@ public:
     Game_03() = default;
     void Init();
     void Reset();
-    void Update(int& hp, int& score);
+    void Update(int& hp, int& score, float mouseRadius = 50.0f);
     void Draw(int hp, int score) const;
 
     // 現在の指示画像を取得する関数
