@@ -66,5 +66,5 @@ private:
 
     int perfect;
 
-    int setumeivoice;
+    int setumeivoice[2];
 };

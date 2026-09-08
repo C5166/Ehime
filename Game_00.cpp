@@ -39,9 +39,11 @@ void Game_00::Init()
 
     perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
 
-    setumeivoice = RM().GetSound(ResourceKeys::SE_GameVoice1);
+    setumeivoice[0] = RM().GetSound(ResourceKeys::SE_GameVoice3_1);
+    setumeivoice[1] = RM().GetSound(ResourceKeys::SE_GameVoice3_2);
+    setumeivoice[2] = RM().GetSound(ResourceKeys::SE_GameVoice3_3);
+    setumeivoice[3] = RM().GetSound(ResourceKeys::SE_GameVoice3_4);
 
-    Reset();
 }
 
 bool Game_00::AllTargetsCollected() const
@@ -116,6 +118,23 @@ void Game_00::Reset()
     if (subjects.empty())
     {
         AddObject(targetObjectType, "Target_Object");
+    }
+
+    if (targetObjectType == ObjectType::Neko)
+    {
+        PlaySoundMem(setumeivoice[1], DX_PLAYTYPE_BACK);
+    }
+    else if (targetObjectType == ObjectType::Hitu)
+    {
+        PlaySoundMem(setumeivoice[3], DX_PLAYTYPE_BACK);
+    }
+    else if (targetObjectType == ObjectType::Inu)
+    {
+        PlaySoundMem(setumeivoice[0], DX_PLAYTYPE_BACK);
+    }
+    else if (targetObjectType == ObjectType::Kesi1 || targetObjectType == ObjectType::Kesi2 || targetObjectType == ObjectType::Kesi3)
+    {
+        PlaySoundMem(setumeivoice[2], DX_PLAYTYPE_BACK);
     }
 }
 

@@ -33,9 +33,14 @@ namespace ResourceKeys
 
 	inline constexpr const wchar_t* SE_StartVoice = L"StartVoice";
 
-	inline constexpr const wchar_t* SE_GameVoice1 = L"GameVoice1";
-	inline constexpr const wchar_t* SE_GameVoice2 = L"GameVoice2";
-	inline constexpr const wchar_t* SE_GameVoice3 = L"GameVoice3";
+	inline constexpr const wchar_t* SE_GameVoice1_1 = L"GameVoice1_1";
+	inline constexpr const wchar_t* SE_GameVoice1_2 = L"GameVoice1_2";
+	inline constexpr const wchar_t* SE_GameVoice2_1 = L"GameVoice2_1";
+	inline constexpr const wchar_t* SE_GameVoice2_2 = L"GameVoice2_2";
+	inline constexpr const wchar_t* SE_GameVoice3_1 = L"GameVoice3_1";
+	inline constexpr const wchar_t* SE_GameVoice3_2 = L"GameVoice3_2";
+	inline constexpr const wchar_t* SE_GameVoice3_3 = L"GameVoice3_3";
+	inline constexpr const wchar_t* SE_GameVoice3_4 = L"GameVoice3_4";
 
 	inline constexpr const wchar_t* SE_GameStart = L"GameStart";
 	inline constexpr const wchar_t* SE_Camera = L"Camera";
