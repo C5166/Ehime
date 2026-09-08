@@ -36,4 +36,14 @@ private:
     const DxPlus::Sprite::SpriteBase* gameover_background{ nullptr };
     const DxPlus::Sprite::SpriteBase* gameover_character_1{ nullptr };
     const DxPlus::Sprite::SpriteBase* gameover_character_2{ nullptr };
+
+    int bgm;
+
+    int  touch[5];
+    int a;
+    int poti;
+    int kirakira;
+
+    int voice;
+
 };

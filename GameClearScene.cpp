@@ -18,6 +18,24 @@ void GameClearScene::Init()
     logoAnimTimer = 0;
     currentLogoIndex = 0;
 
+    touch[0] = RM().GetSound(ResourceKeys::SE_TouchVoice1);
+    touch[1] = RM().GetSound(ResourceKeys::SE_TouchVoice2);
+    touch[2] = RM().GetSound(ResourceKeys::SE_TouchVoice3);
+    touch[3] = RM().GetSound(ResourceKeys::SE_TouchVoice4);
+    touch[4] = RM().GetSound(ResourceKeys::SE_TouchVoice5);
+
+    poti = RM().GetSound(ResourceKeys::SE_poti);
+    kirakira = RM().GetSound(ResourceKeys::SE_kirakira);
+
+
+    voice = RM().GetSound(ResourceKeys::SE_GameClearVoice);
+    int bgm = RM().GetMusic(ResourceKeys::BGM_Game);
+    if (bgm >= 0)
+    {
+        PlaySoundMem(voice, DX_PLAYTYPE_BACK);
+        DxLib::ChangeVolumeSoundMem(128, bgm);
+        DxLib::PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
+    }
     StartFadeIn();
 }
 
@@ -28,6 +46,15 @@ void GameClearScene::Update()
 
     if (buttonDown & BUTTON_START || buttonDown & BUTTON_TRIGGER2)
     {
+        if (isGameClearInputCount <= isGameClearInputMax)
+        {
+            a++;
+            PlaySoundMem(touch[a], DX_PLAYTYPE_BACK);
+            if (a >= 4)
+            {
+                a = 0;
+            }
+        }
         isGameClearInput = true;
         isGameClearInputCount++;
     }
@@ -42,6 +69,9 @@ void GameClearScene::Update()
         Scene* titleScene = SceneManager::GetInstance().GetScene(SceneID::Title);
         SetNextScene(titleScene);
         StartFadeOut();
+        if (CheckSoundMem(kirakira) == 0) {
+            PlaySoundMem(kirakira, DX_PLAYTYPE_BACK);
+        }
     }
 
     // ロゴのアニメーションを更新（常にループ）

@@ -48,4 +48,6 @@ private:
 
     int perfect;
 
+    int setumeivoice;
+
 };

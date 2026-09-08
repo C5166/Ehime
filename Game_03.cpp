@@ -59,7 +59,10 @@ void Game_03::Init()
     good[2] = RM().GetSound(ResourceKeys::SE_GoodVoice3);
     perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
 
-    Reset();
+
+    setumeivoice = RM().GetSound(ResourceKeys::SE_GameVoice1);
+
+    //Reset();
 }
 
 void Game_03::Reset()
@@ -70,6 +73,11 @@ void Game_03::Reset()
     currentExplanationSpr = explanationSprites[ruleIdx];
 
     SpawnBalls();
+
+    if (setumeivoice >= 0)
+    {
+        DxLib::PlaySoundMem(setumeivoice, DX_PLAYTYPE_BACK);
+    }
 }
 
 void Game_03::SpawnBalls()
@@ -121,6 +129,7 @@ void Game_03::Update(int& hp, int& score)
     }
 
     // 移動および壁反射処理
+
     for (auto& ball : balls)
     {
         if (!ball.active) continue;
@@ -188,6 +197,7 @@ void Game_03::Update(int& hp, int& score)
 
 void Game_03::Draw(int hp, int score) const
 {
+
     for (const auto& ball : balls)
     {
         if (!ball.active) continue;

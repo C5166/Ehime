@@ -62,7 +62,7 @@ private:
     int good[3];
     int perfect;
 
-    int nextUniqueId{ 1 };          // ID自動インクリメント用
+        int nextUniqueId{ 1 };          // ID自動インクリメント用
     int copiedObjectId{ -1 };        // コピー中のオブジェクトID
 
     // ID検索ヘルパー
@@ -77,4 +77,7 @@ private:
 
     // ディープコピー処理（子要素もまとめて複製）
     int DuplicateObjectRecursive(int srcId, int newParentId = -1);
+
+    int setumeivoice;
+
 };

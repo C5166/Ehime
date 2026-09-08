@@ -71,6 +71,14 @@ void ResourceManager::LoadAll()
 	LoadTextureAsSpriteCenter(ResourceKeys::game_3_kesi3, L"./Data/Images/game_3_kesi3.png");
 
     LoadMusic(ResourceKeys::BGM_Game,       L"./Data/Sounds/sanjinooyatsu.mp3");
+    LoadMusic(ResourceKeys::SE_GameOver,       L"./Data/Sounds/bgm_gameover.mp3");
+    LoadSound(ResourceKeys::SE_GameOverVoice, L"./Data/Sounds/ゲームオーバ/voice_gameover.mp3");
+    LoadSound(ResourceKeys::SE_GameClearVoice, L"./Data/Sounds/ゲームクリア/voice_gameclear.mp3");
+
+    LoadSound(ResourceKeys::SE_GameVoice1, L"./Data/Sounds/説明ボイス/voice_setumei_1.mp3");//ハート拾い
+    LoadSound(ResourceKeys::SE_GameVoice2, L"./Data/Sounds/説明ボイス/voice_setumei_3.mp3");//多いほう
+    LoadSound(ResourceKeys::SE_GameVoice3, L"./Data/Sounds/説明ボイス/voice_setumei_6.mp3");//犬探す
+
     LoadSound(ResourceKeys::SE_Explosion,   L"./Data/Sounds/Explosion.mp3");
 
 	LoadSound(ResourceKeys::SE_TouchVoice1, L"./Data/Sounds/タイトル_胸を押したときのボイス/voice_mune_baka.mp3");
