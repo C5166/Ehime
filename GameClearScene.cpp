@@ -37,11 +37,12 @@ void GameClearScene::Init()
         DxLib::PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
     }
     StartFadeIn();
+    // Reset game context once on entering GameClearScene (avoid heavy per-frame reset)
+    gameContext.Reset();
 }
 
 void GameClearScene::Update()
 {
-	gameContext.Reset();
     using namespace DxPlus::Input;
     int buttonDown = GetButtonDown(PLAYER1);
 

@@ -11,6 +11,9 @@ void GameOverScene::Init()
     gameover_character_1 = RM().GridAt(ResourceKeys::gameover_character_1);
     gameover_character_2 = RM().GridAt(ResourceKeys::gameover_character_2);
 
+    // Reset game context once when entering GameOverScene (avoid per-frame reset)
+    gameContext.Reset();
+
 
     touch[0] = RM().GetSound(ResourceKeys::SE_TouchVoice1);
     touch[1] = RM().GetSound(ResourceKeys::SE_TouchVoice2);
@@ -43,7 +46,6 @@ void GameOverScene::Init()
 
 void GameOverScene::Update()
 {
-	gameContext.Reset();
     using namespace DxPlus::Input;
     int buttonDown = GetButtonDown(PLAYER1);
 
