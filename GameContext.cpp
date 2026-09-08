@@ -524,6 +524,20 @@ void GameContext::Draw() const
 
 
 	}
+	else if (Isinit == GameNamber::Game_3)
+	{
+		const auto* moziSpr = game_03.GetMoziSprite();
+		if (moziSpr)
+		{
+			DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+			// Game_00 と同じ位置、または適切な位置に設定
+			DxPlus::Vec2 moziPos = { 300.0f, DxPlus::CLIENT_HEIGHT - 50.0f };
+			DxPlus::Vec2 moziScale = { 1.0f, 1.0f };
+
+			moziSpr->Draw(moziPos, moziScale);
+		}
+	}
 	DrawTimer();
 	DrawHP();
 

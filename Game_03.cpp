@@ -64,6 +64,13 @@ void Game_03::Init()
     explanationSprites[4] = RM().GridAt(ResourceKeys::game_setumei_5);
     explanationSprites[5] = RM().GridAt(ResourceKeys::game_setumei_6);
 
+    moziSprites[0] = RM().GridAt(ResourceKeys::game_mozi_1);
+    moziSprites[1] = RM().GridAt(ResourceKeys::game_mozi_2);
+    moziSprites[2] = RM().GridAt(ResourceKeys::game_mozi_3);
+    moziSprites[3] = RM().GridAt(ResourceKeys::game_mozi_4);
+    moziSprites[4] = RM().GridAt(ResourceKeys::game_mozi_5);
+    moziSprites[5] = RM().GridAt(ResourceKeys::game_mozi_6);
+
     poti = RM().GetSound(ResourceKeys::SE_poti);
     bubu = RM().GetSound(ResourceKeys::SE_bubu);
     good[0] = RM().GetSound(ResourceKeys::SE_GoodVoice1);
@@ -84,6 +91,7 @@ void Game_03::Reset()
     int ruleIdx = rand() % 6;
     currentRule = static_cast<RuleType>(ruleIdx);
     currentExplanationSpr = explanationSprites[ruleIdx];
+    currentMoziSpr = moziSprites[ruleIdx];
     if (ruleIdx <= 2) {
         DxLib::PlaySoundMem(setumeivoice[0], DX_PLAYTYPE_BACK);
     }

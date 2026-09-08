@@ -111,6 +111,13 @@ namespace ResourceKeys
 	inline constexpr const wchar_t* game_stage_2 = L"game_stage_2";
 
 
+	inline const wchar_t* game_mozi_1 = L"game_mozi_1";
+	inline const wchar_t* game_mozi_2 = L"game_mozi_2";
+	inline const wchar_t* game_mozi_3 = L"game_mozi_3";
+	inline const wchar_t* game_mozi_4 = L"game_mozi_4";
+	inline const wchar_t* game_mozi_5 = L"game_mozi_5";
+	inline const wchar_t* game_mozi_6 = L"game_mozi_6";
+
 	inline const wchar_t* game_mozi_9 = L"game_mozi_9";
 	inline const wchar_t* game_mozi_10 = L"game_mozi_10";
 	inline const wchar_t* game_mozi_11 = L"game_mozi_11";

@@ -83,6 +83,13 @@ void ResourceManager::LoadAll()
 	LoadTextureAsSpriteCenter(ResourceKeys::game_3_kesi2, L"./Data/Images/game_3_kesi1.png");
 	LoadTextureAsSpriteCenter(ResourceKeys::game_3_kesi3, L"./Data/Images/game_3_kesi3.png");
 
+	LoadTextureAsSpriteCenter(ResourceKeys::game_mozi_1, L"./Data/Images/game_mozi_2.png");
+	LoadTextureAsSpriteCenter(ResourceKeys::game_mozi_2, L"./Data/Images/game_mozi_1.png");
+	LoadTextureAsSpriteCenter(ResourceKeys::game_mozi_3, L"./Data/Images/game_mozi_3.png");
+	LoadTextureAsSpriteCenter(ResourceKeys::game_mozi_4, L"./Data/Images/game_mozi_6.png");
+	LoadTextureAsSpriteCenter(ResourceKeys::game_mozi_5, L"./Data/Images/game_mozi_4.png");
+	LoadTextureAsSpriteCenter(ResourceKeys::game_mozi_6, L"./Data/Images/game_mozi_5.png");
+
 	LoadTextureAsSpriteCenter(ResourceKeys::game_mozi_9, L"./Data/Images/game_mozi_9.png");
 	LoadTextureAsSpriteCenter(ResourceKeys::game_mozi_10, L"./Data/Images/game_mozi_10.png");
 	LoadTextureAsSpriteCenter(ResourceKeys::game_mozi_11, L"./Data/Images/game_mozi_15.png");

@@ -29,6 +29,8 @@ public:
     // 指定のターゲットがすべて選択されたか
     bool AllTargetsCollected() const;
 
+    const DxPlus::Sprite::SpriteBase* GetMoziSprite() const { return currentMoziSpr; }
+
 private:
     void SpawnBalls();
 
@@ -39,6 +41,8 @@ private:
     // 6つの説明画像用ポインタ
     const DxPlus::Sprite::SpriteBase* explanationSprites[6]{ nullptr };
     const DxPlus::Sprite::SpriteBase* currentExplanationSpr{ nullptr };
+    const DxPlus::Sprite::SpriteBase* moziSprites[6]{ nullptr };
+    const DxPlus::Sprite::SpriteBase* currentMoziSpr{ nullptr };
 
     RuleType currentRule{ RuleType::PickRed };
 
