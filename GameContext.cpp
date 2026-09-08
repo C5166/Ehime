@@ -249,6 +249,7 @@ void GameContext::Update(bool& input)
 	}
 
 	timer -= deltaTime * TIME_SPEED_RATE;
+
 	int currentSecond = static_cast<int>(std::ceil(timer));
 	// 秒数が前回の判定から変化した瞬間に音を鳴らす
 	if (currentSecond != lastPlayTime && currentSecond >= 0)
