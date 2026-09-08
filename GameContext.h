@@ -9,31 +9,32 @@
 
 enum GameNamber
 {
-    Game_3,
-    Game_2,
-    Game_0,
-	Title,
+    Game_0 = 0,
+    Game_2 = 2,
+    Game_3 = 3,
+    Title = 4,
 };
 
 class GameContext
 {
 public:
-    // 演出フェーズの定義
     enum class SequenceState
     {
-        Explanation, // 説明画像表示
-        Countdown,   // 3, 2, 1 表示
-        StartMsg,    // スタート！表示
-        Playing      // メインゲームプレイ中
+        Explanation,
+        Countdown,
+        StartMsg,
+        Playing
     };
 
-	GameContext() = default;
+    GameContext() = default;
     ~GameContext() = default;
 
     void Init();
     void Reset();
-    void Update(bool & input);
+    void Update(bool& input);
     void Draw() const;
+
+    bool IsSequenceFinished() const { return sequenceFinished; }
 
     int GetHP() const { return playerHP; }
     int GetScore() const { return totalScore; }
@@ -42,35 +43,31 @@ public:
     int GetCurrentMiniGame() const { return Isinit; }
     void SetCurrentMiniGame(int gameNum) { Isinit = gameNum; }
 
-    // ゲッターを追加
     Game_00& GetGame00() { return game_00; }
 
-
 private:
-    // --- 【設定】演出位置・表示時間 ---
-    const float EXPLANATION_DURATION = 2.0f; // 説明表示時間(秒)
-    const float COUNTDOWN_STEP_TIME = 1.0f; // カウントダウンの1コマ(3, 2, 1)あたりの秒数
-    const float START_MSG_DURATION = 0.8f; // 「スタート！」表示時間(秒)
+    const float EXPLANATION_DURATION = 2.0f;
+    const float COUNTDOWN_STEP_TIME = 1.0f;
+    const float START_MSG_DURATION = 0.8f;
 
-    const DxPlus::Vec2 EXPLANATION_POS = { 0.0f, 0.0f }; // 説明画像位置
-    const DxPlus::Vec2 COUNTDOWN_POS = { 960.0f, 540.0f }; // 321位置
-    const DxPlus::Vec2 START_MSG_POS = { 960.0f, 540.0f }; // スタート！位置
+    const DxPlus::Vec2 EXPLANATION_POS = { 0.0f, 0.0f };
+    const DxPlus::Vec2 COUNTDOWN_POS = { 960.0f, 540.0f };
+    const DxPlus::Vec2 START_MSG_POS = { 960.0f, 540.0f };
 
-    // --- タイマー描画位置の設定 ---
     const DxPlus::Vec2 TIMER_POS = { 960.0f, 50.0f };
     const float DIGIT_OFFSET_X = 65.0f;
 
-    // --- HP表示設定 ---
     const int MAX_PLAYER_HP = 3;
     const DxPlus::Vec2 HP_POS = { 80.5f, 50.0f };
     const float HP_ICON_OFFSET_X = 80.0f;
 
     void DrawTimer() const;
     void DrawHP() const;
-	
-    void DrawSequenceUI() const; // 演出描画関数を追加
+    void DrawSequenceUI() const;
+    void DrawGameOverUI() const;
 
-	void DrawGameOverUI() const; // ゲームオーバー描画関数を追加
+    void GenerateRandomGameQueue();
+    void SetupCurrentGame();
 
     const DxPlus::Sprite::SpriteBase* backgroundSpr{ nullptr };
     const DxPlus::Sprite::SpriteBase* backgroundSpr2{ nullptr };
@@ -80,9 +77,28 @@ private:
 
     Game_03 game_03;
     Game_02 game_02;
+    Game_00 game_00;
 
     int Isinit{ 0 };
-    Game_00 game_00;
+
+    // 5ゲーム管理用
+    std::vector<GameNamber> gameQueue;
+    int currentGameIndex{ 0 };
+    const int TOTAL_MINI_GAMES{ 5 };
+
+    // シーケンス完了フラグ（5つのミニゲームを終えたら true）
+    bool sequenceFinished{ false };
+
+    // game_perfect アニメーション制御
+    bool showPerfect{ false };
+    int perfectSheetID{ -1 };
+    int perfectFrame{ 0 };
+    int perfectTimer{ 0 };
+    int perfectAnimInterval{ 6 };
+    const int perfectTotalFrames{ 17 };
+    const int perfectColumns{ 10 };
+    int perfectFrameW{ 0 };
+    int perfectFrameH{ 0 };
 
     int playerHP{ 3 };
     int totalScore{ 0 };
@@ -93,9 +109,6 @@ private:
 
     int gamestart;
 
-
-    // --- 演出管理用変数 ---
     SequenceState sequenceState{ SequenceState::Explanation };
     float sequenceTimer{ 0.0f };
-
 };

@@ -51,6 +51,8 @@ void ResourceManager::LoadAll()
     LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_4, L"./Data/Images/game_setumei_4.png");
     LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_5, L"./Data/Images/game_setumei_5.png");
     LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_6, L"./Data/Images/game_setumei_6.png");
+    LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_7, L"./Data/Images/game_setumei_7.png");
+    LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_8, L"./Data/Images/game_setumei_8.png");
 
     LoadGridCenter(ResourceKeys::game_start123, L"./Data/Images/game_start123.png", { 0, 0 }, { 3, 1 }, { 300, 379 });
 
@@ -59,7 +61,13 @@ void ResourceManager::LoadAll()
 	LoadTextureAsSpriteLeftTop(ResourceKeys::game2_back, L"./Data/Images/mihon_3.png");
 	LoadTextureAsSpriteLeftTop(ResourceKeys::title_frame_2, L"./Data/Images/title_frame_2.png");
 
-	
+	LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_9, L"./Data/Images/game_setumei_9.png");
+	LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_10, L"./Data/Images/game_setumei_10.png");
+	LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_11, L"./Data/Images/game_setumei_11.png");
+	LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_12, L"./Data/Images/game_setumei_12.png");
+	LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_13, L"./Data/Images/game_setumei_13.png");
+	LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_14, L"./Data/Images/game_setumei_14.png");
+	LoadTextureAsSpriteLeftTop(ResourceKeys::game_setumei_15, L"./Data/Images/game_setumei_15.png");
 
 	LoadTextureAsSpriteCenter(ResourceKeys::game_1_heart_1, L"./Data/Images/game_1_heart_1.png");
     LoadTextureAsSpriteCenter(ResourceKeys::game_1_heart_2, L"./Data/Images/game_1_heart_2.png");

@@ -90,6 +90,16 @@ namespace ResourceKeys
     inline constexpr const wchar_t* game_3_kesi2 = L"game_3_kesi2";
     inline constexpr const wchar_t* game_3_kesi3 = L"game_3_kesi3";
 
+	inline constexpr const wchar_t* game_setumei_7 = L"game_setumei_7";
+	inline constexpr const wchar_t* game_setumei_8 = L"game_setumei_8";
+	inline constexpr const wchar_t* game_setumei_9 = L"game_setumei_9";
+	inline constexpr const wchar_t* game_setumei_10 = L"game_setumei_10";
+	inline constexpr const wchar_t* game_setumei_11 = L"game_setumei_11";
+	inline constexpr const wchar_t* game_setumei_12 = L"game_setumei_12";
+	inline constexpr const wchar_t* game_setumei_13 = L"game_setumei_13";
+	inline constexpr const wchar_t* game_setumei_14 = L"game_setumei_14";
+	inline constexpr const wchar_t* game_setumei_15 = L"game_setumei_15";
+
 	// ===== Transition =====
 	inline constexpr const wchar_t* transition_1 = L"transition_1"; // フェードイン用
 	inline constexpr const wchar_t* transition_2 = L"transition_2"; // フェードアウト用

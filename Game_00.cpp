@@ -1,7 +1,7 @@
 ﻿// Game_00.cpp
 #include "Game_00.h"
-#include "ResourceManager.h"
 #include "ResourceKeys.h"
+#include "ResourceManager.h"
 #include "imgui.h"
 #include <cstdlib>
 #include <cmath>
@@ -12,11 +12,24 @@
 
 using json = nlohmann::json;
 
+struct TargetInfo {
+    const wchar_t* explanationKey; // ResourceKeys 内の文字列定数を受ける型
+    ObjectType targetType;
+    const char* jsonFileName;
+};
+
+static const TargetInfo g_TargetTable[] = {
+    { ResourceKeys::game_setumei_9,  ObjectType::Nekosima, "game_setumei_9.json" },
+    { ResourceKeys::game_setumei_10, ObjectType::Neko,     "game_setumei_10.json" },
+    { ResourceKeys::game_setumei_11, ObjectType::Hitu,     "game_setumei_11.json" },
+    { ResourceKeys::game_setumei_12, ObjectType::Inu,      "game_setumei_12.json" },
+    { ResourceKeys::game_setumei_13, ObjectType::Kesi1,    "game_setumei_13.json" },
+    { ResourceKeys::game_setumei_14, ObjectType::Kesi2,    "game_setumei_14.json" },
+    { ResourceKeys::game_setumei_15, ObjectType::Kesi3,    "game_setumei_15.json" },
+};
+
 void Game_00::Init()
 {
-    Reset();
-    LoadFromFile();
-
     CAMERA = RM().GetSound(ResourceKeys::SE_Camera);
     bubu = RM().GetSound(ResourceKeys::SE_bubu);
 
@@ -24,9 +37,23 @@ void Game_00::Init()
     good[1] = RM().GetSound(ResourceKeys::SE_GoodVoice2);
     good[2] = RM().GetSound(ResourceKeys::SE_GoodVoice3);
 
-	perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
+    perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
 
     setumeivoice = RM().GetSound(ResourceKeys::SE_GameVoice1);
+
+    Reset();
+}
+
+bool Game_00::AllTargetsCollected() const
+{
+    for (const auto& subj : subjects)
+    {
+        if (subj.active && subj.objType == targetObjectType)
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 // --- JSON へ保存 ---
@@ -72,15 +99,30 @@ void Game_00::Reset()
 
     subjects.clear();
 
-    // デフォルトでサンプルオブジェクトを数個配置
-    AddObject(ObjectType::Neko, "Neko_01");
-    AddObject(ObjectType::Kesi1, "Kesi_01");
+    // g_TargetTable からランダムに目標を選択
+    constexpr int tableSize = sizeof(g_TargetTable) / sizeof(g_TargetTable[0]);
+    currentTargetIndex = rand() % tableSize;
+    const auto& targetInfo = g_TargetTable[currentTargetIndex];
+
+    // 目標となるオブジェクトタイプと説明画像ポインタをセット
+    targetObjectType = targetInfo.targetType;
+    currentExplanationSpr = RM().GridAt(targetInfo.explanationKey);
+
+    // バッファを更新して該当の JSON をロード
+    strcpy_s(saveFileNameBuf, sizeof(saveFileNameBuf), targetInfo.jsonFileName);
+    LoadFromFile(saveFileNameBuf);
+
+    // ロード失敗等でオブジェクトが存在しない場合のフォールバック設定
+    if (subjects.empty())
+    {
+        AddObject(targetObjectType, "Target_Object");
+    }
 }
 
 void Game_00::AddObject(ObjectType type, const char* defaultName)
 {
     Object obj;
-    obj.id = nextUniqueId++; // 【修正 3】IDを個別に採番
+    obj.id = nextUniqueId++;
     obj.name = defaultName;
     obj.objType = type;
     obj.position = { screenWidth * 0.5f, screenHeight * 0.5f };
@@ -201,6 +243,7 @@ void Game_00::Update(int& hp, int& score)
             bool isInCamera = (worldPos.x >= camMinX && worldPos.x <= camMaxX &&
                 worldPos.y >= camMinY && worldPos.y <= camMaxY);
 
+            // 指定された targetObjectType を撮影できたか判定
             if (isInCamera && subj.objType == targetObjectType)
             {
                 subj.active = false;
@@ -211,9 +254,10 @@ void Game_00::Update(int& hp, int& score)
             }
         }
 
+        // ターゲット以外を撮影、または空振りした場合はHPが削れる
         if (!hitTarget)
         {
-            hp++;
+            hp--;
             PlaySoundMem(bubu, DX_PLAYTYPE_BACK);
         }
     }
@@ -272,17 +316,10 @@ void Game_00::Draw(int hp, int score) const
     }
 }
 
-// =========================================================================
-// ImGui (Hierarchy, Inspector, Gizmo) 処理
-// =========================================================================
 void Game_00::DrawImGui()
 {
-    // ---------------------------------------------------------------------
-    // 1. Hierarchy ウィンドウ
-    // ---------------------------------------------------------------------
     ImGui::Begin("Hierarchy");
 
-    // リスト背景の右クリックメニュー（オブジェクト生成）
     if (ImGui::BeginPopupContextWindow("HierarchyContext", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
     {
         if (ImGui::BeginMenu("Create Object"))
@@ -300,7 +337,6 @@ void Game_00::DrawImGui()
         ImGui::EndPopup();
     }
 
-    // ショートカットキーでのコピペ
     if (ImGui::IsWindowFocused())
     {
         if (ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_C) && selectedObjectIndex != -1)
@@ -313,7 +349,6 @@ void Game_00::DrawImGui()
         }
     }
 
-    // 【修正 2】旧リスト表示を削除し、ルート要素のみツリー描画を開始
     for (size_t i = 0; i < subjects.size(); ++i)
     {
         if (subjects[i].parentId == -1)
@@ -324,7 +359,6 @@ void Game_00::DrawImGui()
 
     ImGui::Separator();
 
-    // シーンデータの保存・読み込みUI
     ImGui::Text("Scene Save / Load");
     ImGui::InputText("File Name", saveFileNameBuf, sizeof(saveFileNameBuf));
 
@@ -360,9 +394,6 @@ void Game_00::DrawImGui()
 
     ImGui::End();
 
-    // ---------------------------------------------------------------------
-    // 2. Inspector ウィンドウ
-    // ---------------------------------------------------------------------
     ImGui::Begin("Inspector");
 
     if (selectedObjectIndex >= 0 && selectedObjectIndex < static_cast<int>(subjects.size()))
@@ -539,10 +570,8 @@ void Game_00::DrawHierarchyTree(int objId)
 
     std::string label = obj->name + (obj->active ? "" : " (Disabled)");
 
-    // TreeNodeEx に intptr_t キャストした objId を渡すことでツリー自体の ID を一意化
     bool nodeOpen = ImGui::TreeNodeEx((void*)(intptr_t)objId, flags, "%s", label.c_str());
 
-    // 選択状態の更新
     if (ImGui::IsItemClicked())
     {
         for (int i = 0; i < static_cast<int>(subjects.size()); ++i)
@@ -555,11 +584,9 @@ void Game_00::DrawHierarchyTree(int objId)
         }
     }
 
-    // --- コンテキストメニュー（ポップアップ）の修正 ---
-    // 第1引数に "HierarchyObjContext" を渡すことでポップアップ自体のIDを固定・一意化します
     if (ImGui::BeginPopupContextItem("HierarchyObjContext"))
     {
-        ImGui::PushID(objId); // ポップアップ内部で objId を Push してボタン等の ID 衝突を回避
+        ImGui::PushID(objId);
 
         if (ImGui::MenuItem("Copy (Include Children)"))
         {
@@ -595,7 +622,6 @@ void Game_00::DrawHierarchyTree(int objId)
         ImGui::EndPopup();
     }
 
-    // Drag & Drop
     if (ImGui::BeginDragDropSource())
     {
         ImGui::SetDragDropPayload("HIERARCHY_OBJ", &objId, sizeof(int));
@@ -616,7 +642,6 @@ void Game_00::DrawHierarchyTree(int objId)
         ImGui::EndDragDropTarget();
     }
 
-    // 子ノードの再帰描画
     if (nodeOpen)
     {
         std::vector<int> children = obj->childIds;
@@ -628,7 +653,6 @@ void Game_00::DrawHierarchyTree(int objId)
     }
 }
 
-// 【修正 1】安全なディープコピー処理（再帰）
 int Game_00::DuplicateObjectRecursive(int srcId, int newParentId)
 {
     const Object* src = FindObjectById(srcId);
@@ -649,13 +673,11 @@ int Game_00::DuplicateObjectRecursive(int srcId, int newParentId)
 
     subjects.push_back(newObj);
 
-    // 子オブジェクトの複製（元の src の childIds を保持してループ）
     std::vector<int> srcChildren = src->childIds;
     for (int childId : srcChildren)
     {
         int newChildId = DuplicateObjectRecursive(childId, newId);
 
-        // vector が再確保された可能性があるため、あらためてポインタを取得
         Object* parentObj = FindObjectById(newId);
         if (parentObj && newChildId != -1)
         {

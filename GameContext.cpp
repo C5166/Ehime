@@ -1,33 +1,67 @@
 ﻿#include "GameContext.h"
 #include <algorithm>
+#include <cstdlib>
 #include "Entity2D.h"
 #include "ResourceManager.h"
 #include "ResourceKeys.h"
 #include "Consts.h"
 #include "Collision2D.h"
 
+void GameContext::GenerateRandomGameQueue()
+{
+	gameQueue.clear();
+	static const GameNamber availableGames[] = { GameNamber::Game_0, GameNamber::Game_2, GameNamber::Game_3 };
+
+	for (int i = 0; i < TOTAL_MINI_GAMES; ++i)
+	{
+		int randomIndex = std::rand() % 3;
+		gameQueue.push_back(availableGames[randomIndex]);
+	}
+}
+
+void GameContext::SetupCurrentGame()
+{
+	if (currentGameIndex >= static_cast<int>(gameQueue.size())) return;
+
+	Isinit = gameQueue[currentGameIndex];
+
+	switch (Isinit)
+	{
+	case GameNamber::Game_3: game_03.Reset(); break;
+	case GameNamber::Game_2: game_02.Reset(); break;
+	case GameNamber::Game_0: game_00.Reset(); break;
+	}
+}
+
 void GameContext::Init()
 {
 	backgroundSpr = RM().GridAt(ResourceKeys::Background);
-	backgroundSpr2 = RM().GridAt(ResourceKeys::title_frame_2); 
+	backgroundSpr2 = RM().GridAt(ResourceKeys::title_frame_2);
 
 	Game_setumei_2 = RM().GridAt(ResourceKeys::game_setumei_2);
 
 	gamestart = RM().GetSound(ResourceKeys::SE_GameStart);
 
-
 	Game_start = RM().GridAt(ResourceKeys::game_start);
-
-	playerHP = 3;
-	totalScore = 0;
-	timer = GAME_TIME_LIMIT;
-
-	sequenceState = SequenceState::Explanation;
-	sequenceTimer = 0.0f;
 
 	game_03.Init();
 	game_02.Init();
 	game_00.Init();
+
+	Reset();
+
+	// game_perfect スプライトをロード（2行 x 10列、合計17コマ）
+	perfectSheetID = DxLib::LoadGraph(L"./Data/Images/game_perfect.png");
+	if (perfectSheetID >= 0)
+	{
+		int w = 0, h = 0;
+		DxLib::GetGraphSize(perfectSheetID, &w, &h);
+		if (w > 0 && h > 0)
+		{
+			perfectFrameW = w / perfectColumns;
+			perfectFrameH = h / 2; // 2行構成
+		}
+	}
 }
 
 void GameContext::Reset()
@@ -35,15 +69,19 @@ void GameContext::Reset()
 	playerHP = 3;
 	totalScore = 0;
 	timer = GAME_TIME_LIMIT;
+	currentGameIndex = 0;
 
-	game_03.Reset();
-	game_02.Reset();
-	game_00.Reset();
-	
+	GenerateRandomGameQueue();
+	SetupCurrentGame();
+
 	sequenceState = SequenceState::Explanation;
 	sequenceTimer = 0.0f;
 
-
+	// リセット時にシーケンスフラグや完了演出をリセット
+	sequenceFinished = false;
+	showPerfect = false;
+	perfectFrame = 0;
+	perfectTimer = 0;
 }
 
 void GameContext::Update(bool& input)
@@ -86,25 +124,27 @@ void GameContext::Update(bool& input)
 
 	timer -= deltaTime * TIME_SPEED_RATE;
 
-	// 10秒経過で次のゲームへ移行＆演出リセット
+    // 10秒経過で次のミニゲームへ移行
 	if (timer <= 0.0f)
 	{
 		timer = GAME_TIME_LIMIT;
-		Isinit++;
+		currentGameIndex++;
 
-		// 次のゲーム用にResetを実行してランダム要素・指示画像を再初期化
-		switch (Isinit)
+		// 5個のミニゲームをすべて終えたらシーケンス完了フラグを立てる
+		if (currentGameIndex >= TOTAL_MINI_GAMES)
 		{
-		case GameNamber::Game_3: game_03.Reset(); break;
-		case GameNamber::Game_2: game_02.Reset(); break;
-		case GameNamber::Game_0: game_00.Reset(); break;
+			sequenceFinished = true;
+		}
+		else
+		{
+			SetupCurrentGame();
 		}
 
 		sequenceState = SequenceState::Explanation;
 		sequenceTimer = 0.0f;
 	}
 
-	if (!(playerHP < 1)) {
+    if (playerHP >= 1 && !sequenceFinished) {
 		switch (Isinit)
 		{
 		case GameNamber::Game_3:
@@ -118,6 +158,46 @@ void GameContext::Update(bool& input)
 			break;
 		default:
 			break;
+		}
+
+		// Game_00: 指定ターゲットを全て選択したら完了演出を開始して次のミニゲームへ
+		if (Isinit == GameNamber::Game_0 && !showPerfect)
+		{
+			if (game_00.AllTargetsCollected())
+			{
+				showPerfect = true;
+				perfectFrame = 0;
+				perfectTimer = 0;
+			}
+		}
+	}
+
+	// 完了演出の更新（表示中はゲームの進行を一時停止）
+	if (showPerfect)
+	{
+		perfectTimer++;
+		if (perfectTimer >= perfectAnimInterval)
+		{
+			perfectTimer = 0;
+			perfectFrame++;
+			if (perfectFrame >= perfectTotalFrames)
+			{
+				// 演出終了 -> 次のミニゲームへ
+				showPerfect = false;
+				perfectFrame = 0;
+				timer = GAME_TIME_LIMIT;
+				currentGameIndex++;
+				if (currentGameIndex >= TOTAL_MINI_GAMES)
+				{
+					sequenceFinished = true;
+				}
+				else
+				{
+					SetupCurrentGame();
+				}
+				sequenceState = SequenceState::Explanation;
+				sequenceTimer = 0.0f;
+			}
 		}
 	}
 }
@@ -136,13 +216,13 @@ void GameContext::DrawTimer() const
 			const auto* sprTens = RM().GridAt(ResourceKeys::number_countdown_b, tens, 0);
 			const auto* sprOnes = RM().GridAt(ResourceKeys::number_countdown_b, ones, 0);
 
-			if (sprTens) sprTens->Draw({ TIMER_POS.x - DIGIT_OFFSET_X * 0.5f, TIMER_POS.y },{0.7,0.7});
-			if (sprOnes) sprOnes->Draw({ TIMER_POS.x + DIGIT_OFFSET_X * 0.5f, TIMER_POS.y },{ 0.7,0.7 });
+			if (sprTens) sprTens->Draw({ TIMER_POS.x - DIGIT_OFFSET_X * 0.5f, TIMER_POS.y }, { 0.7,0.7 });
+			if (sprOnes) sprOnes->Draw({ TIMER_POS.x + DIGIT_OFFSET_X * 0.5f, TIMER_POS.y }, { 0.7,0.7 });
 		}
 		else
 		{
 			const auto* spr = RM().GridAt(ResourceKeys::number_countdown_b, displayTime, 0);
-			if (spr) spr->Draw(TIMER_POS,{ 0.7,0.7 });
+			if (spr) spr->Draw(TIMER_POS, { 0.7,0.7 });
 		}
 	}
 	else
@@ -196,10 +276,21 @@ void GameContext::DrawSequenceUI() const
 	{
 	case SequenceState::Explanation:
 	{
-		// Game_03 が選択されている場合は動的説明画像を描画
-		if (Isinit == GameNamber::Game_3)
+		GameNamber currentGame = static_cast<GameNamber>(Isinit);
+
+		if (currentGame == GameNamber::Game_3)
 		{
 			const auto* spr = game_03.GetExplanationSprite();
+			if (spr) spr->Draw({ 0, 0 });
+		}
+		else if (currentGame == GameNamber::Game_2)
+		{
+			const auto* spr = game_02.GetExplanationSprite();
+			if (spr) spr->Draw({ 0, 0 });
+		}
+		else if (currentGame == GameNamber::Game_0)
+		{
+			const auto* spr = game_00.GetExplanationSprite();
 			if (spr) spr->Draw({ 0, 0 });
 		}
 		else
@@ -243,7 +334,6 @@ void GameContext::DrawGameOverUI() const
 	int GameOverlogoCountX{ 0 };
 	int GameOverlogoCountY{ 0 };
 
-	//Gameover_logoをループして描画させる
 	if (GameOverlogoCountX < 12 && GameOverlogoCountY < 5)
 	{
 		GameOverlogoTotalfram++;
@@ -257,7 +347,6 @@ void GameContext::DrawGameOverUI() const
 				GameOverlogoCountX = 0;
 				GameOverlogoCountY = 0;
 			}
-			
 		}
 	}
 
@@ -269,37 +358,50 @@ void GameContext::DrawGameOverUI() const
 	}
 }
 
-
-
 void GameContext::Draw() const
 {
-	backgroundSpr->Draw({});
+	backgroundSpr->Draw({}); // 背景
 
-	switch (Isinit)
+	// プレイ状態のときだけゲーム本体を描画
+	if (sequenceState == SequenceState::Playing)
 	{
-	case GameNamber::Game_3:
-		game_03.Draw(playerHP, totalScore);
-		DrawTimer();
-		break;
-
-	case GameNamber::Game_2:
-		game_02.Draw(playerHP, totalScore);
-		DrawTimer();
-		break;
-
-	case GameNamber::Game_0:
-		game_00.Draw(playerHP, totalScore);
-		break;
-
-	default:
-		break;
+		switch (Isinit)
+		{
+		case GameNamber::Game_3:
+			game_03.Draw(playerHP, totalScore);
+			break;
+		case GameNamber::Game_2:
+			game_02.Draw(playerHP, totalScore);
+			break;
+		case GameNamber::Game_0:
+			game_00.Draw(playerHP, totalScore);
+			break;
+		default:
+			break;
+		}
 	}
 
-
-	// 最前面に演出画像を描画
-	DrawSequenceUI();
+	// 枠・タイマー・HPの描画
 	backgroundSpr2->Draw({ 0, 0 });
 	DrawTimer();
 	DrawHP();
-	
+
+	// 最前面に説明・カウントダウン画像を描画
+	DrawSequenceUI();
+
+	// 完了演出の描画
+	if (showPerfect && perfectSheetID >= 0)
+	{
+		int frameIndex = perfectFrame;
+		if (frameIndex < perfectTotalFrames)
+		{
+			int gridX = frameIndex % perfectColumns;
+			int gridY = frameIndex / perfectColumns;
+			int sx = gridX * perfectFrameW;
+			int sy = gridY * perfectFrameH;
+			int dx = 960 - perfectFrameW / 2;
+			int dy = 540 - perfectFrameH / 2;
+			DrawRectGraph(dx, dy, sx, sy, perfectFrameW, perfectFrameH, perfectSheetID, TRUE);
+		}
+	}
 }

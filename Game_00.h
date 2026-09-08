@@ -5,6 +5,17 @@
 #include <vector>
 #include <string>
 
+enum class InstructionsType
+{
+    nekosimaPick,    // game_setumei_9の説明画像   指示、game_3_nekosimaを撮れ
+    nekoPick,   // game_setumei_10の説明画像   指示、game_3_nekoを撮れ
+    hituPick,   // game_setumei_11の説明画像  指示、game_3_hituを撮れ
+    inuPick,   // game_setumei_12の説明画像  指示、game_3_inuを撮れ
+    game_3_kesi1Pick,   // game_setumei_13の説明画像  指示、game_3_kesi1を撮れ
+    game_3_kesi2Pick,   // game_setumei_14の説明画像  指示、game_3_kesi2を撮れ
+    game_3_kesi3Pick    // game_setumei_15の説明画像  指示、game_3_kesi3を撮れ
+};
+
 class Game_00
 {
 public:
@@ -25,11 +36,18 @@ public:
     void SetTargetObjectType(ObjectType type) { targetObjectType = type; }
     ObjectType GetTargetObjectType() const { return targetObjectType; }
 
+    // 現在選択されている指示画像を取得
+    const DxPlus::Sprite::SpriteBase* GetExplanationSprite() const { return currentExplanationSpr; }
+
+    // 目標がすべて選択されたか
+    bool AllTargetsCollected() const;
+
 private:
     std::vector<Object> subjects;
     int selectedObjectIndex{ -1 }; // 選択中のオブジェクトのインデックス
 
     ObjectType targetObjectType{ ObjectType::Nekosima }; // デフォルトターゲット
+    const DxPlus::Sprite::SpriteBase* currentExplanationSpr{ nullptr }; // 現在の指示画像
 
     // ImGuiでの保存・読み込み用ファイル名バッファ
     char saveFileNameBuf[128]{ "game_setumei_9.json" };
@@ -62,7 +80,7 @@ private:
     int good[3];
     int perfect;
 
-        int nextUniqueId{ 1 };          // ID自動インクリメント用
+    int nextUniqueId{ 1 };          // ID自動インクリメント用
     int copiedObjectId{ -1 };        // コピー中のオブジェクトID
 
     // ID検索ヘルパー
@@ -80,4 +98,6 @@ private:
 
     int setumeivoice;
 
+    // 現在選択されているパターンのインデックス
+    int currentTargetIndex{ 0 };
 };

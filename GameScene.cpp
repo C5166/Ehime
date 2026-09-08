@@ -39,7 +39,8 @@ void GameScene::Update()
         return;
     }
 
-    if (gameContext->GetCurrentMiniGame() == GameNamber::Game_3 && gameContext->GetScore() >= 10)
+    // 5つのミニゲームをクリアしたら GameClearScene へ遷移
+    if (gameContext->IsSequenceFinished())
     {
         Scene* gameClearScene = SceneManager::GetInstance().GetScene(SceneID::GameClear);
         SetNextScene(gameClearScene);
