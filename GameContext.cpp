@@ -71,6 +71,9 @@ void GameContext::Init()
 
 	Game_start = RM().GridAt(ResourceKeys::game_start);
 
+	CountSE_1 = RM().GetSound(ResourceKeys::SE_Count_1);
+	CountSE_2 = RM().GetSound(ResourceKeys::SE_Count_2);
+
 	game_03.Init();
 	game_02.Init();
 	game_00.Init();
