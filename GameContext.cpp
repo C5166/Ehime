@@ -33,6 +33,33 @@ void GameContext::SetupCurrentGame()
 	}
 }
 
+void GameContext::AdvanceToNextGame(bool perfectAchieved)
+{
+	if (!perfectAchieved && playerHP > 0)
+	{
+		playerHP -= 1;
+	}
+
+	showPerfect = false;
+	perfectFrame = 0;
+	perfectTimer = 0;
+	perfectElapsedFrames = 0;
+	perfectAlpha = 255;
+
+	timer = GAME_TIME_LIMIT;
+	currentGameIndex++;
+
+	if (currentGameIndex >= TOTAL_MINI_GAMES)
+	{
+		sequenceFinished = true;
+		return;
+	}
+
+	SetupCurrentGame();
+	sequenceState = SequenceState::Explanation;
+	sequenceTimer = 0.0f;
+}
+
 void GameContext::Init()
 {
 	backgroundSpr = RM().GridAt(ResourceKeys::Background);
@@ -82,6 +109,8 @@ void GameContext::Reset()
 	showPerfect = false;
 	perfectFrame = 0;
 	perfectTimer = 0;
+	perfectElapsedFrames = 0;
+	perfectAlpha = 255;
 }
 
 void GameContext::Update(bool& input)
@@ -122,60 +151,9 @@ void GameContext::Update(bool& input)
 		return;
 	}
 
-	timer -= deltaTime * TIME_SPEED_RATE;
-
-    // 10秒経過で次のミニゲームへ移行
-	if (timer <= 0.0f)
-	{
-		timer = GAME_TIME_LIMIT;
-		currentGameIndex++;
-
-		// 5個のミニゲームをすべて終えたらシーケンス完了フラグを立てる
-		if (currentGameIndex >= TOTAL_MINI_GAMES)
-		{
-			sequenceFinished = true;
-		}
-		else
-		{
-			SetupCurrentGame();
-		}
-
-		sequenceState = SequenceState::Explanation;
-		sequenceTimer = 0.0f;
-	}
-
-    if (playerHP >= 1 && !sequenceFinished) {
-		switch (Isinit)
-		{
-		case GameNamber::Game_3:
-			game_03.Update(playerHP, totalScore);
-			break;
-		case GameNamber::Game_2:
-			game_02.Update(playerHP, totalScore);
-			break;
-		case GameNamber::Game_0:
-			game_00.Update(playerHP, totalScore);
-			break;
-		default:
-			break;
-		}
-
-		// Game_00: 指定ターゲットを全て選択したら完了演出を開始して次のミニゲームへ
-		if (Isinit == GameNamber::Game_0 && !showPerfect)
-		{
-			if (game_00.AllTargetsCollected())
-			{
-				showPerfect = true;
-				perfectFrame = 0;
-				perfectTimer = 0;
-			}
-		}
-	}
-
-    // 完了演出の更新（表示中はゲームの進行を一時停止）
+	// game_perfect 表示中はゲーム進行を止める
 	if (showPerfect)
 	{
-		// アニメフレームの更新
 		perfectTimer++;
 		if (perfectTimer >= perfectAnimInterval)
 		{
@@ -183,10 +161,8 @@ void GameContext::Update(bool& input)
 			perfectFrame = (perfectFrame + 1) % perfectTotalFrames;
 		}
 
-		// 表示時間の経過
 		perfectElapsedFrames++;
 
-		// アルファ計算（フェードイン / 表示 / フェードアウト）
 		if (perfectElapsedFrames < perfectFadeFrames)
 		{
 			perfectAlpha = static_cast<int>(255.0f * (static_cast<float>(perfectElapsedFrames) / perfectFadeFrames));
@@ -204,24 +180,77 @@ void GameContext::Update(bool& input)
 
 		if (perfectElapsedFrames >= perfectDisplayFrames)
 		{
-			// 演出終了 -> 次のミニゲームへ
-			showPerfect = false;
-			perfectFrame = 0;
-			perfectElapsedFrames = 0;
-			perfectAlpha = 255;
-			timer = GAME_TIME_LIMIT;
-			currentGameIndex++;
-			if (currentGameIndex >= TOTAL_MINI_GAMES)
-			{
-				sequenceFinished = true;
-			}
-			else
-			{
-				SetupCurrentGame();
-			}
-			sequenceState = SequenceState::Explanation;
-			sequenceTimer = 0.0f;
+			AdvanceToNextGame(true);
 		}
+
+		return;
+	}
+
+	// ふつうのプレイ中だけゲームを更新
+	if (playerHP >= 1 && !sequenceFinished)
+	{
+		switch (Isinit)
+		{
+		case GameNamber::Game_3:
+			game_03.Update(playerHP, totalScore);
+			break;
+		case GameNamber::Game_2:
+			game_02.Update(playerHP, totalScore);
+			break;
+		case GameNamber::Game_0:
+			game_00.Update(playerHP, totalScore);
+			break;
+		default:
+			break;
+		}
+
+		// 各ミニゲームの完了判定 -> 完了演出を開始
+		if (!showPerfect)
+		{
+			if (Isinit == GameNamber::Game_0)
+			{
+				if (game_00.AllTargetsCollected())
+				{
+					showPerfect = true;
+					perfectFrame = 0;
+					perfectTimer = 0;
+					perfectElapsedFrames = 0;
+				}
+			}
+			else if (Isinit == GameNamber::Game_2)
+			{
+				if (game_02.AllCorrect())
+				{
+					showPerfect = true;
+					perfectFrame = 0;
+					perfectTimer = 0;
+					perfectElapsedFrames = 0;
+				}
+			}
+			else if (Isinit == GameNamber::Game_3)
+			{
+				if (game_03.AllTargetsCollected())
+				{
+					showPerfect = true;
+					perfectFrame = 0;
+					perfectTimer = 0;
+					perfectElapsedFrames = 0;
+				}
+			}
+		}
+	}
+
+	if (showPerfect || sequenceFinished)
+	{
+		return;
+	}
+
+	timer -= deltaTime * TIME_SPEED_RATE;
+
+	// 10秒経過で次のミニゲームへ移行
+	if (timer <= 0.0f)
+	{
+		AdvanceToNextGame(false);
 	}
 }
 

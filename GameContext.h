@@ -68,6 +68,7 @@ private:
 
     void GenerateRandomGameQueue();
     void SetupCurrentGame();
+    void AdvanceToNextGame(bool perfectAchieved);
 
     const DxPlus::Sprite::SpriteBase* backgroundSpr{ nullptr };
     const DxPlus::Sprite::SpriteBase* backgroundSpr2{ nullptr };

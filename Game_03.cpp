@@ -197,6 +197,36 @@ void Game_03::Update(int& hp, int& score)
     }
 }
 
+bool Game_03::AllTargetsCollected() const
+{
+    switch (currentRule)
+    {
+    case RuleType::PickGreen:
+        for (const auto& ball : balls)
+        {
+            if (ball.active && ball.type == BallType::Green) return false;
+        }
+        return true;
+
+    case RuleType::PickRed:
+        for (const auto& ball : balls)
+        {
+            if (ball.active && ball.type == BallType::Red) return false;
+        }
+        return true;
+
+    case RuleType::PickBlue:
+        for (const auto& ball : balls)
+        {
+            if (ball.active && ball.type == BallType::Blue) return false;
+        }
+        return true;
+
+    default:
+        return false;
+    }
+}
+
 void Game_03::Draw(int hp, int score) const
 {
 
