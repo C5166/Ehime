@@ -80,9 +80,14 @@ void ResourceManager::LoadAll()
     LoadSound(ResourceKeys::SE_GameOverVoice, L"./Data/Sounds/ゲームオーバ/voice_gameover.mp3");
     LoadSound(ResourceKeys::SE_GameClearVoice, L"./Data/Sounds/ゲームクリア/voice_gameclear.mp3");
 
-    LoadSound(ResourceKeys::SE_GameVoice1, L"./Data/Sounds/説明ボイス/voice_setumei_1.mp3");//ハート拾い
-    LoadSound(ResourceKeys::SE_GameVoice2, L"./Data/Sounds/説明ボイス/voice_setumei_3.mp3");//多いほう
-    LoadSound(ResourceKeys::SE_GameVoice3, L"./Data/Sounds/説明ボイス/voice_setumei_6.mp3");//犬探す
+    LoadSound(ResourceKeys::SE_GameVoice1_1, L"./Data/Sounds/説明ボイス/voice_setumei_1.mp3");//ハート拾い
+    LoadSound(ResourceKeys::SE_GameVoice1_2, L"./Data/Sounds/説明ボイス/voice_setumei_2.mp3");//ハート拾うな
+    LoadSound(ResourceKeys::SE_GameVoice2_1, L"./Data/Sounds/説明ボイス/voice_setumei_3.mp3");//多いほう
+    LoadSound(ResourceKeys::SE_GameVoice2_2, L"./Data/Sounds/説明ボイス/voice_setumei_5.mp3");//少ないほう
+    LoadSound(ResourceKeys::SE_GameVoice3_1, L"./Data/Sounds/説明ボイス/voice_setumei_6.mp3");//犬探す
+    LoadSound(ResourceKeys::SE_GameVoice3_2, L"./Data/Sounds/説明ボイス/voice_setumei_8.mp3");//猫探す
+    LoadSound(ResourceKeys::SE_GameVoice3_3, L"./Data/Sounds/説明ボイス/voice_setumei_9.mp3");//消しゴム探す
+    LoadSound(ResourceKeys::SE_GameVoice3_4, L"./Data/Sounds/説明ボイス/voice_setumei_4.mp3");//鉛筆探す
 
     LoadSound(ResourceKeys::SE_Explosion,   L"./Data/Sounds/Explosion.mp3");
 

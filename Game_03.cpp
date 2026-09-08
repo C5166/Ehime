@@ -60,7 +60,8 @@ void Game_03::Init()
     perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
 
 
-    setumeivoice = RM().GetSound(ResourceKeys::SE_GameVoice1);
+    setumeivoice[0] = RM().GetSound(ResourceKeys::SE_GameVoice1_1);
+    setumeivoice[1] = RM().GetSound(ResourceKeys::SE_GameVoice1_2);
 
     //Reset();
 }
@@ -72,12 +73,9 @@ void Game_03::Reset()
     currentRule = static_cast<RuleType>(ruleIdx);
     currentExplanationSpr = explanationSprites[ruleIdx];
 
-    SpawnBalls();
+	IsVoice = true;
 
-    if (setumeivoice >= 0)
-    {
-        DxLib::PlaySoundMem(setumeivoice, DX_PLAYTYPE_BACK);
-    }
+    SpawnBalls();
 }
 
 void Game_03::SpawnBalls()
@@ -117,6 +115,20 @@ void Game_03::SpawnBalls()
 
 void Game_03::Update(int& hp, int& score)
 {
+    if(IsVoice)
+    {
+        if (setumeivoice >= 0)
+        {
+            if (currentRule == RuleType::PickGreen || currentRule == RuleType::PickRed || currentRule == RuleType::PickBlue) {
+                DxLib::PlaySoundMem(setumeivoice[0], DX_PLAYTYPE_BACK);
+            }
+            else {
+                DxLib::PlaySoundMem(setumeivoice[1], DX_PLAYTYPE_BACK);
+            }
+        }
+        IsVoice = false;
+	}
+
     using namespace DxPlus::Input;
     int button = GetButtonDown(PLAYER1);
     bool isClicked = (button & BUTTON_TRIGGER2);
