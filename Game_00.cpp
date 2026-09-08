@@ -315,7 +315,7 @@ void Game_00::Draw(int hp, int score) const
         DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
     }
 }
-
+#ifdef _DEBUG
 void Game_00::DrawImGui()
 {
     ImGui::Begin("Hierarchy");
@@ -514,7 +514,7 @@ void Game_00::DrawGizmo(Object& obj)
         }
     }
 }
-
+#endif
 Object* Game_00::FindObjectById(int id)
 {
     for (auto& obj : subjects) { if (obj.id == id) return &obj; }

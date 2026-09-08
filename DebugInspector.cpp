@@ -27,6 +27,7 @@ namespace
 
 void DebugInspector::Update()
 {
+#ifdef _DEBUG
     // キー入力での切り替え（TitleSceneと同じフェード遷移を使う）
     if (DxLib::CheckHitKey(KEY_INPUT_1))
     {
@@ -39,10 +40,15 @@ void DebugInspector::Update()
     if (DxLib::CheckHitKey(KEY_INPUT_3))
     {
     }
+
+#endif // _DEBUG
 }
+
 
 void DebugInspector::Draw()
 {
+#ifdef _DEBUG
+
     ImGui::Begin("Debug Inspector");
 
     ImGui::Text("Scene Select");
@@ -107,4 +113,5 @@ void DebugInspector::Draw()
     {
         gameContext.GetGame00().DrawImGui();
     }
+#endif // _DEBUG
 }

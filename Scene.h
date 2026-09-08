@@ -18,7 +18,6 @@ public:
     virtual Scene* GetNextScene() { return nextScene; }
     void SetNextScene(Scene* scene);
 
-    // ★ TitleScene と同様の手順で遷移を開始する公開関数を追加
     void RequestChangeScene(Scene* next, float fadeDuration = 1.0f)
     {
         if (!next) return;

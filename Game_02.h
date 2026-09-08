@@ -30,7 +30,8 @@ private:
 
     // 各問題(a[0]〜a[5])において「合計が多いほう」が左か右かを示すテーブル
     // true : 左(Left)が多い / false : 右(Right)が多い
-    bool leftIsMoreTable[6] = { true, false, true, true, false, true };
+    // NOTE: game2_2.png 表示時に左が正解になるよう 2 番目の値を true に設定
+    bool leftIsMoreTable[6] = { true, true, true, true, false, true };
 
     // 画面の幅・高さ
     const float screenWidth = 1920.0f;
