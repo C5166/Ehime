@@ -110,7 +110,7 @@ private:
     int totalScore{ 0 };
 
     const float GAME_TIME_LIMIT{ 10.0f };
-    const float TIME_SPEED_RATE{ 1.0f };
+    const float TIME_SPEED_RATE{ 0.5f };
     float timer{ 10.0f };
 
     int gamestart;

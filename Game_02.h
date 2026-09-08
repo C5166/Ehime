@@ -9,6 +9,12 @@ enum class Game02InstructionType
     Less  // game_setumei_8 : 合計が少ないほうを選択
 };
 
+// 各問題の「左の合計値」と「右の合計値」を保持する構造体
+struct ProblemValue {
+    double leftValue;  // 左側の合計値
+    double rightValue; // 右側の合計値
+};
+
 class Game_02
 {
 public:
@@ -31,10 +37,16 @@ private:
 
     int a[6];
 
-    // 各問題(a[0]〜a[5])において「合計が多いほう」が左か右かを示すテーブル
-    // true : 左(Left)が多い / false : 右(Right)が多い
-    // NOTE: game2_2.png 表示時に左が正解になるよう 2 番目の値を true に設定
-    bool leftIsMoreTable[6] = { true, true, true, true, false, true };
+    // 各問題 (game2_1 〜 game2_6) の合計値を直接指定
+    // 例: { 左の合計値, 右の合計値 }
+    ProblemValue problems[6] = {
+        { 3.0 * 4.0,  5.0 * 3.0 },      // game2_1: 左(12), 右(15)
+        { 100.0,      48.0 },           // game2_2: 直接数値指定も可能
+        { 0.8 * 0.5,  1.0 },            // game2_3: 小数点や計算式もそのまま書けます
+        { 2026.0 + 100.0, 20.0 + 10000.0 }, // game2_4
+        { -100.0,      -90.0 },        // game2_5
+        { 17.0 / 42.0-11/56, 1 }      // game2_6
+    };
 
     // 画面の幅・高さ
     const float screenWidth = 1920.0f;
@@ -75,8 +87,7 @@ private:
     int correctCount{ 0 };
     bool completed{ false };
 
-    // 各問題の左側/右側の正解判定に使う数値（左と右の合計や積など、問題に応じた値を設定してください）
-    // デフォルトは -1（未設定）で、その場合は従来のテーブルを参照します。
-    int leftValue[6]  = { -1, -1, -1, -1, -1, -1 };
-    int rightValue[6] = { -1, -1, -1, -1, -1, -1 };
+    // 計算後の値を保持する配列 (小数対応のため double に変更)
+    double leftValue[6] = { -1.0, -1.0, -1.0, -1.0, -1.0, -1.0 };
+    double rightValue[6] = { -1.0, -1.0, -1.0, -1.0, -1.0, -1.0 };
 };
