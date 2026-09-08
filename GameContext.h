@@ -115,6 +115,11 @@ private:
 
     int gamestart;
 
+    int CountSE_1;
+    int CountSE_2;
+
+    int lastPlayTime{ -1 };
+
     SequenceState sequenceState{ SequenceState::Explanation };
     float sequenceTimer{ 0.0f };
 };
