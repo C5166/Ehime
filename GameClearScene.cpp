@@ -41,6 +41,7 @@ void GameClearScene::Init()
 
 void GameClearScene::Update()
 {
+	gameContext.Reset();
     using namespace DxPlus::Input;
     int buttonDown = GetButtonDown(PLAYER1);
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "GameContext.h"
 
 class GameClearScene final : public Scene
 {
@@ -43,4 +44,6 @@ private:
     int poti;
     int kirakira;
     int a = 0;
+
+	GameContext gameContext;
 };

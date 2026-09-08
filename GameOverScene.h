@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "GameContext.h"
 
 class GameOverScene final : public Scene
 {
@@ -45,5 +46,7 @@ private:
     int kirakira;
 
     int voice;
+
+	GameContext gameContext;
 
 };

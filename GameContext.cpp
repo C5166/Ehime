@@ -17,7 +17,6 @@ void GameContext::Init()
 
 
 	Game_start = RM().GridAt(ResourceKeys::game_start);
-	
 
 	playerHP = 3;
 	totalScore = 0;
@@ -35,6 +34,7 @@ void GameContext::Reset()
 {
 	playerHP = 3;
 	totalScore = 0;
+	timer = GAME_TIME_LIMIT;
 
 	game_03.Reset();
 	game_02.Reset();
