@@ -105,6 +105,16 @@ void Game_02::Reset()
         currentExplanationSpr = RM().GridAt(ResourceKeys::game_setumei_8);
         PlaySoundMem(setumeivoice[1], DX_PLAYTYPE_BACK);
     }
+
+    // TODO: leftValue/rightValue に問題ごとの数値（合計や積）を設定してください。
+    // 例: 左が 5x3, 右が 3x4 の場合は leftValue[0]=15, rightValue[0]=12 のように設定します。
+    // デフォルトでは -1 のままで、既存の leftIsMoreTable が使用されます。
+    // デフォルトでは未設定(-1)にして既存のテーブルを使用する
+    for (int i = 0; i < 6; ++i) { leftValue[i] = -1; rightValue[i] = -1; }
+
+    // リセット時に正解カウント等をクリア
+    correctCount = 0;
+    completed = false;
 }
 
 void Game_02::Update(int& hp, int& score)
@@ -128,7 +138,18 @@ void Game_02::Update(int& hp, int& score)
         if (isLeftClicked || isRightClicked)
         {
             // 現在の画像で「合計が多いほう」は左か？
-            bool leftIsMore = leftIsMoreTable[change];
+            bool leftIsMore = false;
+            if ((leftValue[change] >= 0) || (rightValue[change] >= 0))
+            {
+                int lv = (leftValue[change] >= 0) ? leftValue[change] : 0;
+                int rv = (rightValue[change] >= 0) ? rightValue[change] : 0;
+                leftIsMore = (lv > rv);
+            }
+            else
+            {
+                // フォールバック: 既存のテーブルを使用
+                leftIsMore = leftIsMoreTable[change];
+            }
 
             // 今回の指示における「正解」は左かどうか
             // More（多いほう）なら leftIsMore、Less（少ないほう）ならその逆
@@ -142,6 +163,13 @@ void Game_02::Update(int& hp, int& score)
                 int soundIdx = GetRand(2);
                 PlaySoundMem(good[soundIdx], DX_PLAYTYPE_BACK);
                 score++;
+                correctCount++;
+                if (correctCount >= 6)
+                {
+                    completed = true;
+                    // play perfect sound
+                    if (perfect >= 0) PlaySoundMem(perfect, DX_PLAYTYPE_BACK);
+                }
             }
             else
             {

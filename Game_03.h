@@ -26,6 +26,9 @@ public:
     // 現在の指示画像を取得する関数
     const DxPlus::Sprite::SpriteBase* GetExplanationSprite() const { return currentExplanationSpr; }
 
+    // 指定のターゲットがすべて選択されたか
+    bool AllTargetsCollected() const;
+
 private:
     void SpawnBalls();
 

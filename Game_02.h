@@ -19,6 +19,9 @@ public:
     void Draw(int hp, int score) const;
     void DrawPerfectAnimation(int x, int y);
 
+    // 全問正解したか
+    bool AllCorrect() const { return completed; }
+
     // 指示画像（説明スプライト）を取得
     const DxPlus::Sprite::SpriteBase* GetExplanationSprite() const { return currentExplanationSpr; }
 
@@ -67,4 +70,13 @@ private:
     int perfect;
 
     int setumeivoice[2];
+
+    // 正解カウントと完了フラグ
+    int correctCount{ 0 };
+    bool completed{ false };
+
+    // 各問題の左側/右側の正解判定に使う数値（左と右の合計や積など、問題に応じた値を設定してください）
+    // デフォルトは -1（未設定）で、その場合は従来のテーブルを参照します。
+    int leftValue[6]  = { -1, -1, -1, -1, -1, -1 };
+    int rightValue[6] = { -1, -1, -1, -1, -1, -1 };
 };

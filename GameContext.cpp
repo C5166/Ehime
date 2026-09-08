@@ -172,32 +172,55 @@ void GameContext::Update(bool& input)
 		}
 	}
 
-	// 完了演出の更新（表示中はゲームの進行を一時停止）
+    // 完了演出の更新（表示中はゲームの進行を一時停止）
 	if (showPerfect)
 	{
+		// アニメフレームの更新
 		perfectTimer++;
 		if (perfectTimer >= perfectAnimInterval)
 		{
 			perfectTimer = 0;
-			perfectFrame++;
-			if (perfectFrame >= perfectTotalFrames)
+			perfectFrame = (perfectFrame + 1) % perfectTotalFrames;
+		}
+
+		// 表示時間の経過
+		perfectElapsedFrames++;
+
+		// アルファ計算（フェードイン / 表示 / フェードアウト）
+		if (perfectElapsedFrames < perfectFadeFrames)
+		{
+			perfectAlpha = static_cast<int>(255.0f * (static_cast<float>(perfectElapsedFrames) / perfectFadeFrames));
+		}
+		else if (perfectElapsedFrames > (perfectDisplayFrames - perfectFadeFrames))
+		{
+			int remain = perfectDisplayFrames - perfectElapsedFrames;
+			perfectAlpha = static_cast<int>(255.0f * (static_cast<float>(remain) / perfectFadeFrames));
+			if (perfectAlpha < 0) perfectAlpha = 0;
+		}
+		else
+		{
+			perfectAlpha = 255;
+		}
+
+		if (perfectElapsedFrames >= perfectDisplayFrames)
+		{
+			// 演出終了 -> 次のミニゲームへ
+			showPerfect = false;
+			perfectFrame = 0;
+			perfectElapsedFrames = 0;
+			perfectAlpha = 255;
+			timer = GAME_TIME_LIMIT;
+			currentGameIndex++;
+			if (currentGameIndex >= TOTAL_MINI_GAMES)
 			{
-				// 演出終了 -> 次のミニゲームへ
-				showPerfect = false;
-				perfectFrame = 0;
-				timer = GAME_TIME_LIMIT;
-				currentGameIndex++;
-				if (currentGameIndex >= TOTAL_MINI_GAMES)
-				{
-					sequenceFinished = true;
-				}
-				else
-				{
-					SetupCurrentGame();
-				}
-				sequenceState = SequenceState::Explanation;
-				sequenceTimer = 0.0f;
+				sequenceFinished = true;
 			}
+			else
+			{
+				SetupCurrentGame();
+			}
+			sequenceState = SequenceState::Explanation;
+			sequenceTimer = 0.0f;
 		}
 	}
 }
@@ -390,7 +413,7 @@ void GameContext::Draw() const
 	DrawSequenceUI();
 
 	// 完了演出の描画
-	if (showPerfect && perfectSheetID >= 0)
+    if (showPerfect && perfectSheetID >= 0)
 	{
 		int frameIndex = perfectFrame;
 		if (frameIndex < perfectTotalFrames)
@@ -401,7 +424,10 @@ void GameContext::Draw() const
 			int sy = gridY * perfectFrameH;
 			int dx = 960 - perfectFrameW / 2;
 			int dy = 540 - perfectFrameH / 2;
+			// フェード用アルファを設定してから描画
+			DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, perfectAlpha);
 			DrawRectGraph(dx, dy, sx, sy, perfectFrameW, perfectFrameH, perfectSheetID, TRUE);
+			DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
 	}
 }
