@@ -93,6 +93,10 @@ private:
 
     int gamestart;
 
+    int CountSE_1;
+	int CountSE_2;
+
+    int lastPlayTime{ -1 };
 
     // --- ‰‰oŠÇ——p•Ï” ---
     SequenceState sequenceState{ SequenceState::Explanation };

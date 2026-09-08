@@ -11,7 +11,6 @@ public:
     void Reset();
     void Update(int& hp, int& score);
     void Draw(int hp, int score) const;
-    void DrawPerfectAnimation(int x, int y) ;
 
 private:
 
@@ -48,6 +47,8 @@ private:
 
     int perfect;
 
-    int setumeivoice;
+    int setumeivoice[2];
+
+	bool IsVoice;
 
 };

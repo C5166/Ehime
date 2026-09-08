@@ -3,64 +3,7 @@
 #include "ResourceManager.h"
 #include <cstdlib>
 
-namespace {
-    struct perfectFrameRect {
-        int x, y, w, h;
-    };
 
-    static const perfectFrameRect frames[33] = {
-        { 0     , 0     , 1391, 604 },   
-        { 1391  , 0     , 1391, 604 },   
-        { 2782  , 0     , 1391, 604 },   
-        { 4173  , 0     , 1391, 604 }, 
-        { 5564  , 0     , 1391, 604 },  
-        { 6955  , 0     , 1391, 604 },
-        { 8346  , 0     , 1391, 604 },  
-        { 1391  , 0     , 1391, 604 },
-        { 9737  , 0     , 1391, 604 },  
-        { 11128 , 0     , 1391, 604 },
-        { 0     , 604   , 1391, 604 },  
-        { 1391  , 604   , 1391, 604 },
-        { 2782  , 604   , 1391, 604 },
-        { 4173  , 604   , 1391, 604 },
-        { 5564  , 604   , 1391, 604 },
-        { 6955  , 604   , 1391 ,604 },
-        { 8346  , 604   , 1391 ,604 },
-        { 1391  , 604   , 1391 ,604 },
-        { 9737  , 604   , 1391 ,604 },
-        { 11128 , 604   , 1391 ,604 },
-        { 0     , 1208  , 1391 ,604 },
-        { 1391  , 1208  , 1391 ,604 },
-        { 2782  , 1208  , 1391 ,604 },
-        { 4173  , 1208  , 1391 ,604 },
-        { 5564  , 1208  , 1391 ,604 },
-        { 6955  , 1208  , 1391 ,604 },
-        { 8346  , 1208  , 1391 ,604 },
-        { 1391  , 1208  , 1391 ,604 },
-        { 9737  , 1208  , 1391 ,604 },
-        { 11128 , 1208  , 1391 ,604 },
-        { 0     , 1812  , 1391 ,604 },
-        { 1391  , 1812  , 1391 ,604 },
-        { 2782  , 1812  , 1391 ,604 },
-    };
-}
-void Game_02::DrawPerfectAnimation(int x, int y)
-{
-    DrawRectGraph(
-        x, y,
-        frames[frame].x, frames[frame].y,
-        frames[frame].w, frames[frame].h,
-        perfectSheetID,
-        TRUE
-    );
-
-
-    if (frame >= 33)
-    {
-        frame = 0;
-        Animating = false;
-    }
-}
 void Game_02::Init()
 {
     Reset();
@@ -87,13 +30,14 @@ void Game_02::Init()
 
     perfect = RM().GetSound(ResourceKeys::SE_PerfectVoice);
 
-    setumeivoice = RM().GetSound(ResourceKeys::SE_GameVoice2);
+    setumeivoice[0] = RM().GetSound(ResourceKeys::SE_GameVoice2_1);
+    setumeivoice[1] = RM().GetSound(ResourceKeys::SE_GameVoice2_2);
 
 }
 
 void Game_02::Reset()
 {
-
+	IsVoice = true;
 }
 
 
@@ -251,12 +195,6 @@ void Game_02::Update(int& hp, int& score)
                 hp--;
                 change = 0;
             }
-            Animating = true;
-        }
-        if (Animating)
-        {
-            DrawPerfectAnimation(100, 100);
-
         }
 		break;
     default:

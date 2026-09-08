@@ -18,11 +18,13 @@ void GameContext::Init()
 
 	Game_start = RM().GridAt(ResourceKeys::game_start);
 	
+	CountSE_1 = RM().GetSound(ResourceKeys::SE_Count_1);
+	CountSE_2 = RM().GetSound(ResourceKeys::SE_Count_2);
 
 	playerHP = 3;
 	totalScore = 0;
 	timer = GAME_TIME_LIMIT;
-
+	lastPlayTime = static_cast<int>(std::ceil(timer));
 	sequenceState = SequenceState::Explanation;
 	sequenceTimer = 0.0f;
 
@@ -42,7 +44,7 @@ void GameContext::Reset()
 	
 	sequenceState = SequenceState::Explanation;
 	sequenceTimer = 0.0f;
-
+	lastPlayTime = static_cast<int>(std::ceil(timer));
 
 }
 
@@ -85,7 +87,24 @@ void GameContext::Update(bool& input)
 	}
 
 	timer -= deltaTime * TIME_SPEED_RATE;
+	int currentSecond = static_cast<int>(std::ceil(timer));
+	// 秒数が前回の判定から変化した瞬間に音を鳴らす
+	if (currentSecond != lastPlayTime && currentSecond >= 0)
+	{
+		if (currentSecond <= 3 && currentSecond > 0)
+		{
+			// 残り3秒以下のカウントダウン音
+			PlaySoundMem(CountSE_2, DX_PLAYTYPE_BACK);
+		}
+		else if (currentSecond > 3)
+		{
+			// 通常のカウントダウン音
+			PlaySoundMem(CountSE_1, DX_PLAYTYPE_BACK);
+		}
 
+		// 再生した秒数を記録
+		lastPlayTime = currentSecond;
+	}
 	// 10秒経過で次のゲームへ移行＆演出リセット
 	if (timer <= 0.0f)
 	{
@@ -117,6 +136,7 @@ void GameContext::Update(bool& input)
 			game_00.Update(playerHP, totalScore);
 			break;
 		default:
+
 			break;
 		}
 	}
@@ -138,6 +158,7 @@ void GameContext::DrawTimer() const
 
 			if (sprTens) sprTens->Draw({ TIMER_POS.x - DIGIT_OFFSET_X * 0.5f, TIMER_POS.y },{0.7,0.7});
 			if (sprOnes) sprOnes->Draw({ TIMER_POS.x + DIGIT_OFFSET_X * 0.5f, TIMER_POS.y },{ 0.7,0.7 });
+			
 		}
 		else
 		{

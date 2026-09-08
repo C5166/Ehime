@@ -42,6 +42,9 @@ namespace ResourceKeys
 	inline constexpr const wchar_t* SE_GameVoice3_3 = L"GameVoice3_3";
 	inline constexpr const wchar_t* SE_GameVoice3_4 = L"GameVoice3_4";
 
+	inline constexpr const wchar_t* SE_Count_1 = L"Count_1";
+	inline constexpr const wchar_t* SE_Count_2 = L"Count_2";
+
 	inline constexpr const wchar_t* SE_GameStart = L"GameStart";
 	inline constexpr const wchar_t* SE_Camera = L"Camera";
 
