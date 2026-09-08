@@ -97,6 +97,10 @@ void ResourceManager::LoadAll()
     LoadSound(ResourceKeys::SE_GameVoice3_3, L"./Data/Sounds/説明ボイス/voice_setumei_9.mp3");//消しゴム探す
     LoadSound(ResourceKeys::SE_GameVoice3_4, L"./Data/Sounds/説明ボイス/voice_setumei_4.mp3");//鉛筆探す
 
+
+    LoadSound(ResourceKeys::SE_Count_1, L"./Data/Sounds/se_count_987654.mp3");
+    LoadSound(ResourceKeys::SE_Count_2, L"./Data/Sounds/se_count_321.mp3");
+
     LoadSound(ResourceKeys::SE_Explosion,   L"./Data/Sounds/Explosion.mp3");
 
 	LoadSound(ResourceKeys::SE_TouchVoice1, L"./Data/Sounds/タイトル_胸を押したときのボイス/voice_mune_baka.mp3");
